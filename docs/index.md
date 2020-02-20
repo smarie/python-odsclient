@@ -18,11 +18,35 @@ It initial purpose is not to cover the full Search API available - although cont
 
 ## Usage
 
+### 1. Basics
+
+#### a- Downloading a "flat" dataset
+
+```python
+from odsclient import get_whole_dataset
+
+csv_str = get_whole_dataset("world-growth-since-the-industrial-revolution0", 
+                            platform_id='public')
+print(csv_str)
+```
+
+yields
+
+```
+Year Ending;World output;World population;Per capita output
+2012-12-31;3.03783837;1.39292748;1.62231324
+1700-12-31;0.07352168;0.05783974;0.01567288
+1820-12-31;0.51654477;0.44594248;0.07028884
+1913-12-31;1.48929571;0.58556427;0.89847031
+```
+
+### 2. Advanced
+
 **TODO**
 
 ## Main features / benefits
 
-See [top of the page](./index.md)
+ - Simple access to ODS API to retrive a whole dataset
 
 ## See Also
 

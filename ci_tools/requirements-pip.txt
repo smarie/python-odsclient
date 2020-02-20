@@ -4,7 +4,7 @@ setuptools_scm
 six
 
 # --- to install
-
+requests
 
 # --- to run the tests
 pytest>=4.4  #$PYTEST_VERSION
