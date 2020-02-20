@@ -14,7 +14,7 @@ here = path.abspath(path.dirname(__file__))
 INSTALL_REQUIRES = ['requests']
 DEPENDENCY_LINKS = []
 SETUP_REQUIRES = ['pytest-runner', 'setuptools_scm', 'six']
-TESTS_REQUIRE = ['pytest']
+TESTS_REQUIRE = ['pytest', 'pandas']
 EXTRAS_REQUIRE = {}
 
 # simple check

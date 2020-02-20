@@ -5,6 +5,7 @@ six
 
 # --- to install
 requests
+pandas
 
 # --- to run the tests
 pytest>=4.4  #$PYTEST_VERSION
