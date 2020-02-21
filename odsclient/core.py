@@ -5,79 +5,6 @@ except ImportError:
 from requests import Session, HTTPError
 
 
-def create_session_for_fiddler():
-    # type: (...) -> Session
-    return create_session_for_proxy(http_proxyhost='localhost', http_proxyport=8888,
-                                    use_http_for_https_proxy=True, ssl_verify=False)
-
-
-def create_session_for_proxy(http_proxyhost,                  # type: str
-                             http_proxyport,                  # type: int
-                             https_proxyhost=None,            # type: str
-                             https_proxyport=None,            # type: int
-                             use_http_for_https_proxy=False,  # type: bool
-                             ssl_verify=None
-                             ):
-    # type: (...) -> Session
-    """
-    Helper method to configure the request package to use the proxy fo your choice and adapt the SSL certificate
-    validation accordingly
-
-    :param http_proxyhost: mandatory proxy host for http
-    :param http_proxyport: mandatory proxy port for http
-    :param https_proxyhost: optional proxy host for https. If none is provided, http_proxyhost will be used
-    :param https_proxyport: optional proxy port for https. If none is provided, http_proxyport will be used
-    :param use_http_for_https_proxy: optional, if set to true the http protocol will be used to initiate communications
-        with the proxy even for https calls (then calls will be done in https as usual).
-    :param ssl_verify: optional ssl verification parameter. It may either be the path to an additional certificate
-        to trust (recommended), or a boolean to enable (default)/disable (not recommended ! use only in debug mode !)
-        certificate validation.
-        See here for details : http://docs.python-requests.org/en/master/user/advanced/#ssl-cert-verification
-    :return: a requests.Session object that you may use with the rest of the library
-    """
-
-    # ----- old with urllib
-    # # fiddler is a localhost:8888 proxy
-    # proxy = request.ProxyHandler({'http': '127.0.0.1:8888', 'https': '127.0.0.1:8888'})
-    #
-    # # don't verify SSL certificate, fiddler replaces the ones from outside with its own.
-    # ctx = ssl.create_default_context()
-    # ctx.check_hostname = False
-    # ctx.verify_mode = ssl.CERT_NONE
-    # https = request.HTTPSHandler(context=ctx)
-    #
-    # # chain the two options and install them
-    # opener = request.build_opener(proxy, https)
-    # request.install_opener(opener)
-
-    https_proxyhost = https_proxyhost or http_proxyhost
-    https_proxyport = https_proxyport or http_proxyport
-    https_proxy_protocol = 'http' if use_http_for_https_proxy else 'https'
-
-    s = Session()
-    s.proxies = {
-                    'http': 'http://' + http_proxyhost + ':' + str(http_proxyport),
-                    'https': https_proxy_protocol + '://' + https_proxyhost + ':' + str(https_proxyport),
-                }
-    if not (ssl_verify is None):
-        s.verify = ssl_verify
-
-    # IMPORTANT : otherwise the environment variables will always have precedence over user settings
-    s.trust_env = False
-
-    return s
-
-
-def url_encode(**kwargs):
-    """
-    Returns a url-encoded string such as 'format=csv&timezone=Europe/Paris&use_labels_for_header=true'
-
-    :param kwargs: key-value options
-    :return:
-    """
-    return '&'.join(['{}={}'.format(k, v) for k,v in kwargs.items()])
-
-
 ODS_BASE_URL_TEMPLATE = "https://%s.opendatasoft.com/explore/dataset/"
 
 
@@ -257,3 +184,53 @@ class DatalibClient(object):
             print(error.response.headers)
 
             raise  # ODSException(error)
+
+
+def create_session_for_fiddler():
+    # type: (...) -> Session
+    return create_session_for_proxy(http_proxyhost='localhost', http_proxyport=8888,
+                                    use_http_for_https_proxy=True, ssl_verify=False)
+
+
+def create_session_for_proxy(http_proxyhost,                  # type: str
+                             http_proxyport,                  # type: int
+                             https_proxyhost=None,            # type: str
+                             https_proxyport=None,            # type: int
+                             use_http_for_https_proxy=False,  # type: bool
+                             ssl_verify=None
+                             ):
+    # type: (...) -> Session
+    """
+    Helper method to configure the `requests` package to use the proxy fo your choice and adapt the SSL certificate
+    validation accordingly. Note that this is only if you do not with to use the default configuration (inherited
+    from environment variables, so you can use https://smarie.github.io/develop-behind-proxy/switching/#envswitcher)
+
+    :param http_proxyhost: mandatory proxy host for http
+    :param http_proxyport: mandatory proxy port for http
+    :param https_proxyhost: optional proxy host for https. If none is provided, http_proxyhost will be used
+    :param https_proxyport: optional proxy port for https. If none is provided, http_proxyport will be used
+    :param use_http_for_https_proxy: optional, if set to true the http protocol will be used to initiate communications
+        with the proxy even for https calls (then calls will be done in https as usual).
+    :param ssl_verify: optional ssl verification parameter. It may either be the path to an additional certificate
+        to trust (recommended), or a boolean to enable (default)/disable (not recommended ! use only in debug mode !)
+        certificate validation.
+        See here for details : http://docs.python-requests.org/en/master/user/advanced/#ssl-cert-verification
+    :return: a requests.Session object that you may use with the rest of the library
+    """
+    # config and fallback
+    https_proxyhost = https_proxyhost if https_proxyhost is not None else http_proxyhost
+    https_proxyport = https_proxyport if https_proxyport is not None else http_proxyport
+    https_proxy_protocol = 'http' if use_http_for_https_proxy else 'https'
+
+    s = Session()
+    s.proxies = {
+        'http': 'http://%s:%s' % (http_proxyhost, http_proxyport),
+        'https': '%s://%s:%s' % (https_proxy_protocol, https_proxyhost,  https_proxyport),
+    }
+    if not (ssl_verify is None):
+        s.verify = ssl_verify
+
+    # IMPORTANT : otherwise the environment variables will always have precedence over user settings
+    s.trust_env = False
+
+    return s
