@@ -16,11 +16,15 @@ It initial purpose is not to cover the full Search API available - although cont
 > pip install odsclient
 ```
 
+If you wish to download datasets as dataframes, you should also install `pandas`. This is not mandatory, though.
+
 ## Usage
 
 ### 1. Basics
 
 #### a- Downloading a "flat" dataset
+
+The most basic thing that you can do is to download a whole dataset, similarly to what you can get when clicking on the links with your browser on a dataset's ["Export" page](https://public.opendatasoft.com/explore/dataset//world-growth-since-the-industrial-revolution0/download/):
 
 ```python
 from odsclient import get_whole_dataset
@@ -38,6 +42,26 @@ Year Ending;World output;World population;Per capita output
 1700-12-31;0.07352168;0.05783974;0.01567288
 1820-12-31;0.51654477;0.44594248;0.07028884
 1913-12-31;1.48929571;0.58556427;0.89847031
+```
+
+If you have `pandas` installed, you can get the dataset directly as a dataframe:
+
+```python
+from odsclient import get_whole_dataframe
+
+df = get_whole_dataframe("world-growth-since-the-industrial-revolution0", 
+                         platform_id='public')
+print(df)
+```
+
+yields
+
+```
+  Year Ending  World output  World population  Per capita output
+0  1820-12-31      0.516545          0.445942           0.070289
+1  1913-12-31      1.489296          0.585564           0.898470
+2  2012-12-31      3.037838          1.392927           1.622313
+3  1700-12-31      0.073522          0.057840           0.015673
 ```
 
 ### 2. Advanced
