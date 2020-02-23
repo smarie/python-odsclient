@@ -32,7 +32,7 @@
         <meta name="lang:search.tokenizer" content="[\s\-]+">
       
       <link rel="shortcut icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-4.6.3">
+      <meta name="generator" content="mkdocs-1.1, mkdocs-material-4.6.3">
     
     
       
@@ -265,6 +265,13 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#020-datasets-as-pandas-dataframes-misc" class="md-nav__link">
+    0.2.0 - datasets as pandas dataframes + misc.
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#010-first-public-version" class="md-nav__link">
     0.1.0 - First public version
   </a>
@@ -303,6 +310,13 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#020-datasets-as-pandas-dataframes-misc" class="md-nav__link">
+    0.2.0 - datasets as pandas dataframes + misc.
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#010-first-public-version" class="md-nav__link">
     0.1.0 - First public version
   </a>
@@ -329,6 +343,10 @@
                 
                 
                 <h1 id="changelog">Changelog<a class="headerlink" href="#changelog" title="Permanent link">&para;</a></h1>
+<h3 id="020-datasets-as-pandas-dataframes-misc">0.2.0 - datasets as pandas dataframes + misc.<a class="headerlink" href="#020-datasets-as-pandas-dataframes-misc" title="Permanent link">&para;</a></h3>
+<p>New method <code>get_whole_dataframe</code> to directly retrieve a dataset as a pandas dataframe. It works in streaming mode so as to correctly handle large datasets. Fixes <a href="https://github.com/smarie/python-odsclient/issues/1">#1</a> </p>
+<p>Added <code>csv_separator</code> option to <code>get_whole_dataset</code> methods. Set default value of <code>use_labels_for_header</code> to <code>True</code> to mimic what is available in the ODS website.</p>
+<p>Now parsing the ODS errors correctly to raise <code>ODSException</code>. Fixes <a href="https://github.com/smarie/python-odsclient/issues/2">#2</a> </p>
 <h3 id="010-first-public-version">0.1.0 - First public version<a class="headerlink" href="#010-first-public-version" title="Permanent link">&para;</a></h3>
 <p>Extracted from internal sources. Ability to download a whole dataset from any of the ODS platform using the "download flat dataset" API.</p>
                 
@@ -389,7 +407,7 @@
     
       <script src="../assets/javascripts/application.c33a9706.js"></script>
       
-      <script>app.initialize({version:"1.0.4",url:{base:".."}})</script>
+      <script>app.initialize({version:"1.1",url:{base:".."}})</script>
       
     
   </body>

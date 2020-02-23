@@ -32,7 +32,7 @@
         <meta name="lang:search.tokenizer" content="[\s\-]+">
       
       <link rel="shortcut icon" href="assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-4.6.3">
+      <meta name="generator" content="mkdocs-1.1, mkdocs-material-4.6.3">
     
     
       
@@ -487,9 +487,11 @@
 </code></pre></div>
 
 
+<p>If you wish to download datasets as dataframes, you should also install <code>pandas</code>. This is not mandatory, though.</p>
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
 <h3 id="1-basics">1. Basics<a class="headerlink" href="#1-basics" title="Permanent link">&para;</a></h3>
 <h4 id="a-downloading-a-flat-dataset">a- Downloading a "flat" dataset<a class="headerlink" href="#a-downloading-a-flat-dataset" title="Permanent link">&para;</a></h4>
+<p>The most basic thing that you can do is to download a whole dataset, similarly to what you can get when clicking on the links with your browser on a dataset's <a href="https://public.opendatasoft.com/explore/dataset//world-growth-since-the-industrial-revolution0/download/">"Export" page</a>:</p>
 <div class="codehilite"><pre><span></span><code><span class="kn">from</span> <span class="nn">odsclient</span> <span class="kn">import</span> <span class="n">get_whole_dataset</span>
 
 <span class="n">csv_str</span> <span class="o">=</span> <span class="n">get_whole_dataset</span><span class="p">(</span><span class="s2">&quot;world-growth-since-the-industrial-revolution0&quot;</span><span class="p">,</span> 
@@ -504,6 +506,24 @@
 <span class="err">1700-12-31;0.07352168;0.05783974;0.01567288</span>
 <span class="err">1820-12-31;0.51654477;0.44594248;0.07028884</span>
 <span class="err">1913-12-31;1.48929571;0.58556427;0.89847031</span>
+</code></pre></div>
+
+
+<p>If you have <code>pandas</code> installed, you can get the dataset directly as a dataframe:</p>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span> <span class="nn">odsclient</span> <span class="kn">import</span> <span class="n">get_whole_dataframe</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">get_whole_dataframe</span><span class="p">(</span><span class="s2">&quot;world-growth-since-the-industrial-revolution0&quot;</span><span class="p">,</span> 
+                         <span class="n">platform_id</span><span class="o">=</span><span class="s1">&#39;public&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+</code></pre></div>
+
+
+<p>yields</p>
+<div class="codehilite"><pre><span></span><code><span class="err">  Year Ending  World output  World population  Per capita output</span>
+<span class="err">0  1820-12-31      0.516545          0.445942           0.070289</span>
+<span class="err">1  1913-12-31      1.489296          0.585564           0.898470</span>
+<span class="err">2  2012-12-31      3.037838          1.392927           1.622313</span>
+<span class="err">3  1700-12-31      0.073522          0.057840           0.015673</span>
 </code></pre></div>
 
 
@@ -580,7 +600,7 @@
     
       <script src="assets/javascripts/application.c33a9706.js"></script>
       
-      <script>app.initialize({version:"1.0.4",url:{base:"."}})</script>
+      <script>app.initialize({version:"1.1",url:{base:"."}})</script>
       
     
   </body>
