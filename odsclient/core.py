@@ -11,7 +11,8 @@ ODS_BASE_URL_TEMPLATE = "https://%s.opendatasoft.com/explore/dataset/"
 def get_whole_dataset(dataset_id,                  # type: str
                       format='csv',                # type: str
                       timezone=None,               # type: str
-                      use_labels_for_header=None,  # type: bool
+                      use_labels_for_header=True,  # type: bool
+                      csv_separator=';',           # type: str
                       platform_id='public',        # type: str
                       base_url=None,               # type: str
                       apikey=None,                 # type: str
@@ -20,7 +21,7 @@ def get_whole_dataset(dataset_id,                  # type: str
                       **other_opts
                       ):
     """
-    Shortcut metho
+    Shortcut method for DatalibClient(...).get_whole_dataset(...)
 
     :param dataset_id:
     :param format:
@@ -41,7 +42,7 @@ def get_whole_dataset(dataset_id,                  # type: str
                            requests_session=requests_session)
     return client.get_whole_dataset(dataset_id=dataset_id, format=format,
                                     timezone=timezone, use_labels_for_header=use_labels_for_header,
-                                    **other_opts)
+                                    csv_separator=csv_separator, **other_opts)
 
 
 class DatalibClient(object):
@@ -101,7 +102,8 @@ class DatalibClient(object):
                           dataset_id,                  # type: str
                           format='csv',                # type: str
                           timezone=None,               # type: str
-                          use_labels_for_header=None,  # type: bool
+                          use_labels_for_header=True,  # type: bool
+                          csv_separator=';',           # type: str
                           **other_opts
                           ):
         """
@@ -110,6 +112,7 @@ class DatalibClient(object):
         :param format:
         :param timezone:
         :param use_labels_for_header:
+        :param csv_separator: ';', ','...
         :param other_opts:
         :return:
         """
@@ -136,6 +139,8 @@ class DatalibClient(object):
             opts['timezone'] = timezone
         if use_labels_for_header is not None:
             opts['use_labels_for_header'] = use_labels_for_header
+        if csv_separator is not None:
+            opts['csv_separator'] = csv_separator
 
         # The URL to call
         url = "{base_url}/{dataset_id}/download/".format(base_url=self.base_url, dataset_id=dataset_id)
