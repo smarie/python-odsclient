@@ -165,10 +165,8 @@ class DatalibClient(object):
             # Send the request
             response = self.session.request(method, url, headers=headers, data=body, params=params)
 
-            # Parse the response
+            # Success ? Read status code, raise an HTTPError if status is error
             status = int(response.status_code)
-
-            # raise an HTTPError if status is error
             response.raise_for_status()
 
             # headers not useful : encoding is automatically used to read the body when calling response.text
@@ -177,13 +175,23 @@ class DatalibClient(object):
             return result
 
         except HTTPError as error:
+            try:
+                body = error.response.text
+                # {
+                #   "errorcode": 10002,
+                #   "reset_time": "2017-10-17T00:00:00Z",
+                #   "limit_time_unit": "day",
+                #   "call_limit": 10000,
+                #   "error": "Too many requests on the domain. Please contact the domain administrator."
+                # }
+                details = loads(body)
+            except Exception as e:
+                # error parsing the json payload?
+                pass
+            else:
+                raise ODSException(error.response.status_code, error.response.headers, **details)
 
-            print("The request failed with status code: " + str(error.response.status_code))
-
-            # Print the headers - they may include some useful debugging info
-            print(error.response.headers)
-
-            raise  # ODSException(error)
+            raise error
 
 
 def create_session_for_fiddler():
@@ -234,3 +242,24 @@ def create_session_for_proxy(http_proxyhost,                  # type: str
     s.trust_env = False
 
     return s
+
+
+class ODSException(Exception):
+    """
+    An error returned by the ODS API
+    """
+    def __init__(self, status_code, headers, **details):
+        """
+
+        :param status_code:
+        :param headers:
+        :param details:
+        """
+        self.status_code = status_code
+        self.headers = headers
+        self.error_msg = details['error']
+        self.details = details
+
+    def __repr__(self):
+        return "Request failed (%s): %s\nDetails: %s\nHeaders: %s" % (self.status_code, self.error_msg,
+                                                                      self.details, self.headers)
