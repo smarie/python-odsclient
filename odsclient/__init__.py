@@ -1,3 +1,8 @@
-from odsclient.core import get_whole_dataset
+from odsclient.core import get_whole_dataset, get_whole_dataframe, ODSException
 
-__all__ = ['core', 'get_whole_dataset']
+__all__ = [
+    # submodules
+    'core',
+    # symbols
+    'get_whole_dataset', 'get_whole_dataframe', 'ODSException'
+]
