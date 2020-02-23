@@ -40,13 +40,14 @@ def test_example():
     # move to pandas
     df = pd.read_csv(create_reading_buffer(csv_str, is_literal=False), sep=';')
 
-    # test the pandas direct streaming API
-    df2 = get_whole_dataframe("world-growth-since-the-industrial-revolution0")
-    pd.testing.assert_frame_equal(df, df2)
-
     # compare with ref
     ref_df = pd.read_csv(create_reading_buffer(ref_csv, is_literal=True), sep=';')
     df = df.set_index('Year Ending').sort_index()
     ref_df = ref_df.set_index('Year Ending').sort_index()
     pd.testing.assert_frame_equal(df, ref_df)
     assert df.shape == (4, 3)
+
+    # test the pandas direct streaming API
+    df2 = get_whole_dataframe("world-growth-since-the-industrial-revolution0")
+    df2 = df2.set_index('Year Ending').sort_index()
+    pd.testing.assert_frame_equal(df, df2)
