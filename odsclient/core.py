@@ -1,3 +1,12 @@
+import io
+from json import loads
+try:
+    # python 3
+    from urllib.parse import quote
+except ImportError:
+    # python 2
+    from urllib import quote
+
 try:
     from typing import Dict
 except ImportError:
@@ -5,7 +14,34 @@ except ImportError:
 from requests import Session, HTTPError
 
 
-ODS_BASE_URL_TEMPLATE = "https://%s.opendatasoft.com/explore/dataset/"
+ODS_BASE_URL_TEMPLATE = "https://%s.opendatasoft.com/explore/dataset"
+
+
+def get_whole_dataframe(dataset_id,                  # type: str
+                        use_labels_for_header=True,  # type: bool
+                        platform_id='public',        # type: str
+                        base_url=None,               # type: str
+                        apikey=None,                 # type: str
+                        apikeyfile_path=None,        # type: str
+                        requests_session=None,       # type: Session
+                        **other_opts
+                        ):
+    """
+    Shortcut method for DatalibClient(...).get_whole_dataframe(...)
+    Returns a dataset as a pandas dataframe. pandas must be installed.
+
+    :param dataset_id:
+    :param platform_id:
+    :param base_url:
+    :param apikey:
+    :param apikeyfile_path:
+    :param requests_session:
+    :param other_opts:
+    :return:
+    """
+    client = DatalibClient(platform_id=platform_id, base_url=base_url, apikey=apikey, apikeyfile_path=apikeyfile_path,
+                           requests_session=requests_session)
+    return client.get_whole_dataframe(dataset_id=dataset_id, use_labels_for_header=use_labels_for_header, **other_opts)
 
 
 def get_whole_dataset(dataset_id,                  # type: str
@@ -98,6 +134,62 @@ class DatalibClient(object):
         # create and store a session
         self.session = requests_session or Session()
 
+    def get_whole_dataframe(self,
+                            dataset_id,                  # type: str
+                            use_labels_for_header=True,  # type: bool
+                            **other_opts
+                            ):
+        """
+        Returns a dataset as a pandas dataframe. pandas must be installed.
+
+        :param dataset_id:
+        :param use_labels_for_header:
+        :param other_opts:
+        :return:
+        """
+        try:
+            import pandas as pd
+        except ImportError as e:
+            raise Exception("`get_whole_dataframe` requires `pandas` to be installed. [%s] %s" % (e.__class__, e))
+
+        # Combine all the options
+        opts = other_opts
+        if self.apikey is not None:
+            opts['apikey'] = self.apikey
+        if use_labels_for_header is not None:
+            opts['use_labels_for_header'] = use_labels_for_header
+
+        # hardcoded
+        if 'timezone' in opts:
+            raise ValueError("'timezone' should not be specified with this method")
+        if 'format' in opts:
+            raise ValueError("'format' should not be specified with this method")
+        opts['format'] = 'csv'
+        if 'csv_separator' in opts:
+            raise ValueError("'csv_separator' should not be specified with this method")
+        opts['csv_separator'] = ';'
+
+        # The URL to call
+        url = self.get_download_url(dataset_id)
+
+        # Execute call in stream mode
+        result = self._http_call(url, params=opts, stream=True)
+        # print(iterable_to_stream(result.iter_content()).read())
+        df = pd.read_csv(iterable_to_stream(result.iter_content()), sep=';')
+
+        return df
+
+    def get_download_url(self,
+                         dataset_id  # type: str
+                         ):
+        # type: (...) -> str
+        """
+
+        :param dataset_id:
+        :return:
+        """
+        return "%s/%s/download/" % (self.base_url, dataset_id)
+
     def get_whole_dataset(self,
                           dataset_id,                  # type: str
                           format='csv',                # type: str
@@ -143,7 +235,7 @@ class DatalibClient(object):
             opts['csv_separator'] = csv_separator
 
         # The URL to call
-        url = "{base_url}/{dataset_id}/download/".format(base_url=self.base_url, dataset_id=dataset_id)
+        url = self.get_download_url(dataset_id)
 
         # Execute call
         result = self._http_call(url, params=opts)
@@ -155,7 +247,9 @@ class DatalibClient(object):
                    body=None,     # type: bytes
                    headers=None,  # type: Dict[str, str]
                    method='get',  # type: str
-                   params=None    # type: Dict[str, str]
+                   params=None,   # type: Dict[str, str]
+                   decode=True,   # type: bool
+                   stream=False   # type: bool
                    ):
         """
         Sub-routine for HTTP web service call. If Body is None, a GET is performed
@@ -167,17 +261,23 @@ class DatalibClient(object):
         :return:
         """
         try:
-            # Send the request
-            response = self.session.request(method, url, headers=headers, data=body, params=params)
+            # Send the request (DO NOT encode the params, this is done automatically)
+            response = self.session.request(method, url, headers=headers, data=body, params=params, stream=stream)
 
             # Success ? Read status code, raise an HTTPError if status is error
             status = int(response.status_code)
             response.raise_for_status()
 
-            # headers not useful : encoding is automatically used to read the body when calling response.text
-            result = response.text
-
-            return result
+            if not stream:
+                if decode:
+                    # Contents (encoding is automatically used to read the body when calling response.text)
+                    result = response.text
+                    return result
+                else:
+                    return response
+            else:
+                response.raw.decode_content = decode
+                return response
 
         except HTTPError as error:
             try:
@@ -268,3 +368,28 @@ class ODSException(Exception):
     def __repr__(self):
         return "Request failed (%s): %s\nDetails: %s\nHeaders: %s" % (self.status_code, self.error_msg,
                                                                       self.details, self.headers)
+
+
+def iterable_to_stream(iterable, buffer_size=io.DEFAULT_BUFFER_SIZE):
+    """
+    Lets you use an iterable (e.g. a generator) that yields bytestrings as a read-only
+    input stream.
+
+    The stream implements Python 3's newer I/O API (available in Python 2's io module).
+    For efficiency, the stream is buffered.
+    """
+    class IterStream(io.RawIOBase):
+        def __init__(self):
+            self.leftover = None
+        def readable(self):
+            return True
+        def readinto(self, b):
+            try:
+                l = len(b)  # We're supposed to return at most this much
+                chunk = self.leftover or next(iterable)
+                output, self.leftover = chunk[:l], chunk[l:]
+                b[:len(output)] = output
+                return len(output)
+            except StopIteration:
+                return 0    # indicate EOF
+    return io.BufferedReader(IterStream(), buffer_size=buffer_size)
