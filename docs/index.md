@@ -24,7 +24,7 @@ If you wish to download datasets as dataframes, you should also install `pandas`
 
 #### a- Downloading a "flat" dataset
 
-The most basic thing that you can do is to download a whole dataset, similarly to what you can get when clicking on the links with your browser on a dataset's ["Export" page](https://public.opendatasoft.com/explore/dataset//world-growth-since-the-industrial-revolution0/download/):
+The most basic thing that you can do is to download a whole dataset, similarly to what you can get when clicking on the links with your browser on a dataset's ["Export" page](https://public.opendatasoft.com/explore/dataset/world-growth-since-the-industrial-revolution0/export/):
 
 ```python
 from odsclient import get_whole_dataset
