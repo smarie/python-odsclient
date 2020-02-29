@@ -1,8 +1,11 @@
-from odsclient.core import get_whole_dataset, get_whole_dataframe, ODSException
+from odsclient.core import ODSClient, ODSException, ENV_ODS_APIKEY, KR_DEFAULT_USERNAME
+from odsclient.shortcuts import get_whole_dataset, get_whole_dataframe, store_apikey_in_keyring, \
+    remove_apikey_from_keyring, get_apikey
 
 __all__ = [
     # submodules
-    'core',
+    'core', 'shortcuts',
     # symbols
-    'get_whole_dataset', 'get_whole_dataframe', 'ODSException'
+    'ODSClient', 'ODSException', 'ENV_ODS_APIKEY', 'KR_DEFAULT_USERNAME',
+    'get_whole_dataset', 'get_whole_dataframe', 'store_apikey_in_keyring', 'remove_apikey_from_keyring', 'get_apikey'
 ]

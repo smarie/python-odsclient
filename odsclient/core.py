@@ -1,135 +1,114 @@
+import os
+from ast import literal_eval
+from getpass import getpass
+
 import io
-from json import loads
+from json import loads, JSONDecodeError
+from requests import Session, HTTPError
+
 try:
     # python 3
+    # noinspection PyCompatibility
     from urllib.parse import quote
 except ImportError:
     # python 2
+    # noinspection PyUnresolvedReferences
     from urllib import quote
 
 try:
+    # noinspection PyUnresolvedReferences
     from typing import Dict
 except ImportError:
     pass
-from requests import Session, HTTPError
 
 
-ODS_BASE_URL_TEMPLATE = "https://%s.opendatasoft.com/explore/dataset"
+ODS_BASE_URL_TEMPLATE = "https://%s.opendatasoft.com"
+ENV_ODS_APIKEY = 'ODS_APIKEY'
+KR_DEFAULT_USERNAME = 'apikey_user'
 
 
-def get_whole_dataframe(dataset_id,                  # type: str
-                        use_labels_for_header=True,  # type: bool
-                        platform_id='public',        # type: str
-                        base_url=None,               # type: str
-                        apikey=None,                 # type: str
-                        apikeyfile_path=None,        # type: str
-                        requests_session=None,       # type: Session
-                        **other_opts
-                        ):
+class ODSClient(object):
     """
-    Shortcut method for DatalibClient(...).get_whole_dataframe(...)
-    Returns a dataset as a pandas dataframe. pandas must be installed.
+    An `ODSClient` is a client for a given OpenDataSoft (ODS) platform. By default the target platform base url is
+    `https://<platform_id>.opendatasoft.com` with `platform_id='public'`. One can change either customize the platform
+    id through the `platform_id` constructor argument, or the whole base url with `base_url`.
 
-    :param dataset_id:
-    :param platform_id:
-    :param base_url:
-    :param apikey:
-    :param apikeyfile_path:
-    :param requests_session:
-    :param other_opts:
-    :return:
+    A client is meant to use a single api key at a time. There are 4 ways for users to provide this api key:
+
+    - through direct `apikey=...` argument passing. This is the **most insecure** way of all, since your code will
+      contain the key. It should only be used as a temporary way to perform quick and dirty tests, and should never be
+      committed with the source code.
+
+     - using the `keyring` library
+
     """
-    client = DatalibClient(platform_id=platform_id, base_url=base_url, apikey=apikey, apikeyfile_path=apikeyfile_path,
-                           requests_session=requests_session)
-    return client.get_whole_dataframe(dataset_id=dataset_id, use_labels_for_header=use_labels_for_header, **other_opts)
-
-
-def get_whole_dataset(dataset_id,                  # type: str
-                      format='csv',                # type: str
-                      timezone=None,               # type: str
-                      use_labels_for_header=True,  # type: bool
-                      csv_separator=';',           # type: str
-                      platform_id='public',        # type: str
-                      base_url=None,               # type: str
-                      apikey=None,                 # type: str
-                      apikeyfile_path=None,        # type: str
-                      requests_session=None,       # type: Session
-                      **other_opts
-                      ):
-    """
-    Shortcut method for DatalibClient(...).get_whole_dataset(...)
-
-    :param dataset_id:
-    :param format:
-    :param timezone:
-    :param use_labels_for_header:
-    :param platform_id: the ods platform id to use. This id is used to construct the base URL based on the pattern
-            https://<platform_id>.opendatasoft.com/explore/dataset/. Default is `'public'` which leads to the base url
-            https://public.opendatasoft.com/explore/dataset/
-    :param base_url: an explicit base url to use instead of the one generated from `platform_id`
-    :param apikey: an explicit api key as a string.
-    :param apikeyfile_path: a path to a file containing an api key. Only one of `apikey` and `apikeyfile` should be
-        provided.
-    :param requests_session: an optional `Session` object to use (from `requests` lib)
-    :param other_opts:
-    :return:
-    """
-    client = DatalibClient(platform_id=platform_id, base_url=base_url, apikey=apikey, apikeyfile_path=apikeyfile_path,
-                           requests_session=requests_session)
-    return client.get_whole_dataset(dataset_id=dataset_id, format=format,
-                                    timezone=timezone, use_labels_for_header=use_labels_for_header,
-                                    csv_separator=csv_separator, **other_opts)
-
-
-class DatalibClient(object):
-    """
-    A client for the ODS datalib.
-    """
-
     def __init__(self,
-                 platform_id='public',   # type: str
-                 base_url=None,          # type: str
-                 apikey=None,            # type: str
-                 apikeyfile_path=None,   # type: str
-                 requests_session=None   # type: Session
+                 platform_id='public',                          # type: str
+                 base_url=None,                                 # type: str
+                 apikey=None,                                   # type: str
+                 apikey_filepath=None,                          # type: str
+                 use_keyring=True,                              # type: bool
+                 keyring_entries_username=KR_DEFAULT_USERNAME,  # type: str
+                 requests_session=None                          # type: Session
                  ):
         """
 
         :param platform_id: the ods platform id to use. This id is used to construct the base URL based on the pattern
-            https://<platform_id>.opendatasoft.com/explore/dataset/. Default is `'public'` which leads to the base url
-            https://public.opendatasoft.com/explore/dataset/
+            https://<platform_id>.opendatasoft.com. Default is `'public'` which leads to the base url
+            https://public.opendatasoft.com
         :param base_url: an explicit base url to use instead of the one generated from `platform_id`
         :param apikey: an explicit api key as a string.
-        :param apikeyfile_path: a path to a file containing an api key. Only one of `apikey` and `apikeyfile` should be
+        :param apikey_filepath: a path to a file containing an api key. Only one of `apikey` and `apikeyfile` should be
             provided.
+        :param use_keyring: an optional boolean specifying whether the `keyring` library should be used to lookup
+            existing api keys. Keys should be stored using `store_apikey_in_keyring()`.
+        :param keyring_entries_username: keyring stores secrets with a key made of a service id and a username. We use
+            the base url for the service id, however the user name can be anything. By default we use a string:
+            'apikey_user'.
         :param requests_session: an optional `Session` object to use (from `requests` lib)
         """
+        # keyring option
+        self.use_keyring = use_keyring
+        self.keyring_entries_username = keyring_entries_username
+
         # Construct the base url
         if base_url is not None:
             if platform_id != 'public':
                 raise ValueError("Only one of `platform_id` and `base_url` should be provided.")
+            # remove trailing slashs
+            while base_url.endswith('/'):
+                base_url = base_url[:-1]
             self.base_url = base_url
+            self.platform_id = None
         else:
+            self.platform_id = platform_id
             self.base_url = ODS_BASE_URL_TEMPLATE % platform_id
 
         # Load apikey from file and validate it
         if apikey is not None:
-            if apikeyfile_path is not None:
+            # api key passed as argument
+            if apikey_filepath is not None:
                 raise ValueError("Only one of `apikey` and `apikeypath` should be provided.")
             self.apikey = apikey
-        elif apikeyfile_path is not None:
+
+        elif apikey_filepath is not None:
             try:
-                with open(apikeyfile_path) as f:
+                # read the api key from the file
+                with open(apikey_filepath) as f:
                     self.apikey = f.read()
-            except FileNotFoundError as e:
+            except FileNotFoundError:
                 raise Exception("Please create a text file containing the ODS api key, and either name it 'apikey' or "
-                                "specify its name/path in the apikeyfile_path argument. Note that you can generate an "
+                                "specify its name/path in the apikey_filepath argument. Note that you can generate an "
                                 "API key on this web page: https://<name>.opendatasoft.com/account/my-api-keys/")
+            else:
+                # remove trailing new lines or blanks if any
+                self.apikey = self.apikey.rstrip()
         else:
+            # no explicit api key. Environment variable will apply
             self.apikey = None
 
         if self.apikey is not None and len(self.apikey) == 0:
-            raise ValueError('The api key is empty!')
+            raise ValueError('The provided api key is empty!')
 
         # create and store a session
         self.session = requests_session or Session()
@@ -154,8 +133,9 @@ class DatalibClient(object):
 
         # Combine all the options
         opts = other_opts
-        if self.apikey is not None:
-            opts['apikey'] = self.apikey
+        apikey = self.get_apikey()
+        if apikey is not None:
+            opts['apikey'] = apikey
         if use_labels_for_header is not None:
             opts['use_labels_for_header'] = use_labels_for_header
 
@@ -179,17 +159,7 @@ class DatalibClient(object):
 
         return df
 
-    def get_download_url(self,
-                         dataset_id  # type: str
-                         ):
-        # type: (...) -> str
-        """
-
-        :param dataset_id:
-        :return:
-        """
-        return "%s/%s/download/" % (self.base_url, dataset_id)
-
+    # noinspection PyShadowingBuiltins
     def get_whole_dataset(self,
                           dataset_id,                  # type: str
                           format='csv',                # type: str
@@ -199,6 +169,7 @@ class DatalibClient(object):
                           **other_opts
                           ):
         """
+        Returns a dataset as a csv string.
 
         :param dataset_id:
         :param format:
@@ -223,8 +194,9 @@ class DatalibClient(object):
 
         # Combine all the options
         opts = other_opts
-        if self.apikey is not None:
-            opts['apikey'] = self.apikey
+        apikey = self.get_apikey()
+        if apikey is not None:
+            opts['apikey'] = apikey
         if format is not None:
             opts['format'] = format
         if timezone is not None:
@@ -241,6 +213,112 @@ class DatalibClient(object):
         result = self._http_call(url, params=opts)
 
         return result
+
+    def store_apikey_in_keyring(self,
+                                apikey=None  # type: str
+                                ):
+        """
+        Convenience method to store a password in the OS keyring using `keyring` lib.
+
+        This method is a shortcut for `keyring.set_password(<base_url>, <keyring_entries_username>, <apikey>)`.
+
+        :param apikey: an explicit apikey string. If not provided, `getpass()` will be used to prompt the user for the
+            api key
+        :return:
+        """
+        import keyring
+        if apikey is None:
+            print("Please enter your api key:")
+            apikey = getpass()
+
+        if apikey is None or len(apikey) == 0:
+            raise ValueError("Empty api key provided.")
+
+        keyring.set_password(self.base_url, self.keyring_entries_username, apikey)
+
+    def remove_apikey_from_keyring(self):
+        """
+        Convenience method to remove a previously stored password in the OS keyring using `keyring` lib.
+
+        :return:
+        """
+        import keyring
+        keyring.delete_password(self.base_url, self.keyring_entries_username)
+
+    def get_apikey(self):
+        """
+        Returns the api key that this client currently uses.
+
+        :return:
+        """
+        # 1- if there is an overridden api key, use it
+        if self.apikey is not None:
+            return self.apikey
+
+        # 2- if keyring service contains an entry, use it
+        if self.use_keyring:
+            import keyring
+            for _url in (self.base_url, self.base_url + '/'):
+                apikey = keyring.get_password(_url, self.keyring_entries_username)
+                if apikey is not None:
+                    return apikey
+
+        # 3- check existence of the reference environment variable
+        try:
+            env_api_key = os.environ[ENV_ODS_APIKEY]
+        except KeyError:
+            return
+        else:
+            # try:
+            # try to load it as json
+            # apikeys_dct = loads(env_api_key)
+
+            if len(env_api_key) == 0:
+                return
+            if env_api_key[0] != '{':
+                return env_api_key
+
+            # use ast.literal_eval: more permissive and as safe.
+            apikeys_dct = literal_eval(env_api_key)
+            # except Exception as e:
+            #     if '{' in env_api_key or '}' in env_api_key:
+            #         # json-like that can not be loaded: error
+            #         raise ValueError("Error loading the api keys from OS environment variable '%s': this is not a "
+            #                          "single api key, nor a valid json object. Found: \"%s\""
+            #                          % (ENV_ODS_APIKEY, env_api_key))
+            #     else:
+            #         # single key
+            #         return env_api_key
+            # else:
+            # loaded successfully !
+            if not isinstance(apikeys_dct, dict):
+                raise TypeError("Environment variable contains something that is neither a str not a dict")
+
+            # Try to get a match
+            def remove_trailing_slash(k):
+                while k.endswith('/'):
+                    k = k[:-1]
+                return k
+            apikeys_dct = {remove_trailing_slash(k): v for k, v in apikeys_dct.items()}
+            if self.platform_id in apikeys_dct:
+                return apikeys_dct[self.platform_id]
+            elif self.base_url in apikeys_dct:
+                return apikeys_dct[self.base_url]
+            elif 'default' in apikeys_dct:
+                return apikeys_dct['default']
+            else:
+                return None
+
+    def get_download_url(self,
+                         dataset_id  # type: str
+                         ):
+        # type: (...) -> str
+        """
+
+        :param dataset_id:
+        :return:
+        """
+        return "%s/explore/dataset/%s/download/" % (self.base_url, dataset_id)
 
     def _http_call(self,
                    url,           # type: str
@@ -265,7 +343,7 @@ class DatalibClient(object):
             response = self.session.request(method, url, headers=headers, data=body, params=params, stream=stream)
 
             # Success ? Read status code, raise an HTTPError if status is error
-            status = int(response.status_code)
+            # status = int(response.status_code)
             response.raise_for_status()
 
             if not stream:
@@ -290,13 +368,38 @@ class DatalibClient(object):
                 #   "error": "Too many requests on the domain. Please contact the domain administrator."
                 # }
                 details = loads(body)
-            except Exception as e:
+            except JSONDecodeError:
                 # error parsing the json payload?
                 pass
             else:
                 raise ODSException(error.response.status_code, error.response.headers, **details)
 
             raise error
+
+
+class ODSException(Exception):
+    """
+    An error returned by the ODS API
+    """
+    def __init__(self, status_code, headers, **details):
+        """
+
+        :param status_code:
+        :param headers:
+        :param details:
+        """
+        super(ODSException, self).__init__()
+        self.status_code = status_code
+        self.headers = headers
+        self.error_msg = details['error']
+        self.details = details
+
+    def __str__(self):
+        return repr(self)
+
+    def __repr__(self):
+        return "Request failed (%s): %s\nDetails: %s\nHeaders: %s" % (self.status_code, self.error_msg,
+                                                                      self.details, self.headers)
 
 
 def create_session_for_fiddler():
@@ -349,27 +452,6 @@ def create_session_for_proxy(http_proxyhost,                  # type: str
     return s
 
 
-class ODSException(Exception):
-    """
-    An error returned by the ODS API
-    """
-    def __init__(self, status_code, headers, **details):
-        """
-
-        :param status_code:
-        :param headers:
-        :param details:
-        """
-        self.status_code = status_code
-        self.headers = headers
-        self.error_msg = details['error']
-        self.details = details
-
-    def __repr__(self):
-        return "Request failed (%s): %s\nDetails: %s\nHeaders: %s" % (self.status_code, self.error_msg,
-                                                                      self.details, self.headers)
-
-
 def iterable_to_stream(iterable, buffer_size=io.DEFAULT_BUFFER_SIZE):
     """
     Lets you use an iterable (e.g. a generator) that yields bytestrings as a read-only
@@ -377,17 +459,21 @@ def iterable_to_stream(iterable, buffer_size=io.DEFAULT_BUFFER_SIZE):
 
     The stream implements Python 3's newer I/O API (available in Python 2's io module).
     For efficiency, the stream is buffered.
+
+    Source: https://stackoverflow.com/a/20260030/7262247
     """
     class IterStream(io.RawIOBase):
         def __init__(self):
             self.leftover = None
+
         def readable(self):
             return True
+
         def readinto(self, b):
             try:
-                l = len(b)  # We're supposed to return at most this much
+                ln = len(b)  # We're supposed to return at most this much
                 chunk = self.leftover or next(iterable)
-                output, self.leftover = chunk[:l], chunk[l:]
+                output, self.leftover = chunk[:ln], chunk[ln:]
                 b[:len(output)] = output
                 return len(output)
             except StopIteration:
