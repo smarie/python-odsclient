@@ -1,7 +1,11 @@
 from __future__ import print_function
 
+import os
+
+import pytest
 import sys
 import pandas as pd
+import keyring
 
 from io import BytesIO   # to handle byte strings
 from io import StringIO  # to handle unicode strings
@@ -16,7 +20,8 @@ else:
         else:
             return StringIO(value)
 
-from odsclient import get_whole_dataset, get_whole_dataframe
+from odsclient import get_whole_dataset, get_whole_dataframe, ODSClient, store_apikey_in_keyring, \
+    remove_apikey_from_keyring
 
 
 def test_example():
@@ -51,3 +56,73 @@ def test_example():
     df2 = get_whole_dataframe("world-growth-since-the-industrial-revolution0")
     df2 = df2.set_index('Year Ending').sort_index()
     pd.testing.assert_frame_equal(df, df2)
+
+
+@pytest.mark.parametrize("apikey_method", ['direct', 'file',
+                                           # 'multi_env_pfid', not available on this ODS target
+                                           'single_env', 'multi_env_baseurl', 'multi_env_default',
+                                           'keyring1', 'keyring2'])
+def test_other_platform(apikey_method):
+    """Tests that the lib can connect to a different ODS platform with api key and custom url"""
+
+    # shared info
+    dataset_id = "employment-by-sector-in-france-and-the-united-states-1800-2012"
+    base_url = "https://data.exchange.se.com/"
+    test_apikey = os.environ['EXCH_AKEY']  # <-- travis
+
+    # various methods to get the api key
+    if apikey_method == 'direct':
+        csv_str = get_whole_dataset(dataset_id=dataset_id, base_url=base_url, apikey=test_apikey)
+    elif apikey_method == 'file':
+        f_name = 'tmp.tmp'
+        assert not os.path.exists(f_name)
+        with open(f_name, 'w+') as f:
+            f.write(test_apikey)
+        try:
+            csv_str = get_whole_dataset(dataset_id=dataset_id, base_url=base_url, apikey_filepath=f_name)
+        finally:
+            os.remove(f_name)
+
+    elif apikey_method == 'single_env':
+        os.environ['ODS_APIKEY'] = test_apikey
+        csv_str = get_whole_dataset(dataset_id=dataset_id, base_url=base_url)
+
+    elif apikey_method == 'multi_env_baseurl':
+        os.environ['ODS_APIKEY'] = "{'default': 'blah', '%s': '%s'}" % (base_url, test_apikey)
+        csv_str = get_whole_dataset(dataset_id=dataset_id, base_url=base_url)
+
+    elif apikey_method == 'multi_env_default':
+        os.environ['ODS_APIKEY'] = "{'default': '%s', 'other_id': 'blah'}" % (test_apikey)
+        csv_str = get_whole_dataset(dataset_id=dataset_id, base_url=base_url)
+
+    elif apikey_method == 'keyring1':
+        keyring.set_password(base_url, 'apikey', test_apikey)
+        csv_str = get_whole_dataset(dataset_id=dataset_id, base_url=base_url, use_keyring=True)
+        keyring.delete_password(base_url, 'apikey')
+        assert keyring.get_password(base_url, 'apikey') is None
+
+    elif apikey_method == 'keyring2':
+        store_apikey_in_keyring(base_url=base_url, apikey=test_apikey)
+        csv_str = get_whole_dataset(dataset_id=dataset_id, base_url=base_url, use_keyring=True)
+        remove_apikey_from_keyring(base_url=base_url)
+        assert keyring.get_password(base_url, 'apikey') is None
+        
+    else:
+        raise ValueError('wrong apikey_method: %s' % apikey_method)
+
+    ref_csv = """Year;France: Agriculture;France: Manufacturing;France: Services;USA: Agriculture;USA: Manufacturing;USA: Services
+1950-12-31;31.5;33.3;35.2;13.5;33.2;50.3
+1800-12-31;64.03737;21.58231;14.38032;68.42105;18.42105;13.15789
+2012-12-31;2.9;20.9;76.2;1.6;18.3;80.1
+1900-12-31;43.2;29.0;27.8;40.5;28.2;31.3
+"""
+
+    # move to pandas
+    df = pd.read_csv(create_reading_buffer(csv_str, is_literal=False), sep=';')
+
+    # compare with ref
+    ref_df = pd.read_csv(create_reading_buffer(ref_csv, is_literal=True), sep=';')
+    df = df.set_index('Year').sort_index()
+    ref_df = ref_df.set_index('Year').sort_index()
+    pd.testing.assert_frame_equal(df, ref_df)
+    assert df.shape == (4, 6)
