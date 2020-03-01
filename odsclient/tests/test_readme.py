@@ -20,8 +20,8 @@ else:
         else:
             return StringIO(value)
 
-from odsclient import get_whole_dataset, get_whole_dataframe, ODSClient, store_apikey_in_keyring, \
-    remove_apikey_from_keyring
+from odsclient import get_whole_dataset, get_whole_dataframe, store_apikey_in_keyring, \
+    remove_apikey_from_keyring, get_apikey
 
 
 def test_example():
@@ -58,7 +58,7 @@ def test_example():
     pd.testing.assert_frame_equal(df, df2)
 
 
-@pytest.mark.parametrize("apikey_method", ['direct', 'file',
+@pytest.mark.parametrize("apikey_method", ['direct', 'file_default', 'file_custom',
                                            # 'multi_env_pfid', not available on this ODS target
                                            'single_env', 'multi_env_baseurl', 'multi_env_default',
                                            'keyring1', 'keyring2'])
@@ -73,11 +73,25 @@ def test_other_platform(apikey_method):
     # various methods to get the api key
     if apikey_method == 'direct':
         csv_str = get_whole_dataset(dataset_id=dataset_id, base_url=base_url, apikey=test_apikey)
-    elif apikey_method == 'file':
+
+    elif apikey_method == 'file_default':
+        f_name = 'ods.apikey'
+        assert not os.path.exists(f_name)
+        with open(f_name, 'w+') as f:
+            f.write(test_apikey)
+
+        assert get_apikey(base_url=base_url) == test_apikey
+        try:
+            csv_str = get_whole_dataset(dataset_id=dataset_id, base_url=base_url)
+        finally:
+            os.remove(f_name)
+
+    elif apikey_method == 'file_custom':
         f_name = 'tmp.tmp'
         assert not os.path.exists(f_name)
         with open(f_name, 'w+') as f:
             f.write(test_apikey)
+        assert get_apikey(base_url=base_url) == test_apikey
         try:
             csv_str = get_whole_dataset(dataset_id=dataset_id, base_url=base_url, apikey_filepath=f_name)
         finally:
@@ -85,25 +99,33 @@ def test_other_platform(apikey_method):
 
     elif apikey_method == 'single_env':
         os.environ['ODS_APIKEY'] = test_apikey
+        assert get_apikey(base_url=base_url) == test_apikey
         csv_str = get_whole_dataset(dataset_id=dataset_id, base_url=base_url)
+        del os.environ['ODS_APIKEY']
 
     elif apikey_method == 'multi_env_baseurl':
         os.environ['ODS_APIKEY'] = "{'default': 'blah', '%s': '%s'}" % (base_url, test_apikey)
+        assert get_apikey(base_url=base_url) == test_apikey
         csv_str = get_whole_dataset(dataset_id=dataset_id, base_url=base_url)
+        del os.environ['ODS_APIKEY']
 
     elif apikey_method == 'multi_env_default':
         os.environ['ODS_APIKEY'] = "{'default': '%s', 'other_id': 'blah'}" % (test_apikey)
+        assert get_apikey(base_url=base_url) == test_apikey
         csv_str = get_whole_dataset(dataset_id=dataset_id, base_url=base_url)
+        del os.environ['ODS_APIKEY']
 
     elif apikey_method == 'keyring1':
         keyring.set_password(base_url, 'apikey', test_apikey)
-        csv_str = get_whole_dataset(dataset_id=dataset_id, base_url=base_url, use_keyring=True)
+        assert get_apikey(base_url=base_url) == test_apikey
+        csv_str = get_whole_dataset(dataset_id=dataset_id, base_url=base_url)
         keyring.delete_password(base_url, 'apikey')
         assert keyring.get_password(base_url, 'apikey') is None
 
     elif apikey_method == 'keyring2':
         store_apikey_in_keyring(base_url=base_url, apikey=test_apikey)
-        csv_str = get_whole_dataset(dataset_id=dataset_id, base_url=base_url, use_keyring=True)
+        assert get_apikey(base_url=base_url) == test_apikey
+        csv_str = get_whole_dataset(dataset_id=dataset_id, base_url=base_url)
         remove_apikey_from_keyring(base_url=base_url)
         assert keyring.get_password(base_url, 'apikey') is None
         
