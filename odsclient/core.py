@@ -61,8 +61,8 @@ class ODSClient(object):
         :param enforce_apikey: an optional boolean indicating if an error should be raised if no apikey is found at all
             (not in the explicit argument, not in a file, environment variable, nor keyring) (default `False`)
         :param apikey: an explicit api key as a string.
-        :param apikey_filepath: a path to a file containing an api key. This file is optional except if
-            `apikey_filecheck` is set to `True`
+        :param apikey_filepath: the path that should be used to look for api keys on the file system. Such files are
+            optional, other (safer) methods exist to pass the api key, see documentation for details.
         :param use_keyring: an optional boolean (default `True`) specifying whether the `keyring` library should be
             used to lookup existing api keys. Keys should be stored using `store_apikey_in_keyring()`.
         :param keyring_entries_username: keyring stores secrets with a key made of a service id and a username. We use
@@ -323,7 +323,7 @@ class ODSClient(object):
 
         # 4- finally if no key was found, raise an exception if a key was required
         if self.enforce_apikey:
-            raise NoAPIKeyFoundError(self)
+            raise NoODSAPIKeyFoundError(self)
 
     def get_download_url(self,
                          dataset_id  # type: str
@@ -362,6 +362,10 @@ class ODSClient(object):
             # status = int(response.status_code)
             response.raise_for_status()
 
+            # detect a "wrong 200 but true 401" (unauthorized)
+            if 'html' in response.headers['Content-Type']:
+                raise InsufficientRightsForODSResourceError(response.headers, response.text)
+
             if not stream:
                 if decode:
                     # Contents (encoding is automatically used to read the body when calling response.text)
@@ -393,7 +397,7 @@ class ODSClient(object):
             raise error
 
 
-class NoAPIKeyFoundError(Exception):
+class NoODSAPIKeyFoundError(Exception):
     """
     Raised when no api key was found (no explicit api key provided, no api key file, no env variable entry, no keyring
     entry)
@@ -411,6 +415,21 @@ class NoAPIKeyFoundError(Exception):
                "%s/account/my-api-keys/." \
                % (self.odsclient.apikey_filepath, "https://smarie.github.io/python-odsclient/#c-declaring-an-api-key",
                   self.odsclient.base_url)
+
+
+class InsufficientRightsForODSResourceError(Exception):
+    """
+    Raised when a HTTP 200 is received from ODS together with an HTML page as body. This happens when api key is
+    missing or does not grant the appropriate rights for the required resource.
+    """
+    def __init__(self, headers, contents):
+        self.headers = headers
+        self.contents = contents
+
+    def __str__(self):
+        return "An ODS query returned a HTTP 200 (OK) but with a html content-type. This is probably an " \
+               "authentication problem, please check your api key using `get_apikey()`. " \
+               "Headers:\n%s\nResponse:\n%s\n" % (self.headers, self.contents)
 
 
 class ODSException(Exception):

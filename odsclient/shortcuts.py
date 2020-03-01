@@ -50,6 +50,7 @@ def remove_apikey_from_keyring(platform_id='public',                          # 
 
 def get_apikey(platform_id='public',                          # type: str
                base_url=None,                                 # type: str
+               apikey_filepath='ods.apikey',                  # type: str
                use_keyring=True,                              # type: bool
                keyring_entries_username=KR_DEFAULT_USERNAME,  # type: str
                ):
@@ -62,6 +63,8 @@ def get_apikey(platform_id='public',                          # type: str
         https://<platform_id>.opendatasoft.com. Default is `'public'` which leads to the base url
         https://public.opendatasoft.com
     :param base_url: an explicit base url to use instead of the one generated from `platform_id`
+    :param apikey_filepath: the path that should be used to look for api keys on the file system. Such files are
+        optional, other (safer) methods exist to pass the api key, see documentation for details.
     :param use_keyring: an optional boolean specifying whether the `keyring` library should be used to lookup
         existing api keys. Keys should be stored as `keyring.set_password(<base_url>, 'apikey', <apikey>)` where
         `<base_url>` should not contain any trailing slash.
@@ -70,7 +73,7 @@ def get_apikey(platform_id='public',                          # type: str
         'apikey_user'.
     :return:
     """
-    client = ODSClient(platform_id=platform_id, base_url=base_url,
+    client = ODSClient(platform_id=platform_id, base_url=base_url, apikey_filepath=apikey_filepath,
                        use_keyring=use_keyring, keyring_entries_username=keyring_entries_username)
     return client.get_apikey()
 
@@ -100,8 +103,8 @@ def get_whole_dataframe(dataset_id,                                    # type: s
     :param enforce_apikey: an optional boolean indicating if an error should be raised if no apikey is found at all
         (not in the explicit argument, not in a file, environment variable, nor keyring) (default `False`)
     :param apikey: an explicit api key as a string.
-    :param apikey_filepath: a path to a file containing an api key. This file is optional, other (safer) methods
-        exist, see documentation for details.
+    :param apikey_filepath: the path that should be used to look for api keys on the file system. Such files are
+        optional, other (safer) methods exist to pass the api key, see documentation for details.
     :param use_keyring: an optional boolean  (default `True`) specifying whether the `keyring` library should be used
         to lookup existing api keys. Keys should be stored using `store_apikey_in_keyring()`.
     :param keyring_entries_username: keyring stores secrets with a key made of a service id and a username. We use
@@ -148,8 +151,8 @@ def get_whole_dataset(dataset_id,                                    # type: str
     :param enforce_apikey: an optional boolean indicating if an error should be raised if no apikey is found at all
         (not in the explicit argument, not in a file, environment variable, nor keyring) (default `False`)
     :param apikey: an explicit api key as a string.
-    :param apikey_filepath: a path to a file containing an api key. This file is optional, other (safer) methods
-        exist, see documentation for details.
+    :param apikey_filepath: the path that should be used to look for api keys on the file system. Such files are
+        optional, other (safer) methods exist to pass the api key, see documentation for details.
     :param use_keyring: an optional boolean  (default `True`) specifying whether the `keyring` library should be used
         to lookup existing api keys. Keys should be stored using `store_apikey_in_keyring()`.
     :param keyring_entries_username: keyring stores secrets with a key made of a service id and a username. We use
