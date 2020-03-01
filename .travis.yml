@@ -44,6 +44,7 @@ install:
   - pip install cryptography pycrypto
   - if [ "${TRAVIS_PYTHON_VERSION}" = "2.7" ]; then pip install "SecretStorage<3"; else pip install SecretStorage; fi;
   - pip install SecretStorage-Setup
+  - ss-setup link
   - ss-setup status -v
 
 script:
