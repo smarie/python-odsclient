@@ -2,6 +2,13 @@ language: python
 
 cache: pip
 
+# for dbus install to work see https://travis-ci.community/t/dbus-python-dependency-any-version-does-not-work/2146/11
+dist: xenial
+addons:
+  apt:
+    packages:
+      - libdbus-1-dev
+
 matrix:
   fast_finish: true
   include:
@@ -10,8 +17,6 @@ matrix:
     - python: 3.5
     - python: 3.6
     - python: 3.7
-      dist: xenial
-      sudo: true
 
 env:
   global:
@@ -22,7 +27,6 @@ before_install:
   - sudo apt-get install pandoc
   - sudo apt-get install ant
   - sudo apt-get install ant-optional  # for junitreports
-  - sudo apt-get install python-dbus python-crypto python3-dbus python3-crypto  # to install the SecretStorage backend for keyring
 
 install:
   - pip list
