@@ -22,7 +22,7 @@ before_install:
   - sudo apt-get install pandoc
   - sudo apt-get install ant
   - sudo apt-get install ant-optional  # for junitreports
-  #- sudo apt-get install libsecret  # to install the SecretStorage backend for keyring
+  - sudo apt-get install dbus  # to install the SecretStorage backend for keyring
 
 install:
   - pip list
@@ -35,6 +35,9 @@ install:
   - pip install codecov  # See https://github.com/codecov/example-python.
   - pip list
   # for keyring on travis
+  - pip install dbus
+  - pip install Crypto
+  - pip install secretstorage
   - pip install SecretStorage-Setup
   - ss-setup status
 
