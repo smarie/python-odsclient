@@ -45,8 +45,9 @@ class ODSClient(object):
     def __init__(self,
                  platform_id='public',                          # type: str
                  base_url=None,                                 # type: str
+                 enforce_apikey=False,                          # type: bool
                  apikey=None,                                   # type: str
-                 apikey_filepath=None,                          # type: str
+                 apikey_filepath='ods.apikey',                  # type: str
                  use_keyring=True,                              # type: bool
                  keyring_entries_username=KR_DEFAULT_USERNAME,  # type: str
                  requests_session=None                          # type: Session
@@ -57,11 +58,13 @@ class ODSClient(object):
             https://<platform_id>.opendatasoft.com. Default is `'public'` which leads to the base url
             https://public.opendatasoft.com
         :param base_url: an explicit base url to use instead of the one generated from `platform_id`
+        :param enforce_apikey: an optional boolean indicating if an error should be raised if no apikey is found at all
+            (not in the explicit argument, not in a file, environment variable, nor keyring) (default `False`)
         :param apikey: an explicit api key as a string.
-        :param apikey_filepath: a path to a file containing an api key. Only one of `apikey` and `apikeyfile` should be
-            provided.
-        :param use_keyring: an optional boolean specifying whether the `keyring` library should be used to lookup
-            existing api keys. Keys should be stored using `store_apikey_in_keyring()`.
+        :param apikey_filepath: a path to a file containing an api key. This file is optional except if
+            `apikey_filecheck` is set to `True`
+        :param use_keyring: an optional boolean (default `True`) specifying whether the `keyring` library should be
+            used to lookup existing api keys. Keys should be stored using `store_apikey_in_keyring()`.
         :param keyring_entries_username: keyring stores secrets with a key made of a service id and a username. We use
             the base url for the service id, however the user name can be anything. By default we use a string:
             'apikey_user'.
@@ -85,10 +88,11 @@ class ODSClient(object):
             self.base_url = ODS_BASE_URL_TEMPLATE % platform_id
 
         # Load apikey from file and validate it
+        self.apikey_filepath = apikey_filepath
         if apikey is not None:
             # api key passed as argument
-            if apikey_filepath is not None:
-                raise ValueError("Only one of `apikey` and `apikeypath` should be provided.")
+            if apikey_filepath != 'ods.apikey':
+                raise ValueError("Only one of `apikey` and custom `apikey_filepath` should be provided.")
             self.apikey = apikey
 
         elif apikey_filepath is not None:
@@ -97,9 +101,7 @@ class ODSClient(object):
                 with open(apikey_filepath) as f:
                     self.apikey = f.read()
             except FileNotFoundError:
-                raise Exception("Please create a text file containing the ODS api key, and either name it 'apikey' or "
-                                "specify its name/path in the apikey_filepath argument. Note that you can generate an "
-                                "API key on this web page: https://<name>.opendatasoft.com/account/my-api-keys/")
+                self.apikey = None
             else:
                 # remove trailing new lines or blanks if any
                 self.apikey = self.apikey.rstrip()
@@ -109,6 +111,9 @@ class ODSClient(object):
 
         if self.apikey is not None and len(self.apikey) == 0:
             raise ValueError('The provided api key is empty!')
+
+        # checker flag
+        self.enforce_apikey = enforce_apikey
 
         # create and store a session
         self.session = requests_session or Session()
@@ -245,6 +250,54 @@ class ODSClient(object):
         import keyring
         keyring.delete_password(self.base_url, self.keyring_entries_username)
 
+    def get_apikey_from_envvar(self):
+        """
+        Looks for the 'ODS_APIKEY' environment variable.
+
+         - if it does not exist return None
+         - otherwise if the env variable does not begin with '{', consider it as the key
+         - if it begins with '{', loads it as a dict and find a match in it, in the following order:
+           platform_id, base_url, 'default'
+
+        If the found key is an empty string, a ValueError is raised.
+
+        :return: the api key found in the 'ODS_APIKEY' env variable (possibly for this platform_id /
+            base_url), or None if it does not exist.
+        """
+        try:
+            env_api_key = os.environ[ENV_ODS_APIKEY]
+        except KeyError:
+            # no env var - return None
+            return None
+
+        if len(env_api_key) > 0 and env_api_key[0] == '{':
+            # a dictionary: use ast.literal_eval: more permissive than json and as safe.
+            apikeys_dct = literal_eval(env_api_key)
+            if not isinstance(apikeys_dct, dict):
+                raise TypeError("Environment variable contains something that is neither a str not a dict")
+
+            # remove trailing slash in keys
+            def _remove_trailing_slash(k):
+                while k.endswith('/'):
+                    k = k[:-1]
+                return k
+            apikeys_dct = {_remove_trailing_slash(k): v for k, v in apikeys_dct.items()}
+
+            # Try to get a match in the dict: first platform id, then base url, then default
+            if self.platform_id in apikeys_dct:
+                env_api_key = apikeys_dct[self.platform_id]
+            elif self.base_url in apikeys_dct:
+                env_api_key = apikeys_dct[self.base_url]
+            elif 'default' in apikeys_dct:
+                env_api_key = apikeys_dct['default']
+            else:
+                return None
+
+        if len(env_api_key) == 0:
+            raise ValueError("Empty api key found in '%s' environment variable." % ENV_ODS_APIKEY)
+
+        return env_api_key
+
     def get_apikey(self):
         """
         Returns the api key that this client currently uses.
@@ -264,50 +317,13 @@ class ODSClient(object):
                     return apikey
 
         # 3- check existence of the reference environment variable
-        try:
-            env_api_key = os.environ[ENV_ODS_APIKEY]
-        except KeyError:
-            return
-        else:
-            # try:
-            # try to load it as json
-            # apikeys_dct = loads(env_api_key)
+        apikey = self.get_apikey_from_envvar()
+        if apikey is not None:
+            return apikey
 
-            if len(env_api_key) == 0:
-                return
-            if env_api_key[0] != '{':
-                return env_api_key
-
-            # use ast.literal_eval: more permissive and as safe.
-            apikeys_dct = literal_eval(env_api_key)
-            # except Exception as e:
-            #     if '{' in env_api_key or '}' in env_api_key:
-            #         # json-like that can not be loaded: error
-            #         raise ValueError("Error loading the api keys from OS environment variable '%s': this is not a "
-            #                          "single api key, nor a valid json object. Found: \"%s\""
-            #                          % (ENV_ODS_APIKEY, env_api_key))
-            #     else:
-            #         # single key
-            #         return env_api_key
-            # else:
-            # loaded successfully !
-            if not isinstance(apikeys_dct, dict):
-                raise TypeError("Environment variable contains something that is neither a str not a dict")
-
-            # Try to get a match
-            def remove_trailing_slash(k):
-                while k.endswith('/'):
-                    k = k[:-1]
-                return k
-            apikeys_dct = {remove_trailing_slash(k): v for k, v in apikeys_dct.items()}
-            if self.platform_id in apikeys_dct:
-                return apikeys_dct[self.platform_id]
-            elif self.base_url in apikeys_dct:
-                return apikeys_dct[self.base_url]
-            elif 'default' in apikeys_dct:
-                return apikeys_dct['default']
-            else:
-                return None
+        # 4- finally if no key was found, raise an exception if a key was required
+        if self.enforce_apikey:
+            raise NoAPIKeyFoundError(self)
 
     def get_download_url(self,
                          dataset_id  # type: str
@@ -375,6 +391,26 @@ class ODSClient(object):
                 raise ODSException(error.response.status_code, error.response.headers, **details)
 
             raise error
+
+
+class NoAPIKeyFoundError(Exception):
+    """
+    Raised when no api key was found (no explicit api key provided, no api key file, no env variable entry, no keyring
+    entry)
+    """
+    def __init__(self,
+                 odsclient  # type: ODSClient
+                 ):
+        self.odsclient = odsclient
+
+    def __str__(self):
+        return "ODS API key file not found, while it is marked as mandatory for this call (`enforce_apikey=True`). " \
+               "It should either be put in a text file at path '%s', or in the `ODS_APIKEY` OS environment variable, " \
+               "or (recommended, most secure) in the local `keyring` using `store_apikey_in_keyring()`. " \
+               "See documentation for details: %s. Note that you can generate an API key on this web page: " \
+               "%s/account/my-api-keys/." \
+               % (self.odsclient.apikey_filepath, "https://smarie.github.io/python-odsclient/#c-declaring-an-api-key",
+                  self.odsclient.base_url)
 
 
 class ODSException(Exception):
