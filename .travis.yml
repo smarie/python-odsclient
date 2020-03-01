@@ -8,6 +8,7 @@ addons:
   apt:
     packages:
       - libdbus-1-dev
+      - libdbus-glib-1-dev
 
 matrix:
   fast_finish: true
@@ -40,10 +41,10 @@ install:
   - pip list
   # for keyring on travis
   - pip install dbus-python
-  - pip install cryptography
+  - pip install cryptography pycrypto
   - if [ "${TRAVIS_PYTHON_VERSION}" = "2.7" ]; then pip install "SecretStorage<3"; else pip install SecretStorage; fi;
   - pip install SecretStorage-Setup
-  - ss-setup status
+  - ss-setup status -v
 
 script:
 #  - coverage run tests.py
