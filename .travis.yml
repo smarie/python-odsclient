@@ -22,6 +22,7 @@ before_install:
   - sudo apt-get install pandoc
   - sudo apt-get install ant
   - sudo apt-get install ant-optional  # for junitreports
+  - sudo apt-get install libsecret  # to install the SecretStorage backend for keyring
 
 install:
   - pip list
