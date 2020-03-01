@@ -1,7 +1,7 @@
 import pytest
 import requests
 
-from odsclient import get_whole_dataset, ODSException, NoAPIKeyFoundError
+from odsclient import get_whole_dataset, ODSException, NoODSAPIKeyFoundError, InsufficientRightsForODSResourceError
 
 
 def test_error_bad_dataset_id():
@@ -16,8 +16,15 @@ def test_error_bad_dataset_id():
 
 def test_no_apikey_provided():
     """Tests that enforce_apikey works correctly"""
-    with pytest.raises(NoAPIKeyFoundError):
+    with pytest.raises(NoODSAPIKeyFoundError):
         get_whole_dataset("world-growth-since-the-industrial-revolution0", enforce_apikey=True)
+
+
+def test_apikey_not_granting_rights():
+    """Tests that if rights are not sufficient the proper error is raised"""
+    with pytest.raises(InsufficientRightsForODSResourceError):
+        get_whole_dataset("employment-by-sector-in-france-and-the-united-states-1800-2012",
+                          base_url="https://data.exchange.se.com/")
 
 
 def test_bad_apikey():

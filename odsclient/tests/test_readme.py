@@ -88,10 +88,10 @@ def test_other_platform(apikey_method):
 
     elif apikey_method == 'file_custom':
         f_name = 'tmp.tmp'
-        assert not os.path.exists(f_name)
+        assert not os.path.exists(f_name), "File '%s' already exists, please delete it first" % f_name
         with open(f_name, 'w+') as f:
             f.write(test_apikey)
-        assert get_apikey(base_url=base_url) == test_apikey
+        assert get_apikey(base_url=base_url, apikey_filepath=f_name) == test_apikey
         try:
             csv_str = get_whole_dataset(dataset_id=dataset_id, base_url=base_url, apikey_filepath=f_name)
         finally:
@@ -117,16 +117,16 @@ def test_other_platform(apikey_method):
 
     elif apikey_method == 'keyring1':
         keyring.set_password(base_url, 'apikey', test_apikey)
-        assert get_apikey(base_url=base_url) == test_apikey
-        csv_str = get_whole_dataset(dataset_id=dataset_id, base_url=base_url)
+        assert get_apikey(base_url=base_url, keyring_entries_username='apikey') == test_apikey
+        csv_str = get_whole_dataset(dataset_id=dataset_id, base_url=base_url, keyring_entries_username='apikey')
         keyring.delete_password(base_url, 'apikey')
         assert keyring.get_password(base_url, 'apikey') is None
 
     elif apikey_method == 'keyring2':
-        store_apikey_in_keyring(base_url=base_url, apikey=test_apikey)
-        assert get_apikey(base_url=base_url) == test_apikey
-        csv_str = get_whole_dataset(dataset_id=dataset_id, base_url=base_url)
-        remove_apikey_from_keyring(base_url=base_url)
+        store_apikey_in_keyring(base_url=base_url, keyring_entries_username='apikey', apikey=test_apikey)
+        assert get_apikey(base_url=base_url, keyring_entries_username='apikey') == test_apikey
+        csv_str = get_whole_dataset(dataset_id=dataset_id, base_url=base_url, keyring_entries_username='apikey')
+        remove_apikey_from_keyring(base_url=base_url, keyring_entries_username='apikey')
         assert keyring.get_password(base_url, 'apikey') is None
         
     else:
