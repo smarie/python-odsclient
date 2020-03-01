@@ -6,9 +6,9 @@
 
 [![Documentation](https://img.shields.io/badge/doc-latest-blue.svg)](https://smarie.github.io/python-odsclient/) [![PyPI](https://img.shields.io/pypi/v/odsclient.svg)](https://pypi.python.org/pypi/odsclient/) [![Downloads](https://pepy.tech/badge/odsclient)](https://pepy.tech/project/odsclient) [![Downloads per week](https://pepy.tech/badge/odsclient/week)](https://pepy.tech/project/odsclient) [![GitHub stars](https://img.shields.io/github/stars/smarie/python-odsclient.svg)](https://github.com/smarie/python-odsclient/stargazers)
 
-`odsclient` provides a minimal set of functions to grab a dataset or a collection of datasets from an OpenDataSoft platform. 
+`odsclient` provides a minimal set of functions to grab a dataset or a collection of datasets from an OpenDataSoft (ODS) platform. 
 
-It initial purpose is not to cover the full Search API available - although contributions towards that direction are welcome.
+Its initial purpose is not to cover the [full set of APIs available](https://help.opendatasoft.com/en/apis/) but to get a minimum viable set of features to work easily with the datasets.
 
 ## Installing
 
@@ -17,6 +17,12 @@ It initial purpose is not to cover the full Search API available - although cont
 ```
 
 If you wish to download datasets as dataframes, you should also install `pandas`. This is not mandatory, though.
+
+Finally, if you plan to use api keys, we recommend that you install `keyring` as it will help you store the critical api keys in your operating system's password vault.
+
+```bash
+> pip install keyring
+```
 
 ## Usage
 
@@ -63,6 +69,95 @@ yields
 2  2012-12-31      3.037838          1.392927           1.622313
 3  1700-12-31      0.073522          0.057840           0.015673
 ```
+
+#### b- Using another ODS platform
+
+By default the base url used to access the OpenDataSoft platform is `https://<platform_id>.opendatasoft.com`, with `platform_id='public'`. In the methods above, you can change either the platform id with `platform_id=...` if your target ODS platform has a standard host name, or the entire base url with `base_url=...`.
+
+If you wish to check the result without executing the method, you can create an `ODSClient` object with the same parameters and inspect its `<client>.base_url` :
+
+```python
+from odsclient import ODSClient
+
+default_client = ODSClient()
+print("Default:               %s" % default_client.base_url)
+
+client_with_custom_pfid = ODSClient(platform_id='my_ods')
+print("Custom `platform_id`:  %s" % client_with_custom_pfid.base_url)
+
+client_with_custom_baseurl = ODSClient(base_url="https://my_ods_server.com/")
+print("Custom `base_url`:     %s" % client_with_custom_baseurl.base_url)
+```
+
+yields
+
+```
+Default:               https://public.opendatasoft.com
+Custom `platform_id`:  https://my_ods.opendatasoft.com
+Custom `base_url`:     https://my_ods_server.com
+```
+
+Note that any trailing slash is automatically removed from custom base urls.
+
+#### c- Declaring an API key
+
+Most ODS servers require some sort of authentication to access some of their contents. `odsclient` supports authentication through API keys (see [ODS API Documentation](https://help.opendatasoft.com/en/apis/)). There are four ways that you can use to specify an api key to use for your ODS interactions, listed below from less secure (top) to most secure (bottom):
+
+ - (1a) through direct `apikey=...` argument passing. This is the **most insecure** way of all, since your code will contain the key as a readable string. It should only be used as a **temporary** way to perform quick and dirty tests, and should never be committed with the source code.
+ 
+```python
+# 1a. providing an api key explicitly 
+csv_str = get_whole_dataset("world-growth-since-the-industrial-revolution0", 
+                            apikey="my_non_working_api_key")
+```
+
+ - (1b) if your application tolerates user interaction, you can make the above more secure by using [`getpass()`](https://docs.python.org/3/library/getpass.html) so that users are prompted for the api key at runtime:
+ 
+```python
+# 1b. prompting the user for an api key at runtime
+from getpass import getpass
+csv_str = get_whole_dataset("world-growth-since-the-industrial-revolution0", 
+                            apikey=getpass())
+```
+
+ - (2) through a text file containing the api key. This is **not secure** as malicious programs on your computer may have access to it. The file should obviously not be committed with the source code (use `.gitignore` !). By default the file should be named `ods.apikey`. You can override this default file path using the `apikey_filepath=...` argument. 
+
+```python
+# (2) no specific python arg for api file, using 'ods.apikey' file if present.
+csv_str = get_whole_dataset("world-growth-since-the-industrial-revolution0")
+```
+
+ - (3) through an `ODS_APIKEY` OS environment variable. This environment variable should either contain a single api key without quotes (e.g. `aef46reohln48`), or a dict-like structure where keys can either be `platform_id`, `base_url`, or the special fallback key `'default'` (e.g. `{'public': 'key2', 'https://myods.com': 'key3', 'default': 'key1'}`). This method is still considered **unsecure** because malicious programs can access the OS environment variables. However it should be preferred over the previous methods as it avoids human mistakes (committing api key files).
+
+```python
+# (3) no specific python arg for api key, using the `ODS_APIKEY` environment variable
+csv_str = get_whole_dataset("world-growth-since-the-industrial-revolution0")
+```
+
+ - (4) through `keyring`, which is backed by your OS' vault ([Windows Credential Locker, macOS Keychain, etc.](https://keyring.readthedocs.io/en/latest/?badge=latest#what-is-python-keyring-lib)). This is the **most secure** method available. Simply `pip install keyring`, and use the `store_apikey_in_keyring()` method once through your favorite commandline.
+
+```python
+(done once in the commandline)
+from odsclient import store_apikey_in_keyring
+# store our secret api key. This will prompt you for the key
+store_apikey_in_keyring(platform_id='public')
+
+---
+(in your code)
+# no specific python arg for api key, using the OS keyring.
+csv_str = get_whole_dataset("world-growth-since-the-industrial-revolution0")
+```
+
+When `odsclient` looks for an api key and none is provided explicitly (1), a key file (2) will be looked up first, then keyring (4), and then environment variables (3).
+
+For debugging purposes, you may wish to use `get_apikey()` to check if the api key that is actually used is the one you think you have configured (through a file, env variable, or keyring):
+
+```python
+from odsclient import get_apikey
+print("api key used: %s" % get_apikey(base_url="https://my_ods_server.com/"))
+```
+
+See [API reference](api_reference.md) for details.
 
 ### 2. Advanced
 
