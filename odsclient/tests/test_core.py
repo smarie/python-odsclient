@@ -35,3 +35,11 @@ def test_bad_apikey():
 
     assert exc_info.value.status_code == requests.codes.UNAUTHORIZED  # not authorized
     assert exc_info.value.error_msg == "API key is not valid"
+
+
+def test_keyring_unit():
+    """Small unit test for keyring"""
+    import keyring
+    base_url = "https://data.exchange.se.com/"
+    keyring.set_password(base_url, 'apikey', 'blah')
+    assert keyring.get_password(base_url, 'apikey') == 'blah'
