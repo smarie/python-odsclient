@@ -10,7 +10,7 @@ requests
 pytest>=4.4  #$PYTEST_VERSION
 pytest-logging  # ==2015.11.4
 pandas
-keyring
+keyring<19  # after version 19 it is python 3 only
 
 # --- to generate the reports (see scripts in ci_tools, called by .travis)
 # pytest-cov==2.6.0  # we now use coverage directly

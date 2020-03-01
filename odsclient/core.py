@@ -3,7 +3,18 @@ from ast import literal_eval
 from getpass import getpass
 
 import io
-from json import loads, JSONDecodeError
+try:
+    from json import loads, JSONDecodeError
+except ImportError:
+    # python 2
+    from json import loads
+    JSONDecodeError = ValueError
+try:
+    FileNotFoundError
+except NameError:
+    # python 2
+    FileNotFoundError = IOError
+
 from requests import Session, HTTPError
 
 try:
