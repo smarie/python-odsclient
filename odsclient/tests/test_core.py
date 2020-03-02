@@ -1,3 +1,5 @@
+import os
+
 import pytest
 import requests
 
@@ -37,9 +39,11 @@ def test_bad_apikey():
     assert exc_info.value.error_msg == "API key is not valid"
 
 
+@pytest.mark.skipif('TRAVIS_PYTHON_VERSION' in os.environ, reason="Does not work yet on travis")
 def test_keyring_unit():
     """Small unit test for keyring"""
     import keyring
+    print(keyring.get_keyring())
     base_url = "https://data.exchange.se.com/"
     keyring.set_password(base_url, 'apikey', 'blah')
     assert keyring.get_password(base_url, 'apikey') == 'blah'
