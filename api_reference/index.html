@@ -224,6 +224,18 @@
       
       
 
+
+  <li class="md-nav__item">
+    <a href="../odskey/" title="odskey command" class="md-nav__link">
+      odskey command
+    </a>
+  </li>
+
+    
+      
+      
+      
+
   
 
 
@@ -234,9 +246,45 @@
       
     
     
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        API reference
+      </label>
+    
     <a href="./" title="API reference" class="md-nav__link md-nav__link--active">
       API reference
     </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#odsclient" class="md-nav__link">
+    ODSClient
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#shortcuts" class="md-nav__link">
+    Shortcuts
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
     
   </li>
 
@@ -270,6 +318,29 @@
     
   
   
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#odsclient" class="md-nav__link">
+    ODSClient
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#shortcuts" class="md-nav__link">
+    Shortcuts
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -285,7 +356,79 @@
                 
                 <h1 id="api-reference">API reference<a class="headerlink" href="#api-reference" title="Permanent link">&para;</a></h1>
 <p>In general, <code>help(symbol)</code> will provide the latest up-to-date documentation.</p>
-<p><strong>TODO</strong></p>
+<h2 id="odsclient"><code>ODSClient</code><a class="headerlink" href="#odsclient" title="Permanent link">&para;</a></h2>
+<p>An <code>ODSClient</code> is a client for a given OpenDataSoft (ODS) platform. By default the target platform base url is
+<code>https://&lt;platform_id&gt;.opendatasoft.com</code> with <code>platform_id='public'</code>. One can change either customize the platform
+id through the <code>platform_id</code> constructor argument, or the whole base url with <code>base_url</code>.</p>
+<p>A client instance offers methods to interact with the various ODS API. Currently two high-level methods are 
+provided: <code>&lt;client&gt;.get_whole_dataset(dataset_id, ...)</code> and <code>&lt;client&gt;.get_whole_dataframe(dataset_id, ...)</code></p>
+<p>You can customize the <code>requests.Session</code> object used for the HTTPS transport using <code>requests_session</code>.</p>
+<p>A client is meant to use a single api key at a time, or none. You can force the api key to be mandatory using
+<code>enforce_apikey=True</code>. There are 4 ways to pass an api key, they are used in the following order:</p>
+<ul>
+<li>
+<p>explicitly with the <code>apikey</code> argument</p>
+</li>
+<li>
+<p>through a text file containing the key. This file if present should be named <code>ods.apikey</code> (name can be changed
+   using <code>apikey_filepath</code>, it does not make the file mandatory)</p>
+</li>
+<li>
+<p>if <code>keyring</code> is installed (<code>pip install keyring</code>), an apikey can be created as an entry in it for service
+   <code>&lt;base_url&gt;</code> and username <code>'apikey_user'</code>. <code>keyring</code> leverages your OS' vault (Windows Credential Locker,
+   macOS Keychain, etc. This is the <strong>most secure</strong> method available. You can override the default keyring entry
+   username with the <code>keyring_entries_username=...</code> argument. You can easily add or remove an entry in the keyring
+   through the OS interface, with the <a href="../odskey/"><code>odskeys</code> commandline utility</a> or with the
+   <code>&lt;client&gt;.store_apikey_in_keyring</code> / <code>&lt;client&gt;.get_apikey_from_keyring</code> / <code>&lt;client&gt;.remove_apikey_from_keyring</code>
+   methods.</p>
+</li>
+<li>
+<p>through the <code>'ODS_APIKEY'</code> OS environment variable. It should either contain the key without quotes or a
+   dict-like structure where keys can either be <code>platform_id</code>, <code>base_url</code>, or the special fallback key <code>'default'</code></p>
+</li>
+</ul>
+<p>For debugging purposes, you may wish to use <code>&lt;client&gt;.get_apikey()</code> to check if the api key that is actually used 
+is the one you think you have configured through one of the above methods.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">ODSClient</span><span class="p">(</span>
+          <span class="n">platform_id</span><span class="o">=</span><span class="s1">&#39;public&#39;</span><span class="p">,</span>                          <span class="c1"># type: str</span>
+          <span class="n">base_url</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>                                 <span class="c1"># type: str</span>
+          <span class="n">enforce_apikey</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>                          <span class="c1"># type: bool</span>
+          <span class="n">apikey</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>                                   <span class="c1"># type: str</span>
+          <span class="n">apikey_filepath</span><span class="o">=</span><span class="s1">&#39;ods.apikey&#39;</span><span class="p">,</span>                  <span class="c1"># type: str</span>
+          <span class="n">use_keyring</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>                              <span class="c1"># type: bool</span>
+          <span class="n">keyring_entries_username</span><span class="o">=</span><span class="n">KR_DEFAULT_USERNAME</span><span class="p">,</span>  <span class="c1"># type: str</span>
+          <span class="n">requests_session</span><span class="o">=</span><span class="kc">None</span>                          <span class="c1"># type: Session</span>
+          <span class="p">):</span>
+</code></pre></div>
+
+
+<p><strong>Parameters</strong>:</p>
+<ul>
+<li><code>platform_id</code>: the ods platform id to use. This id is used to construct the base URL based on the pattern
+    https://<platform_id>.opendatasoft.com. Default is <code>'public'</code> which leads to the base url
+    https://public.opendatasoft.com</li>
+<li><code>base_url</code>: an explicit base url to use instead of the one generated from <code>platform_id</code></li>
+<li><code>enforce_apikey</code>: an optional boolean indicating if an error should be raised if no apikey is found at all
+    (not in the explicit argument, not in a file, environment variable, nor keyring) (default <code>False</code>)</li>
+<li><code>apikey</code>: an explicit api key as a string.</li>
+<li><code>apikey_filepath</code>: the path that should be used to look for api keys on the file system. Such files are
+    optional, other (safer) methods exist to pass the api key, see documentation for details.</li>
+<li><code>use_keyring</code>: an optional boolean (default <code>True</code>) specifying whether the <code>keyring</code> library should be
+    used to lookup existing api keys. Keys should be stored using <code>store_apikey_in_keyring()</code>.</li>
+<li><code>keyring_entries_username</code>: keyring stores secrets with a key made of a service id and a username. We use
+    the base url for the service id, however the user name can be anything. By default we use a string:
+    'apikey_user'.</li>
+<li><code>requests_session</code>: an optional <code>Session</code> object to use (from <code>requests</code> lib)</li>
+</ul>
+<h2 id="shortcuts">Shortcuts<a class="headerlink" href="#shortcuts" title="Permanent link">&para;</a></h2>
+<p>The following shortcut functions provide the same level of functionality than <code>ODSClient(...).&lt;function_name&gt;(...)</code>. They can be handy if only one call to ODS is needed.</p>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span> <span class="nn">odsclient.shortcuts</span> <span class="kn">import</span> <span class="p">(</span><span class="n">get_whole_dataset</span><span class="p">,</span> 
+                                 <span class="n">get_whole_dataframe</span><span class="p">,</span> 
+                                 <span class="n">get_apikey</span><span class="p">,</span>
+                                 <span class="n">store_apikey_in_keyring</span><span class="p">,</span>
+                                 <span class="n">get_apikey_from_keyring</span><span class="p">,</span> 
+                                 <span class="n">remove_apikey_from_keyring</span><span class="p">)</span>
+</code></pre></div>
                 
                   
                 
@@ -307,7 +450,7 @@
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
         
-          <a href=".." title="Home" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href="../odskey/" title="odskey command" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-flex__cell md-flex__cell--shrink">
               <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
             </div>
@@ -316,7 +459,7 @@
                 <span class="md-footer-nav__direction">
                   Previous
                 </span>
-                Home
+                odskey command
               </span>
             </div>
           </a>

@@ -36,7 +36,7 @@
     
     
       
-        <title>Changelog - odsclient</title>
+        <title>odskey command - odsclient</title>
       
     
     
@@ -77,7 +77,7 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
     
-      <a href="#changelog" tabindex="0" class="md-skip">
+      <a href="#odskey-commandline-utility" tabindex="0" class="md-skip">
         Skip to content
       </a>
     
@@ -103,7 +103,7 @@
             </span>
             <span class="md-header-nav__topic">
               
-                Changelog
+                odskey command
               
             </span>
           
@@ -224,11 +224,20 @@
       
       
 
+  
 
-  <li class="md-nav__item">
-    <a href="../odskey/" title="odskey command" class="md-nav__link">
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+    <a href="./" title="odskey command" class="md-nav__link md-nav__link--active">
       odskey command
     </a>
+    
   </li>
 
     
@@ -248,70 +257,11 @@
       
       
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active">
-    
-    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    
-      
-    
-    
-      <label class="md-nav__link md-nav__link--active" for="__toc">
-        Changelog
-      </label>
-    
-    <a href="./" title="Changelog" class="md-nav__link md-nav__link--active">
+  <li class="md-nav__item">
+    <a href="../changelog/" title="Changelog" class="md-nav__link">
       Changelog
     </a>
-    
-      
-<nav class="md-nav md-nav--secondary">
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">Table of contents</label>
-    <ul class="md-nav__list" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#040-odskey-commandline" class="md-nav__link">
-    0.4.0 - odskey commandline
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#030-api-keys" class="md-nav__link">
-    0.3.0 -  api keys
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#020-datasets-as-pandas-dataframes-misc" class="md-nav__link">
-    0.2.0 - datasets as pandas dataframes + misc.
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#010-first-public-version" class="md-nav__link">
-    0.1.0 - First public version
-  </a>
-  
-</li>
-      
-      
-      
-      
-      
-    </ul>
-  
-</nav>
-    
   </li>
 
     
@@ -332,43 +282,6 @@
     
   
   
-    <label class="md-nav__title" for="__toc">Table of contents</label>
-    <ul class="md-nav__list" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#040-odskey-commandline" class="md-nav__link">
-    0.4.0 - odskey commandline
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#030-api-keys" class="md-nav__link">
-    0.3.0 -  api keys
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#020-datasets-as-pandas-dataframes-misc" class="md-nav__link">
-    0.2.0 - datasets as pandas dataframes + misc.
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#010-first-public-version" class="md-nav__link">
-    0.1.0 - First public version
-  </a>
-  
-</li>
-      
-      
-      
-      
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
@@ -379,40 +292,42 @@
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/smarie/python-odsclient/edit/master/docs/changelog.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
+                  <a href="https://github.com/smarie/python-odsclient/edit/master/docs/odskey.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
                 
                 
-                <h1 id="changelog">Changelog<a class="headerlink" href="#changelog" title="Permanent link">&para;</a></h1>
-<h3 id="040-odskey-commandline">0.4.0 - odskey commandline<a class="headerlink" href="#040-odskey-commandline" title="Permanent link">&para;</a></h3>
-<ul>
-<li>New <code>odskey</code> commandline utility to ease registration of api keys in <code>keyring</code>. Fixes <a href="https://github.com/smarie/python-odsclient/issues/16">#16</a>. Added a dedicated documentation page.</li>
-<li>Documentation improvements, in particular concerning api key registration.</li>
-<li>Filled the API reference documentation section</li>
-</ul>
-<h3 id="030-api-keys">0.3.0 -  api keys<a class="headerlink" href="#030-api-keys" title="Permanent link">&para;</a></h3>
-<p><strong>API Keys:</strong></p>
-<ul>
-<li>New documentation section on api keys. Fixes <a href="https://github.com/smarie/python-odsclient/issues/11">#11</a></li>
-<li>New methods <code>get_apikey()</code> and <code>&lt;ODSClient&gt;.get_apikey()</code> for debugging purposes</li>
-<li>API keys can now be provided through OS Environment Variables. Fixes <a href="https://github.com/smarie/python-odsclient/issues/6">#6</a>. New method <code>&lt;ODSClient&gt;.get_apikey_from_envvar()</code> for debugging.</li>
-<li>API keys can now be provided through <code>keyring</code>. Fixes <a href="https://github.com/smarie/python-odsclient/issues/8">#8</a></li>
-<li>API key files: <code>apikeyfile_path</code> argument renamed <code>apikey_filepath</code>. Now tolerating new lines or blanks at the end of api key files. Fixes <a href="https://github.com/smarie/python-odsclient/issues/12">#12</a>. <code>apikey_filepath</code> now has a default value <code>'ods.apikey'</code> and file check is now optional. Fixes <a href="https://github.com/smarie/python-odsclient/issues/13">#13</a></li>
-<li>Now correctly raising an error (<code>InsufficientRightsForODSResourceError</code>) when rights are not sufficient for a resource. Fixed <a href="https://github.com/smarie/python-odsclient/issues/7">#7</a>.</li>
-<li><code>enforce_apikey</code> controls if an api key is mandatory before calling (whatever way it is provided: explicit, file, env variable, or keyring). A <code>NoODSAPIKeyFoundError</code> is raised in case none is found.</li>
-</ul>
-<p><strong>Misc:</strong></p>
-<ul>
-<li>Added documentation on target platform customization. Fixes <a href="https://github.com/smarie/python-odsclient/issues/14">#14</a></li>
-<li>Now tolerating trailing slashs at the end of custom <code>base_url</code> (they are removed automatically).</li>
-<li>Init: now exposing <code>ODSClient</code> and <code>ODSException</code> at the root package level.</li>
-<li>new method <code>get_apikey()</code> on <code>ODSClient</code></li>
-</ul>
-<h3 id="020-datasets-as-pandas-dataframes-misc">0.2.0 - datasets as pandas dataframes + misc.<a class="headerlink" href="#020-datasets-as-pandas-dataframes-misc" title="Permanent link">&para;</a></h3>
-<p>New method <code>get_whole_dataframe</code> to directly retrieve a dataset as a pandas dataframe. It works in streaming mode so as to correctly handle large datasets. Fixes <a href="https://github.com/smarie/python-odsclient/issues/1">#1</a> </p>
-<p>Added <code>csv_separator</code> option to <code>get_whole_dataset</code> methods. Set default value of <code>use_labels_for_header</code> to <code>True</code> to mimic what is available in the ODS website.</p>
-<p>Now parsing the ODS errors correctly to raise <code>ODSException</code>. Fixes <a href="https://github.com/smarie/python-odsclient/issues/2">#2</a> </p>
-<h3 id="010-first-public-version">0.1.0 - First public version<a class="headerlink" href="#010-first-public-version" title="Permanent link">&para;</a></h3>
-<p>Extracted from internal sources. Ability to download a whole dataset from any of the ODS platform using the "download flat dataset" API.</p>
+                <h1 id="odskey-commandline-utility"><code>odskey</code> commandline utility<a class="headerlink" href="#odskey-commandline-utility" title="Permanent link">&para;</a></h1>
+<p>Registering an api key in your OS' vault should not be a pain. </p>
+<p>For this, <code>keyring</code> comes with a handy <a href="https://github.com/jaraco/keyring/#command-line-utility">commandline utility</a> already. Since in <code>odsclient</code> we use a specific hardcoded pattern (<code>service_name=&lt;base_url&gt;, username='apikey_user', password=&lt;apikey&gt;</code>), we provide an even easier commandline for you named <code>odskey</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">Usage</span><span class="err">:</span><span class="w"> </span><span class="n">odskeys</span><span class="w"> </span><span class="o">[</span><span class="n">OPTIONS</span><span class="o">]</span><span class="w"> </span><span class="n">COMMAND</span><span class="w"> </span><span class="o">[</span><span class="n">ARGS</span><span class="o">]</span><span class="p">...</span><span class="w"></span>
+
+<span class="w">  </span><span class="n">Commandline</span><span class="w"> </span><span class="n">utility</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="k">get</span><span class="o">/</span><span class="k">set</span><span class="o">/</span><span class="n">remove</span><span class="w"> </span><span class="n">api</span><span class="w"> </span><span class="n">keys</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">OS</span><span class="w"> </span><span class="n">keyring</span><span class="w"> </span><span class="k">using</span><span class="w"></span>
+<span class="w">  </span><span class="n">the</span><span class="w"> </span><span class="err">`</span><span class="n">keyring</span><span class="err">`</span><span class="w"> </span><span class="n">library</span><span class="p">.</span><span class="w"> </span><span class="k">To</span><span class="w"> </span><span class="k">get</span><span class="w"> </span><span class="n">help</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="k">each</span><span class="w"> </span><span class="n">command</span><span class="w"> </span><span class="k">use</span><span class="err">:</span><span class="w"></span>
+
+<span class="w">      </span><span class="n">odskeys</span><span class="w"> </span><span class="o">&lt;</span><span class="n">cmd</span><span class="o">&gt;</span><span class="w"> </span><span class="c1">--help</span>
+
+<span class="nl">Options</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="c1">--help  Show this message and exit.</span>
+
+<span class="nl">Commands</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="k">get</span><span class="w">     </span><span class="n">Looks</span><span class="w"> </span><span class="n">up</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="n">ODS</span><span class="w"> </span><span class="n">apikey</span><span class="w"> </span><span class="n">entry</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">keyring</span><span class="p">.</span><span class="w"></span>
+<span class="w">  </span><span class="n">remove</span><span class="w">  </span><span class="n">Removes</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="n">ODS</span><span class="w"> </span><span class="n">apikey</span><span class="w"> </span><span class="n">entry</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">keyring</span><span class="p">.</span><span class="w"></span>
+<span class="w">  </span><span class="k">set</span><span class="w">     </span><span class="n">Creates</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="n">ODS</span><span class="w"> </span><span class="n">apikey</span><span class="w"> </span><span class="n">entry</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">keyring</span><span class="p">.</span><span class="w"></span>
+</code></pre></div>
+
+
+<p>For example:</p>
+<div class="codehilite"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">odskeys</span> <span class="k">get</span> <span class="o">-</span><span class="n">b</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">myodsplatform</span><span class="p">.</span><span class="n">com</span><span class="o">/</span>
+<span class="k">No</span> <span class="n">api</span> <span class="k">key</span> <span class="n">registered</span> <span class="k">for</span> <span class="n">platform</span> <span class="n">url</span>  <span class="s1">&#39;https://myodsplatform.com/&#39;</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">odskeys</span> <span class="k">set</span> <span class="o">-</span><span class="n">b</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">myodsplatform</span><span class="p">.</span><span class="n">com</span><span class="o">/</span>
+<span class="n">Please</span> <span class="n">enter</span> <span class="n">your</span> <span class="n">api</span> <span class="k">key</span><span class="p">:</span> <span class="p">...</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">odskeys</span> <span class="k">get</span> <span class="o">-</span><span class="n">b</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">myodsplatform</span><span class="p">.</span><span class="n">com</span><span class="o">/</span>
+<span class="n">Api</span> <span class="k">key</span> <span class="k">found</span> <span class="k">for</span> <span class="n">platform</span> <span class="n">url</span> <span class="s1">&#39;https://myodsplatform.com/&#39;</span><span class="p">:</span> <span class="p">...</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">odskey</span> <span class="n">remove</span> <span class="o">-</span><span class="n">b</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">myodsplatform</span><span class="p">.</span><span class="n">com</span><span class="o">/</span>
+<span class="n">Api</span> <span class="k">key</span> <span class="n">removed</span> <span class="n">successfully</span> <span class="k">for</span> <span class="n">platform</span> <span class="n">url</span> <span class="s1">&#39;https://myodsplatform.com/&#39;</span>
+</code></pre></div>
                 
                   
                 
@@ -434,7 +349,7 @@
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
         
-          <a href="../api_reference/" title="API reference" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href=".." title="Home" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-flex__cell md-flex__cell--shrink">
               <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
             </div>
@@ -443,11 +358,25 @@
                 <span class="md-footer-nav__direction">
                   Previous
                 </span>
-                API reference
+                Home
               </span>
             </div>
           </a>
         
+        
+          <a href="../api_reference/" title="API reference" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                API reference
+              </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          </a>
         
       </nav>
     </div>

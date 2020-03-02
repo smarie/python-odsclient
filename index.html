@@ -282,6 +282,33 @@
     c- Declaring an API key
   </a>
   
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#explicit-temporary" class="md-nav__link">
+    explicit, temporary
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#interactive" class="md-nav__link">
+    interactive
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#permanent" class="md-nav__link">
+    permanent
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
       </ul>
@@ -343,6 +370,18 @@
   
 </nav>
     
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="odskey/" title="odskey command" class="md-nav__link">
+      odskey command
+    </a>
   </li>
 
     
@@ -431,6 +470,33 @@
   <a href="#c-declaring-an-api-key" class="md-nav__link">
     c- Declaring an API key
   </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#explicit-temporary" class="md-nav__link">
+    explicit, temporary
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#interactive" class="md-nav__link">
+    interactive
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#permanent" class="md-nav__link">
+    permanent
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -585,59 +651,60 @@
 
 <p>Note that any trailing slash is automatically removed from custom base urls.</p>
 <h4 id="c-declaring-an-api-key">c- Declaring an API key<a class="headerlink" href="#c-declaring-an-api-key" title="Permanent link">&para;</a></h4>
-<p>Most ODS servers require some sort of authentication to access some of their contents. <code>odsclient</code> supports authentication through API keys (see <a href="https://help.opendatasoft.com/en/apis/">ODS API Documentation</a>). There are four ways that you can use to specify an api key to use for your ODS interactions, listed below from less secure (top) to most secure (bottom):</p>
-<ul>
-<li>(1a) through direct <code>apikey=...</code> argument passing. This is the <strong>most insecure</strong> way of all, since your code will contain the key as a readable string. It should only be used as a <strong>temporary</strong> way to perform quick and dirty tests, and should never be committed with the source code.</li>
-</ul>
-<div class="codehilite"><pre><span></span><code><span class="c1"># 1a. providing an api key explicitly </span>
-<span class="n">csv_str</span> <span class="o">=</span> <span class="n">get_whole_dataset</span><span class="p">(</span><span class="s2">&quot;world-growth-since-the-industrial-revolution0&quot;</span><span class="p">,</span> 
+<p>Most ODS servers require some sort of authentication to access some of their contents. <code>odsclient</code> supports authentication through API keys (see <a href="https://help.opendatasoft.com/en/apis/">ODS API Documentation</a>). There are several ways that you can use to specify an api key to use for your ODS interactions.</p>
+<h5 id="explicit-temporary">explicit, temporary<a class="headerlink" href="#explicit-temporary" title="Permanent link">&para;</a></h5>
+<p>If your need is a "quick and dirty" test, you can use direct <code>apikey=...</code> argument passing. This is the <strong>most insecure</strong> way of all, since your code will contain the key as a readable string. It should only be used as a temporary workaround, and should never be committed with the source code.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">csv_str</span> <span class="o">=</span> <span class="n">get_whole_dataset</span><span class="p">(</span><span class="s2">&quot;world-growth-since-the-industrial-revolution0&quot;</span><span class="p">,</span> 
                             <span class="n">apikey</span><span class="o">=</span><span class="s2">&quot;my_non_working_api_key&quot;</span><span class="p">)</span>
 </code></pre></div>
 
 
-<ul>
-<li>(1b) if your application tolerates user interaction, you can make the above more secure by using <a href="https://docs.python.org/3/library/getpass.html"><code>getpass()</code></a> so that users are prompted for the api key at runtime:</li>
-</ul>
-<div class="codehilite"><pre><span></span><code><span class="c1"># 1b. prompting the user for an api key at runtime</span>
-<span class="kn">from</span> <span class="nn">getpass</span> <span class="kn">import</span> <span class="n">getpass</span>
+<h5 id="interactive">interactive<a class="headerlink" href="#interactive" title="Permanent link">&para;</a></h5>
+<p>If your application tolerates user interaction through the terminal, you can make the above more secure by using <a href="https://docs.python.org/3/library/getpass.html"><code>getpass()</code></a> so that users are prompted for the api key at runtime:</p>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span> <span class="nn">getpass</span> <span class="kn">import</span> <span class="n">getpass</span>
 <span class="n">csv_str</span> <span class="o">=</span> <span class="n">get_whole_dataset</span><span class="p">(</span><span class="s2">&quot;world-growth-since-the-industrial-revolution0&quot;</span><span class="p">,</span> 
                             <span class="n">apikey</span><span class="o">=</span><span class="n">getpass</span><span class="p">())</span>
 </code></pre></div>
 
 
-<ul>
-<li>(2) through a text file containing the api key. This is <strong>not secure</strong> as malicious programs on your computer may have access to it. The file should obviously not be committed with the source code (use <code>.gitignore</code> !). By default the file should be named <code>ods.apikey</code>. You can override this default file path using the <code>apikey_filepath=...</code> argument. </li>
-</ul>
-<div class="codehilite"><pre><span></span><code><span class="c1"># (2) no specific python arg for api file, using &#39;ods.apikey&#39; file if present.</span>
-<span class="n">csv_str</span> <span class="o">=</span> <span class="n">get_whole_dataset</span><span class="p">(</span><span class="s2">&quot;world-growth-since-the-industrial-revolution0&quot;</span><span class="p">)</span>
+<h5 id="permanent">permanent<a class="headerlink" href="#permanent" title="Permanent link">&para;</a></h5>
+<p>In all other cases, we recommend that you write apikey-agnostic code such as the one below:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">csv_str</span> <span class="o">=</span> <span class="n">get_whole_dataset</span><span class="p">(</span><span class="s2">&quot;world-growth-since-the-industrial-revolution0&quot;</span><span class="p">)</span>
 </code></pre></div>
 
 
+<p>In that case, <code>odsclient</code> will try several strategies to find an api key:</p>
 <ul>
-<li>(3) through an <code>ODS_APIKEY</code> OS environment variable. This environment variable should either contain a single api key without quotes (e.g. <code>aef46reohln48</code>), or a dict-like structure where keys can either be <code>platform_id</code>, <code>base_url</code>, or the special fallback key <code>'default'</code> (e.g. <code>{'public': 'key2', 'https://myods.com': 'key3', 'default': 'key1'}</code>). This method is still considered <strong>unsecure</strong> because malicious programs can access the OS environment variables. However it should be preferred over the previous methods as it avoids human mistakes (committing api key files).</li>
+<li>
+<p>first it will look for an <code>ods.apikey</code> text file containing the api key. This is <strong>not very secure</strong> as malicious programs on your computer may have access to it. The file should obviously not be committed with the source code (use <code>.gitignore</code> !). You can override the default file path with the <code>apikey_filepath=...</code> argument.</p>
+</li>
+<li>
+<p>then if <code>keyring</code> is installed (<code>pip install keyring</code>), it will check if there is an entry in it for service <code>&lt;base_url&gt;</code> and username <code>'apikey_user'</code>. <code>keyring</code> leverages your OS' vault (<a href="https://keyring.readthedocs.io/en/latest/?badge=latest#what-is-python-keyring-lib">Windows Credential Locker, macOS Keychain, etc.</a>). This is the <strong>most secure</strong> method available. You can override the default keyring entry username with the <code>keyring_entries_username=...</code> argument. You can easily add or remove an entry in the keyring with the <a href="odskey/"><code>odskeys</code> commandline utility</a>, through the OS interface, or with the <code>store_apikey_in_keyring</code> / <code>get_apikey_from_keyring</code> / <code>remove_apikey_from_keyring</code> python API.</p>
+</li>
+<li>
+<p>finally it looks for an <code>ODS_APIKEY</code> OS environment variable. This environment variable should either contain a single api key without quotes (e.g. <code>aef46reohln48</code>), or a dict-like structure where keys can either be <code>platform_id</code>, <code>base_url</code>, or the special fallback key <code>'default'</code> (e.g. <code>{'public': 'key2', 'https://myods.com': 'key3', 'default': 'key1'}</code>). This method is still considered <strong>unsecure</strong> because malicious programs can access the OS environment variables. However it should be preferred over the previous methods as it avoids human mistakes (committing api key files).</p>
+</li>
 </ul>
-<div class="codehilite"><pre><span></span><code><span class="c1"># (3) no specific python arg for api key, using the `ODS_APIKEY` environment variable</span>
-<span class="n">csv_str</span> <span class="o">=</span> <span class="n">get_whole_dataset</span><span class="p">(</span><span class="s2">&quot;world-growth-since-the-industrial-revolution0&quot;</span><span class="p">)</span>
+<p>If you wish to force usage of an api key (and prevent any ODS query to be made if none is found), you may wish to set <code>enforce_apikey=True</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">csv_str</span> <span class="o">=</span> <span class="n">get_whole_dataset</span><span class="p">(</span><span class="s2">&quot;world-growth-since-the-industrial-revolution0&quot;</span><span class="p">,</span>
+                            <span class="n">enforce_apikey</span><span class="o">=</span><span class="kc">True</span>  <span class="c1"># raise if no apikey is found</span>
+                            <span class="p">)</span>
 </code></pre></div>
 
 
-<ul>
-<li>(4) through <code>keyring</code>, which is backed by your OS' vault (<a href="https://keyring.readthedocs.io/en/latest/?badge=latest#what-is-python-keyring-lib">Windows Credential Locker, macOS Keychain, etc.</a>). This is the <strong>most secure</strong> method available. Simply <code>pip install keyring</code>, and use the <code>store_apikey_in_keyring()</code> method once through your favorite commandline.</li>
-</ul>
-<div class="codehilite"><pre><span></span><code><span class="p">(</span><span class="n">done</span> <span class="n">once</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">commandline</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">odsclient</span> <span class="kn">import</span> <span class="n">store_apikey_in_keyring</span>
-<span class="c1"># store our secret api key. This will prompt you for the key</span>
-<span class="n">store_apikey_in_keyring</span><span class="p">(</span><span class="n">platform_id</span><span class="o">=</span><span class="s1">&#39;public&#39;</span><span class="p">)</span>
-
-<span class="o">---</span>
-<span class="p">(</span><span class="ow">in</span> <span class="n">your</span> <span class="n">code</span><span class="p">)</span>
-<span class="c1"># no specific python arg for api key, using the OS keyring.</span>
-<span class="n">csv_str</span> <span class="o">=</span> <span class="n">get_whole_dataset</span><span class="p">(</span><span class="s2">&quot;world-growth-since-the-industrial-revolution0&quot;</span><span class="p">)</span>
+<p>If no api key is found, the above yields:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">odsclient</span><span class="p">.</span><span class="n">core</span><span class="p">.</span><span class="n">NoODSAPIKeyFoundError</span><span class="p">:</span> <span class="n">ODS</span> <span class="n">API</span> <span class="k">key</span> <span class="n">file</span> <span class="k">not</span> <span class="n">found</span><span class="p">,</span> <span class="k">while</span> <span class="n">it</span> <span class="k">is</span> 
+    <span class="n">marked</span> <span class="k">as</span> <span class="n">mandatory</span> <span class="k">for</span> <span class="n">this</span> <span class="k">call</span> <span class="p">(</span><span class="ss">`enforce_apikey=True`</span><span class="p">).</span> <span class="n">It</span> <span class="n">should</span> <span class="n">either</span> 
+    <span class="n">be</span> <span class="n">put</span> <span class="k">in</span> <span class="n">a</span> <span class="kt">text</span> <span class="n">file</span> <span class="n">at</span> <span class="n">path</span> <span class="s1">&#39;ods.apikey&#39;</span><span class="p">,</span> <span class="k">or</span> <span class="k">in</span> <span class="n">the</span> <span class="ss">`ODS_APIKEY`</span> <span class="n">OS</span> 
+    <span class="n">environment</span> <span class="n">variable</span><span class="p">,</span> <span class="k">or</span> <span class="p">(</span><span class="n">recommended</span><span class="p">,</span> <span class="n">most</span> <span class="n">secure</span><span class="p">)</span> <span class="k">in</span> <span class="n">the</span> <span class="n">local</span> <span class="ss">`keyring`</span>
+    <span class="k">using</span> <span class="ss">`store_apikey_in_keyring()`</span><span class="p">.</span> <span class="n">See</span> <span class="n">documentation</span> <span class="k">for</span> <span class="n">details</span><span class="p">:</span> 
+    <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">smarie</span><span class="p">.</span><span class="n">github</span><span class="p">.</span><span class="n">io</span><span class="o">/</span><span class="n">python</span><span class="o">-</span><span class="n">odsclient</span><span class="o">/</span><span class="c1">#c-declaring-an-api-key. </span>
+    <span class="n">Note</span> <span class="n">that</span> <span class="n">you</span> <span class="n">can</span> <span class="n">generate</span> <span class="n">an</span> <span class="n">API</span> <span class="k">key</span> <span class="k">on</span> <span class="n">this</span> <span class="n">web</span> <span class="n">page</span><span class="p">:</span> <span class="p">[...].</span>
 </code></pre></div>
 
 
-<p>When <code>odsclient</code> looks for an api key and none is provided explicitly (1), a key file (2) will be looked up first, then keyring (4), and then environment variables (3).</p>
-<p>For debugging purposes, you may wish to use <code>get_apikey()</code> to check if the api key that is actually used is the one you think you have configured (through a file, env variable, or keyring):</p>
+<p>This can be handy if you wish your users to see a quick help at first call reminding them on the various ways to provide an api key.</p>
+<p>Finally, for debugging purposes, you may wish to use <code>get_apikey()</code> to check if the api key that is actually used is the one you think you have configured (through a file, env variable, or keyring):</p>
 <div class="codehilite"><pre><span></span><code><span class="kn">from</span> <span class="nn">odsclient</span> <span class="kn">import</span> <span class="n">get_apikey</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;api key used: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">get_apikey</span><span class="p">(</span><span class="n">base_url</span><span class="o">=</span><span class="s2">&quot;https://my_ods_server.com/&quot;</span><span class="p">))</span>
 </code></pre></div>
@@ -648,12 +715,14 @@
 <p><strong>TODO</strong></p>
 <h2 id="main-features-benefits">Main features / benefits<a class="headerlink" href="#main-features-benefits" title="Permanent link">&para;</a></h2>
 <ul>
-<li>Simple access to ODS API to retrive a whole dataset</li>
+<li>Simple access to ODS API to retrive a whole dataset as text (csv) or dataframe</li>
+<li>Support for many methods to define an api key, independently of the source code: different users may use different methods (env variable, api key file, keyring) while using the same odsclient code.</li>
 </ul>
 <h2 id="see-also">See Also<a class="headerlink" href="#see-also" title="Permanent link">&para;</a></h2>
 <p>This library was inspired by:</p>
 <ul>
 <li><a href="https://smarie.github.io/python-azureml-client/"><code>azmlclient</code></a></li>
+<li><a href="https://pypi.org/project/keyring/"><code>keyring</code></a></li>
 </ul>
 <h3 id="others">Others<a class="headerlink" href="#others" title="Permanent link">&para;</a></h3>
 <p><em>Do you like this library ? You might also like <a href="https://github.com/smarie/OVERVIEW#python">my other python libraries</a></em> </p>
@@ -681,13 +750,13 @@
       <nav class="md-footer-nav__inner md-grid">
         
         
-          <a href="api_reference/" title="API reference" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+          <a href="odskey/" title="odskey command" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
               <span class="md-flex__ellipsis">
                 <span class="md-footer-nav__direction">
                   Next
                 </span>
-                API reference
+                odskey command
               </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink">

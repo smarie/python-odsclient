@@ -5,6 +5,7 @@ docs_dir: .
 site_dir: ../site
 nav:
     - Home: index.md
+    - odskey command: odskey.md
     - API reference: api_reference.md
     - Changelog: changelog.md
 
