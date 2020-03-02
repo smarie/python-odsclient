@@ -87,8 +87,9 @@ class ODSClient(object):
 
         # Construct the base url
         if base_url is not None:
-            if platform_id != 'public':
-                raise ValueError("Only one of `platform_id` and `base_url` should be provided.")
+            if platform_id != 'public' and platform_id is not None:
+                raise ValueError("Only one of `platform_id` and `base_url` should be provided. Received "
+                                 "platform_id='%s' and base_url='%s'" % (platform_id, base_url))
             # remove trailing slashs
             while base_url.endswith('/'):
                 base_url = base_url[:-1]
@@ -244,8 +245,7 @@ class ODSClient(object):
         """
         import keyring
         if apikey is None:
-            print("Please enter your api key:")
-            apikey = getpass()
+            apikey = getpass(prompt="Please enter your api key: ")
 
         if apikey is None or len(apikey) == 0:
             raise ValueError("Empty api key provided.")
