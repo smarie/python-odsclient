@@ -39,7 +39,7 @@ install:
   - pip install PyGithub  # for ci_tools/github_release.py
   - pip install codecov  # See https://github.com/codecov/example-python.
   - pip list
-  # for keyring on travis
+  # for keyring on travis: install this very unsecure (text file) but working backend, just for the tests.
   - pip install keyrings.alt
 #  - pip install dbus-python
 #  - pip install cryptography pycrypto
