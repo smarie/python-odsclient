@@ -1,6 +1,6 @@
 from requests import Session
-from odsclient import ODSClient
-from odsclient.core import KR_DEFAULT_USERNAME
+
+from odsclient.core import KR_DEFAULT_USERNAME, ODSClient
 
 
 def store_apikey_in_keyring(platform_id='public',                          # type: str
@@ -25,6 +25,20 @@ def store_apikey_in_keyring(platform_id='public',                          # typ
     """
     client = ODSClient(platform_id=platform_id, base_url=base_url, keyring_entries_username=keyring_entries_username)
     client.store_apikey_in_keyring(apikey=apikey)
+
+
+def get_apikey_from_keyring(platform_id='public',                          # type: str
+                            base_url=None,                                 # type: str
+                            keyring_entries_username=KR_DEFAULT_USERNAME,  # type: str
+                            ):
+    """
+    Convenience method to get a previously stored password in the OS keyring using `keyring` lib.
+    It is equivalent to `ODSClient(...).get_apikey_from_keyring()`
+
+    :return:
+    """
+    client = ODSClient(platform_id=platform_id, base_url=base_url, keyring_entries_username=keyring_entries_username)
+    return client.get_apikey_from_keyring()
 
 
 def remove_apikey_from_keyring(platform_id='public',                          # type: str

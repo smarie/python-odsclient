@@ -261,6 +261,18 @@ class ODSClient(object):
         import keyring
         keyring.delete_password(self.base_url, self.keyring_entries_username)
 
+    def get_apikey_from_keyring(self):
+        """
+        Looks for a keyring entry containing the api key and returns it.
+        If not found, returns `None`
+        :return:
+        """
+        import keyring
+        for _url in (self.base_url, self.base_url + '/'):
+            apikey = keyring.get_password(_url, self.keyring_entries_username)
+            if apikey is not None:
+                return apikey
+
     def get_apikey_from_envvar(self):
         """
         Looks for the 'ODS_APIKEY' environment variable.
@@ -321,11 +333,9 @@ class ODSClient(object):
 
         # 2- if keyring service contains an entry, use it
         if self.use_keyring:
-            import keyring
-            for _url in (self.base_url, self.base_url + '/'):
-                apikey = keyring.get_password(_url, self.keyring_entries_username)
-                if apikey is not None:
-                    return apikey
+            apikey = self.get_apikey_from_keyring()
+            if apikey is not None:
+                return apikey
 
         # 3- check existence of the reference environment variable
         apikey = self.get_apikey_from_envvar()
