@@ -265,6 +265,13 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#030-api-keys" class="md-nav__link">
+    0.3.0 -  api keys
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#020-datasets-as-pandas-dataframes-misc" class="md-nav__link">
     0.2.0 - datasets as pandas dataframes + misc.
   </a>
@@ -310,6 +317,13 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#030-api-keys" class="md-nav__link">
+    0.3.0 -  api keys
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#020-datasets-as-pandas-dataframes-misc" class="md-nav__link">
     0.2.0 - datasets as pandas dataframes + misc.
   </a>
@@ -343,6 +357,24 @@
                 
                 
                 <h1 id="changelog">Changelog<a class="headerlink" href="#changelog" title="Permanent link">&para;</a></h1>
+<h3 id="030-api-keys">0.3.0 -  api keys<a class="headerlink" href="#030-api-keys" title="Permanent link">&para;</a></h3>
+<p><strong>API Keys:</strong></p>
+<ul>
+<li>New documentation section on api keys. Fixes <a href="https://github.com/smarie/python-odsclient/issues/11">#11</a></li>
+<li>New methods <code>get_apikey()</code> and <code>&lt;ODSClient&gt;.get_apikey()</code> for debugging purposes</li>
+<li>API keys can now be provided through OS Environment Variables. Fixes <a href="https://github.com/smarie/python-odsclient/issues/6">#6</a>. New method <code>&lt;ODSClient&gt;.get_apikey_from_envvar()</code> for debugging.</li>
+<li>API keys can now be provided through <code>keyring</code>. Fixes <a href="https://github.com/smarie/python-odsclient/issues/8">#8</a></li>
+<li>API key files: <code>apikeyfile_path</code> argument renamed <code>apikey_filepath</code>. Now tolerating new lines or blanks at the end of api key files. Fixes <a href="https://github.com/smarie/python-odsclient/issues/12">#12</a>. <code>apikey_filepath</code> now has a default value <code>'ods.apikey'</code> and file check is now optional. Fixes <a href="https://github.com/smarie/python-odsclient/issues/13">#13</a></li>
+<li>Now correctly raising an error (<code>InsufficientRightsForODSResourceError</code>) when rights are not sufficient for a resource. Fixed <a href="https://github.com/smarie/python-odsclient/issues/7">#7</a>.</li>
+<li><code>enforce_apikey</code> controls if an api key is mandatory before calling (whatever way it is provided: explicit, file, env variable, or keyring). A <code>NoODSAPIKeyFoundError</code> is raised in case none is found.</li>
+</ul>
+<p><strong>Misc:</strong></p>
+<ul>
+<li>Added documentation on target platform customization. Fixes <a href="https://github.com/smarie/python-odsclient/issues/14">#14</a></li>
+<li>Now tolerating trailing slashs at the end of custom <code>base_url</code> (they are removed automatically).</li>
+<li>Init: now exposing <code>ODSClient</code> and <code>ODSException</code> at the root package level.</li>
+<li>new method <code>get_apikey()</code> on <code>ODSClient</code></li>
+</ul>
 <h3 id="020-datasets-as-pandas-dataframes-misc">0.2.0 - datasets as pandas dataframes + misc.<a class="headerlink" href="#020-datasets-as-pandas-dataframes-misc" title="Permanent link">&para;</a></h3>
 <p>New method <code>get_whole_dataframe</code> to directly retrieve a dataset as a pandas dataframe. It works in streaming mode so as to correctly handle large datasets. Fixes <a href="https://github.com/smarie/python-odsclient/issues/1">#1</a> </p>
 <p>Added <code>csv_separator</code> option to <code>get_whole_dataset</code> methods. Set default value of <code>use_labels_for_header</code> to <code>True</code> to mimic what is available in the ODS website.</p>
