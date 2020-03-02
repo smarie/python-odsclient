@@ -10,6 +10,7 @@ requests
 pytest>=4.4  #$PYTEST_VERSION
 pytest-logging  # ==2015.11.4
 pandas
+click
 keyring<19  # after version 19 it is python 3 only
 
 # --- to generate the reports (see scripts in ci_tools, called by .travis)

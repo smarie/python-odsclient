@@ -59,6 +59,17 @@ def remove_ods_apikey(platform_id='public',          # type: str
     """
     Removes an ODS apikey entry from the keyring. Custom ODS platform id or base url can be provided through options.
     """
+    apikey = get_apikey_from_keyring(platform_id=platform_id,
+                                     base_url=base_url,
+                                     keyring_entries_username=username,
+                                     )
+    if apikey is None:
+        if base_url is None:
+            click.echo("No api key registered for platform id '%s'" % (platform_id,))
+        else:
+            click.echo("No api key registered for platform url '%s'" % (base_url,))
+        return
+
     remove_apikey_from_keyring(platform_id=platform_id,
                                base_url=base_url,
                                keyring_entries_username=username,
@@ -80,6 +91,7 @@ def remove_ods_apikey(platform_id='public',          # type: str
                                                      "https://<platform_id>.opendatasoft.com/")
 @click.option('-u', '--username', default=KR_DEFAULT_USERNAME, help='Custom username to use in the keyring entry. '
                                                                     'Default: %s' % KR_DEFAULT_USERNAME)
+@click.option('-k', '--apikey', help="apikey to register. If none is provided, you will be prompted for it.")
 def set_ods_apikey(platform_id='public',          # type: str
                    base_url=None,                 # type: str
                    username=KR_DEFAULT_USERNAME,  # type: str
