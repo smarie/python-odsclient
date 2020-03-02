@@ -101,56 +101,66 @@ Note that any trailing slash is automatically removed from custom base urls.
 
 #### c- Declaring an API key
 
-Most ODS servers require some sort of authentication to access some of their contents. `odsclient` supports authentication through API keys (see [ODS API Documentation](https://help.opendatasoft.com/en/apis/)). There are four ways that you can use to specify an api key to use for your ODS interactions, listed below from less secure (top) to most secure (bottom):
+Most ODS servers require some sort of authentication to access some of their contents. `odsclient` supports authentication through API keys (see [ODS API Documentation](https://help.opendatasoft.com/en/apis/)). There are several ways that you can use to specify an api key to use for your ODS interactions.
 
- - (1a) through direct `apikey=...` argument passing. This is the **most insecure** way of all, since your code will contain the key as a readable string. It should only be used as a **temporary** way to perform quick and dirty tests, and should never be committed with the source code.
+##### explicit, temporary
+
+If your need is a "quick and dirty" test, you can use direct `apikey=...` argument passing. This is the **most insecure** way of all, since your code will contain the key as a readable string. It should only be used as a temporary workaround, and should never be committed with the source code.
  
-```python
-# 1a. providing an api key explicitly 
+```python 
 csv_str = get_whole_dataset("world-growth-since-the-industrial-revolution0", 
                             apikey="my_non_working_api_key")
 ```
 
- - (1b) if your application tolerates user interaction, you can make the above more secure by using [`getpass()`](https://docs.python.org/3/library/getpass.html) so that users are prompted for the api key at runtime:
+##### interactive
+
+If your application tolerates user interaction through the terminal, you can make the above more secure by using [`getpass()`](https://docs.python.org/3/library/getpass.html) so that users are prompted for the api key at runtime:
  
 ```python
-# 1b. prompting the user for an api key at runtime
 from getpass import getpass
 csv_str = get_whole_dataset("world-growth-since-the-industrial-revolution0", 
                             apikey=getpass())
 ```
 
- - (2) through a text file containing the api key. This is **not secure** as malicious programs on your computer may have access to it. The file should obviously not be committed with the source code (use `.gitignore` !). By default the file should be named `ods.apikey`. You can override this default file path using the `apikey_filepath=...` argument. 
+##### permanent
+
+In all other cases, we recommend that you write apikey-agnostic code such as the one below:
 
 ```python
-# (2) no specific python arg for api file, using 'ods.apikey' file if present.
 csv_str = get_whole_dataset("world-growth-since-the-industrial-revolution0")
 ```
 
- - (3) through an `ODS_APIKEY` OS environment variable. This environment variable should either contain a single api key without quotes (e.g. `aef46reohln48`), or a dict-like structure where keys can either be `platform_id`, `base_url`, or the special fallback key `'default'` (e.g. `{'public': 'key2', 'https://myods.com': 'key3', 'default': 'key1'}`). This method is still considered **unsecure** because malicious programs can access the OS environment variables. However it should be preferred over the previous methods as it avoids human mistakes (committing api key files).
+In that case, `odsclient` will try several strategies to find an api key:
+
+ - first it will look for an `ods.apikey` text file containing the api key. This is **not very secure** as malicious programs on your computer may have access to it. The file should obviously not be committed with the source code (use `.gitignore` !). You can override the default file path with the `apikey_filepath=...` argument.
+
+ - then if `keyring` is installed (`pip install keyring`), it will check if there is an entry in it for service `<base_url>` and username `'apikey_user'`. `keyring` leverages your OS' vault ([Windows Credential Locker, macOS Keychain, etc.](https://keyring.readthedocs.io/en/latest/?badge=latest#what-is-python-keyring-lib)). This is the **most secure** method available. You can override the default keyring entry username with the `keyring_entries_username=...` argument. You can easily add or remove an entry in the keyring with the [`odskeys` commandline utility](./odskey.md), through the OS interface, or with the `store_apikey_in_keyring` / `get_apikey_from_keyring` / `remove_apikey_from_keyring` python API.
+  
+ - finally it looks for an `ODS_APIKEY` OS environment variable. This environment variable should either contain a single api key without quotes (e.g. `aef46reohln48`), or a dict-like structure where keys can either be `platform_id`, `base_url`, or the special fallback key `'default'` (e.g. `{'public': 'key2', 'https://myods.com': 'key3', 'default': 'key1'}`). This method is still considered **unsecure** because malicious programs can access the OS environment variables. However it should be preferred over the previous methods as it avoids human mistakes (committing api key files).
+
+If you wish to force usage of an api key (and prevent any ODS query to be made if none is found), you may wish to set `enforce_apikey=True`:
 
 ```python
-# (3) no specific python arg for api key, using the `ODS_APIKEY` environment variable
-csv_str = get_whole_dataset("world-growth-since-the-industrial-revolution0")
+csv_str = get_whole_dataset("world-growth-since-the-industrial-revolution0",
+                            enforce_apikey=True  # raise if no apikey is found
+                            )
 ```
 
- - (4) through `keyring`, which is backed by your OS' vault ([Windows Credential Locker, macOS Keychain, etc.](https://keyring.readthedocs.io/en/latest/?badge=latest#what-is-python-keyring-lib)). This is the **most secure** method available. Simply `pip install keyring`, and use the `store_apikey_in_keyring()` method once through your favorite commandline.
+If no api key is found, the above yields:
 
-```python
-(done once in the commandline)
-from odsclient import store_apikey_in_keyring
-# store our secret api key. This will prompt you for the key
-store_apikey_in_keyring(platform_id='public')
-
----
-(in your code)
-# no specific python arg for api key, using the OS keyring.
-csv_str = get_whole_dataset("world-growth-since-the-industrial-revolution0")
+```
+odsclient.core.NoODSAPIKeyFoundError: ODS API key file not found, while it is 
+    marked as mandatory for this call (`enforce_apikey=True`). It should either 
+    be put in a text file at path 'ods.apikey', or in the `ODS_APIKEY` OS 
+    environment variable, or (recommended, most secure) in the local `keyring`
+    using `store_apikey_in_keyring()`. See documentation for details: 
+    https://smarie.github.io/python-odsclient/#c-declaring-an-api-key. 
+    Note that you can generate an API key on this web page: [...].
 ```
 
-When `odsclient` looks for an api key and none is provided explicitly (1), a key file (2) will be looked up first, then keyring (4), and then environment variables (3).
+This can be handy if you wish your users to see a quick help at first call reminding them on the various ways to provide an api key.
 
-For debugging purposes, you may wish to use `get_apikey()` to check if the api key that is actually used is the one you think you have configured (through a file, env variable, or keyring):
+Finally, for debugging purposes, you may wish to use `get_apikey()` to check if the api key that is actually used is the one you think you have configured (through a file, env variable, or keyring):
 
 ```python
 from odsclient import get_apikey
@@ -159,19 +169,22 @@ print("api key used: %s" % get_apikey(base_url="https://my_ods_server.com/"))
 
 See [API reference](api_reference.md) for details.
 
+
 ### 2. Advanced
 
 **TODO**
 
 ## Main features / benefits
 
- - Simple access to ODS API to retrive a whole dataset
+ - Simple access to ODS API to retrive a whole dataset as text (csv) or dataframe
+ - Support for many methods to define an api key, independently of the source code: different users may use different methods (env variable, api key file, keyring) while using the same odsclient code.
 
 ## See Also
 
 This library was inspired by:
 
  * [`azmlclient`](https://smarie.github.io/python-azureml-client/)
+ * [`keyring`](https://pypi.org/project/keyring/)
 
 ### Others
 
