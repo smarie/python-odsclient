@@ -116,8 +116,8 @@ def test_other_platform(apikey_method):
         del os.environ['ODS_APIKEY']
 
     elif apikey_method == 'keyring1':
-        if 'TRAVIS_PYTHON_VERSION' in os.environ:
-            pytest.skip("Does not work yet on travis")
+        # if 'TRAVIS_PYTHON_VERSION' in os.environ:
+        #     pytest.skip("Does not work yet on travis")
         keyring.set_password(base_url, 'apikey', test_apikey)
         assert get_apikey(base_url=base_url, keyring_entries_username='apikey') == test_apikey
         csv_str = get_whole_dataset(dataset_id=dataset_id, base_url=base_url, keyring_entries_username='apikey')
@@ -125,8 +125,8 @@ def test_other_platform(apikey_method):
         assert keyring.get_password(base_url, 'apikey') is None
 
     elif apikey_method == 'keyring2':
-        if 'TRAVIS_PYTHON_VERSION' in os.environ:
-            pytest.skip("Does not work yet on travis")
+        # if 'TRAVIS_PYTHON_VERSION' in os.environ:
+        #     pytest.skip("Does not work yet on travis")
         store_apikey_in_keyring(base_url=base_url, keyring_entries_username='apikey', apikey=test_apikey)
         assert get_apikey(base_url=base_url, keyring_entries_username='apikey') == test_apikey
         csv_str = get_whole_dataset(dataset_id=dataset_id, base_url=base_url, keyring_entries_username='apikey')

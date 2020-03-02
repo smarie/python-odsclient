@@ -4,11 +4,11 @@ cache: pip
 
 # for dbus install to work see https://travis-ci.community/t/dbus-python-dependency-any-version-does-not-work/2146/11
 dist: xenial
-addons:
-  apt:
-    packages:
-      - libdbus-1-dev
-      - libdbus-glib-1-dev
+#addons:
+#  apt:
+#    packages:
+#      - libdbus-1-dev
+#      - libdbus-glib-1-dev
 
 matrix:
   fast_finish: true
@@ -40,11 +40,12 @@ install:
   - pip install codecov  # See https://github.com/codecov/example-python.
   - pip list
   # for keyring on travis
-  - pip install dbus-python
-  - pip install cryptography pycrypto
-  - if [ "${TRAVIS_PYTHON_VERSION}" = "2.7" ]; then pip install "SecretStorage<3"; else pip install SecretStorage; fi;
-  - pip install SecretStorage-Setup
-  - ss-setup status -v
+  - pip install keyrings.alt
+#  - pip install dbus-python
+#  - pip install cryptography pycrypto
+#  - if [ "${TRAVIS_PYTHON_VERSION}" = "2.7" ]; then pip install "SecretStorage<3"; else pip install SecretStorage; fi;
+#  - pip install SecretStorage-Setup
+#  - ss-setup status -v
 
 script:
 #  - coverage run tests.py
