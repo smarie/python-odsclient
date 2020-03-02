@@ -44,13 +44,32 @@ class ODSClient(object):
     `https://<platform_id>.opendatasoft.com` with `platform_id='public'`. One can change either customize the platform
     id through the `platform_id` constructor argument, or the whole base url with `base_url`.
 
-    A client is meant to use a single api key at a time. There are 4 ways for users to provide this api key:
+    A client instance offers methods to interact with the various ODS API. Currently two high-level methods are
+    provided: `<client>.get_whole_dataset(dataset_id, ...)` and `<client>.get_whole_dataframe(dataset_id, ...)`
 
-    - through direct `apikey=...` argument passing. This is the **most insecure** way of all, since your code will
-      contain the key. It should only be used as a temporary way to perform quick and dirty tests, and should never be
-      committed with the source code.
+    You can customize the `requests.Session` object used for the HTTPS transport using `requests_session`.
 
-     - using the `keyring` library
+    A client is meant to use a single api key at a time, or none. You can force the api key to be mandatory using
+    `enforce_apikey=True`. There are 4 ways to pass an api key, they are used in the following order:
+
+     - explicitly with the `apikey` argument
+
+     - through a text file containing the key. This file if present should be named `ods.apikey` (name can be changed
+       using `apikey_filepath`, it does not make the file mandatory)
+
+     - if `keyring` is installed (`pip install keyring`), an apikey can be created as an entry in it for service
+       `<base_url>` and username `'apikey_user'`. `keyring` leverages your OS' vault (Windows Credential Locker,
+       macOS Keychain, etc. This is the **most secure** method available. You can override the default keyring entry
+       username with the `keyring_entries_username=...` argument. You can easily add or remove an entry in the keyring
+       through the OS interface, with the `odskeys` commandline utility (`odskeys --help`) or with the
+       `<client>.store_apikey_in_keyring` / `<client>.get_apikey_from_keyring` / `<client>.remove_apikey_from_keyring`
+       methods.
+
+     - through the `'ODS_APIKEY'` OS environment variable. It should either contain the key without quotes or a
+       dict-like structure where keys can either be `platform_id`, `base_url`, or the special fallback key `'default'`
+
+    For debugging purposes, you may wish to use `<client>.get_apikey()` to check if the api key that is actually used
+    is the one you think you have configured through one of the above methods.
 
     """
     def __init__(self,
@@ -64,6 +83,7 @@ class ODSClient(object):
                  requests_session=None                          # type: Session
                  ):
         """
+        Constructor for `ODSClient`s
 
         :param platform_id: the ods platform id to use. This id is used to construct the base URL based on the pattern
             https://<platform_id>.opendatasoft.com. Default is `'public'` which leads to the base url
