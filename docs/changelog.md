@@ -1,5 +1,11 @@
 # Changelog
 
+### 0.4.0 - odskey commandline
+
+ - New `odskey` commandline utility to ease registration of api keys in `keyring`. Fixes [#16](https://github.com/smarie/python-odsclient/issues/16). Added a dedicated documentation page.
+ - Documentation improvements, in particular concerning api key registration.
+ - Filled the API reference documentation section
+
 ### 0.3.0 -  api keys
 
 **API Keys:**
