@@ -134,11 +134,11 @@ In that case, `odsclient` will try several strategies to find an api key:
 
  - first it will look for an `ods.apikey` text file containing the api key. The file should obviously not be committed with the source code (use `.gitignore` !). This is not the most secure solution, as malicious programs on your computer may have access to the file, and moreover you may commit it by accident (human error prone). You can override the default file path with the `apikey_filepath=...` argument.
 
- - then if `keyring` is installed (`pip install keyring`), it will check if there is an entry in it for service `<base_url>` and username `'apikey_user'`. `keyring` leverages your OS' vault ([Windows Credential Locker, macOS Keychain, etc.](https://keyring.readthedocs.io/en/latest/?badge=latest#what-is-python-keyring-lib)). **This is the most secure method available, it is therefore highly recommended**. You can override the default keyring entry username with the `keyring_entries_username=...` argument. You can easily add or remove an entry in the keyring with the [`odskeys` commandline utility](./odskey.md), through the OS interface, or with the `store_apikey_in_keyring` / `get_apikey_from_keyring` / `remove_apikey_from_keyring` python API.
+ - then if `keyring` is installed (`pip install keyring`), it will check if there is an entry in it for service `<base_url>` and username `'apikey_user'`. `keyring` leverages your OS' vault ([Windows Credential Locker, macOS Keychain, Ubuntu SecretService, GNOME Keyring, etc.](https://keyring.readthedocs.io/en/latest/?badge=latest#what-is-python-keyring-lib)). **This is the most secure method available, it is therefore highly recommended**. You can override the default keyring entry username with the `keyring_entries_username=...` argument. You can easily add or remove an entry in the keyring with the [`odskeys` commandline utility](./odskey.md), through the OS interface, or with the `store_apikey_in_keyring` / `get_apikey_from_keyring` / `remove_apikey_from_keyring` python API provided in `odsclient`.
   
- - finally it looks for an `ODS_APIKEY` OS environment variable. This environment variable should either contain a single api key without quotes (e.g. `aef46reohln48`), or a dict-like structure where keys can either be `platform_id`, `base_url`, or the special fallback key `'default'` (e.g. `{'public': 'key2', 'https://myods.com': 'key3', 'default': 'key1'}`). This method is not the most secure solution because malicious programs can access the OS environment variables ; however it should be preferred over the file-based method as it is not human error-prone.
+ - finally it looks for an `ODS_APIKEY` OS environment variable. This environment variable should either contain a single api key without quotes (e.g. `aef46reohln48`), or a dict-like structure where keys can either be `<platform_id>`, `<base_url>`, or the special fallback key `'default'` (e.g. `{'public': 'key2', 'https://myods.com': 'key3', 'default': 'key1'}`). This method is not the most secure solution because malicious programs can access the OS environment variables ; however it should be preferred over the file-based method as it is not human error-prone. Besides it can be handy for continuous integration jobs.
 
-If you wish to force usage of an api key (and prevent any ODS query to be made if none is found), you may wish to set `enforce_apikey=True`:
+If you wish to **force** usage of an api key (and prevent any ODS query to be made if none is found), you may wish to set `enforce_apikey=True`:
 
 ```python
 csv_str = get_whole_dataset("world-growth-since-the-industrial-revolution0",
@@ -152,8 +152,8 @@ If no api key is found, the above yields:
 odsclient.core.NoODSAPIKeyFoundError: ODS API key file not found, while it is 
     marked as mandatory for this call (`enforce_apikey=True`). It should either 
     be put in a text file at path 'ods.apikey', or in the `ODS_APIKEY` OS 
-    environment variable, or (recommended, most secure) in the local `keyring`
-    using `store_apikey_in_keyring()`. See documentation for details: 
+    environment variable, or (recommended, most secure) in the local `keyring`.
+    See documentation for details: 
     https://smarie.github.io/python-odsclient/#c-declaring-an-api-key. 
     Note that you can generate an API key on this web page: [...].
 ```
@@ -185,6 +185,7 @@ This library was inspired by:
 
  * [`azmlclient`](https://smarie.github.io/python-azureml-client/)
  * [`keyring`](https://pypi.org/project/keyring/)
+ * Work in progress: using KeePass as a `keyring` backend. [Here](https://github.com/brettviren/python-keepass) and [here](https://github.com/jaraco/keyring/issues/14)
 
 ### Others
 
