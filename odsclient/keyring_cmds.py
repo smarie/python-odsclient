@@ -1,3 +1,5 @@
+from subprocess import call
+
 import click
 
 from odsclient.core import KR_DEFAULT_USERNAME, ODSClient
@@ -116,6 +118,46 @@ def set_ods_apikey(platform_id='public',          # type: str
     # actual url used, for message print
     url_used = _get_url_used(platform_id=platform_id, base_url=base_url)
     click.echo("Api key defined successfully for platform url '%s'" % (url_used,))
+
+
+@odskeys.command(name="show")
+@click.option('-a', '--alt', default=0, help='Alternative #id (the number of available alternatives is '
+                                             'platform dependent)')
+def show_os_mgr(alt=0,  # type: int
+                ):
+    """
+    Shows the OS credentials manager associated with current keyring backend.
+    When several alternatives exist, the `--alt` option can be used to switch from 0 (default) to others.
+
+    Currently supported backends and alternatives:
+
+    Windows WinVaultKeyring:
+     - (alt 0, default) control.exe /name Microsoft.CredentialManager
+     - (alt 1) rundll32.exe keymgr.dll, KRShowKeyMgr
+
+    """
+    import keyring
+    kr = keyring.get_keyring()
+    if 'Windows WinVaultKeyring' in kr.name:
+        alts = {
+            0: ["control.exe", "/name", "Microsoft.CredentialManager"],
+            1: ["cmd.exe", "/c", "start", "/B", "rundll32.exe", "keymgr.dll,KRShowKeyMgr"]
+        }
+    else:
+        click.echo("This command is not supported for keyring backend '%s', please report it here:"
+                   " https://github.com/smarie/python-odsclient/issues/" % (kr.name, ))
+        return
+
+    # execute the alternative
+    try:
+        cmd = alts[alt]
+    except KeyError:
+        click.echo("Invalid alternative #: %s. Only [0-%s] are supported with keyring backend %s"
+                   % (alt, len(alts)-1, kr.name))
+        return
+    else:
+        click.echo("Keyring backend is '%s'. Runnning command for alternative %s: '%s'" % (kr.name, alt, ' '.join(cmd)))
+        call(cmd)
 
 
 # @odskeys.command(name="list")
