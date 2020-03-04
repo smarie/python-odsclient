@@ -1,6 +1,6 @@
 import click
 
-from odsclient.core import KR_DEFAULT_USERNAME
+from odsclient.core import KR_DEFAULT_USERNAME, ODSClient
 from odsclient.shortcuts import store_apikey_in_keyring, get_apikey_from_keyring, remove_apikey_from_keyring
 
 
@@ -14,6 +14,15 @@ def odskeys():
 
     """
     pass
+
+
+def _get_url_used(platform_id,  # type: str
+                  base_url,     # type: str
+                  ):
+    # type: (...) -> str
+    """ returns the url actually used by the ODSClient """
+    client = ODSClient(platform_id=platform_id, base_url=base_url)
+    return client.base_url
 
 
 @odskeys.command(name="get")
@@ -33,17 +42,12 @@ def get_ods_apikey(platform_id,                   # type: str
                                      base_url=base_url,
                                      keyring_entries_username=username,
                                      )
-
-    if base_url is None:
-        if apikey is not None:
-            click.echo("Api key found for platform id '%s': %s" % (platform_id, apikey))
-        else:
-            click.echo("No api key registered for platform id '%s'" % (platform_id, ))
+    # actual url used, for message prints
+    url_used = _get_url_used(platform_id=platform_id, base_url=base_url)
+    if apikey is not None:
+        click.echo("Api key found for platform url '%s': %s" % (url_used, apikey))
     else:
-        if apikey is not None:
-            click.echo("Api key found for platform url '%s': %s" % (base_url, apikey))
-        else:
-            click.echo("No api key registered for platform url '%s'" % (base_url, ))
+        click.echo("No api key registered for platform url '%s'" % (url_used, ))
 
 
 @odskeys.command(name="remove")
@@ -63,26 +67,21 @@ def remove_ods_apikey(platform_id='public',          # type: str
                                      base_url=base_url,
                                      keyring_entries_username=username,
                                      )
+    # actual url used, for message prints
+    url_used = _get_url_used(platform_id=platform_id, base_url=base_url)
     if apikey is None:
-        if base_url is None:
-            click.echo("No api key registered for platform id '%s'" % (platform_id,))
-        else:
-            click.echo("No api key registered for platform url '%s'" % (base_url,))
-        return
-
-    remove_apikey_from_keyring(platform_id=platform_id,
-                               base_url=base_url,
-                               keyring_entries_username=username,
-                               )
-    apikey = get_apikey_from_keyring(platform_id=platform_id,
-                                     base_url=base_url,
-                                     keyring_entries_username=username,
-                                     )
-    assert apikey is None
-    if base_url is None:
-        click.echo("Api key removed successfully for platform id '%s'" % (platform_id,))
+        click.echo("No api key registered for platform url '%s'" % (url_used,))
     else:
-        click.echo("Api key removed successfully for platform url '%s'" % (base_url,))
+        remove_apikey_from_keyring(platform_id=platform_id,
+                                   base_url=base_url,
+                                   keyring_entries_username=username,
+                                   )
+        apikey = get_apikey_from_keyring(platform_id=platform_id,
+                                         base_url=base_url,
+                                         keyring_entries_username=username,
+                                         )
+        assert apikey is None
+        click.echo("Api key removed successfully for platform url '%s'" % (url_used,))
 
 
 @odskeys.command(name="set")
@@ -114,10 +113,9 @@ def set_ods_apikey(platform_id='public',          # type: str
     else:
         # api key provided through getpass() - we do not have access to it
         assert gotapikey is not None
-    if base_url is None:
-        click.echo("Api key defined successfully for platform id '%s'" % (platform_id,))
-    else:
-        click.echo("Api key defined successfully for platform url '%s'" % (base_url,))
+    # actual url used, for message print
+    url_used = _get_url_used(platform_id=platform_id, base_url=base_url)
+    click.echo("Api key defined successfully for platform url '%s'" % (url_used,))
 
 
 # @odskeys.command(name="list")

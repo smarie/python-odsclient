@@ -14,12 +14,13 @@ def test_odskey(platform_id, base_url):
     if platform_id is not None:
         assert base_url is None
         other_args += ['-p', platform_id]
-        msg = "platform id '%s'" % platform_id
+        url_used = "https://%s.opendatasoft.com" % platform_id
     elif base_url is not None:
         other_args += ['-b', base_url]
-        msg = "platform url '%s'" % base_url
+        url_used = base_url[0:-1] if base_url.endswith('/') else base_url
     else:
-        msg = "platform id 'public'"
+        url_used = "https://public.opendatasoft.com"
+    msg = "platform url '%s'" % url_used
 
     runner = CliRunner()
 
