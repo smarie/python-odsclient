@@ -451,7 +451,7 @@ class NoODSAPIKeyFoundError(Exception):
     def __str__(self):
         return "ODS API key file not found, while it is marked as mandatory for this call (`enforce_apikey=True`). " \
                "It should either be put in a text file at path '%s', or in the `ODS_APIKEY` OS environment variable, " \
-               "or (recommended, most secure) in the local `keyring` using `store_apikey_in_keyring()`. " \
+               "or (recommended, most secure) in the local `keyring`. " \
                "See documentation for details: %s. Note that you can generate an API key on this web page: " \
                "%s/account/my-api-keys/." \
                % (self.odsclient.apikey_filepath, "https://smarie.github.io/python-odsclient/#c-declaring-an-api-key",
