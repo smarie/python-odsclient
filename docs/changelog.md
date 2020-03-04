@@ -1,8 +1,14 @@
 # Changelog
 
-### 0.4.0 - odskey commandline
+### 0.5.0 - odskeys improvements
 
- - New `odskey` commandline utility to ease registration of api keys in `keyring`. Fixes [#16](https://github.com/smarie/python-odsclient/issues/16). Added a dedicated documentation page.
+ - New `odskeys show` command to open the OS GUI for keyring management. Fixed [#18](https://github.com/smarie/python-odsclient/issues/18)
+ - `odskeys get/set/remove` now always print the complete url used for the keyring entry. Fixes [#17](https://github.com/smarie/python-odsclient/issues/17)
+ - Improved documentation about api keys management. Fixed [#15](https://github.com/smarie/python-odsclient/issues/15)
+
+### 0.4.0 - odskeys commandline
+
+ - New `odskeys` commandline utility to ease registration of api keys in `keyring`. Fixes [#16](https://github.com/smarie/python-odsclient/issues/16). Added a dedicated documentation page.
  - Documentation improvements, in particular concerning api key registration.
  - Filled the API reference documentation section
 
