@@ -234,9 +234,72 @@
       
     
     
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        odskey command
+      </label>
+    
     <a href="./" title="odskey command" class="md-nav__link md-nav__link--active">
       odskey command
     </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    Usage
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#optional-management-gui" class="md-nav__link">
+    Optional management gui
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#windows-credentials-manager" class="md-nav__link">
+    Windows - Credentials Manager
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#macos-keychain" class="md-nav__link">
+    MacOS - Keychain
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linux-ubuntu-secretservice" class="md-nav__link">
+    Linux Ubuntu - SecretService
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
     
   </li>
 
@@ -282,6 +345,56 @@
     
   
   
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    Usage
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#optional-management-gui" class="md-nav__link">
+    Optional management gui
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#windows-credentials-manager" class="md-nav__link">
+    Windows - Credentials Manager
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#macos-keychain" class="md-nav__link">
+    MacOS - Keychain
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linux-ubuntu-secretservice" class="md-nav__link">
+    Linux Ubuntu - SecretService
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -297,7 +410,8 @@
                 
                 <h1 id="odskey-commandline-utility"><code>odskey</code> commandline utility<a class="headerlink" href="#odskey-commandline-utility" title="Permanent link">&para;</a></h1>
 <p>Registering an api key in your OS' vault should not be a pain. </p>
-<p>For this, <code>keyring</code> comes with a handy <a href="https://github.com/jaraco/keyring/#command-line-utility">commandline utility</a> already. Since in <code>odsclient</code> we use a specific hardcoded pattern (<code>service_name=&lt;base_url&gt;, username='apikey_user', password=&lt;apikey&gt;</code>), we provide an even easier commandline for you named <code>odskey</code>:</p>
+<p>Although <code>keyring</code> comes with a handy <a href="https://github.com/jaraco/keyring/#command-line-utility">commandline utility</a> already, since in <code>odsclient</code> we use a specific hardcoded pattern (<code>service_name=&lt;base_url&gt;, username='apikey_user', password=&lt;apikey&gt;</code>), we provide an even easier commandline for you named <code>odskey</code>:</p>
+<h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
 <div class="codehilite"><pre><span></span><code><span class="k">Usage</span><span class="err">:</span><span class="w"> </span><span class="n">odskeys</span><span class="w"> </span><span class="o">[</span><span class="n">OPTIONS</span><span class="o">]</span><span class="w"> </span><span class="n">COMMAND</span><span class="w"> </span><span class="o">[</span><span class="n">ARGS</span><span class="o">]</span><span class="p">...</span><span class="w"></span>
 
 <span class="w">  </span><span class="n">Commandline</span><span class="w"> </span><span class="n">utility</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="k">get</span><span class="o">/</span><span class="k">set</span><span class="o">/</span><span class="n">remove</span><span class="w"> </span><span class="n">api</span><span class="w"> </span><span class="n">keys</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">OS</span><span class="w"> </span><span class="n">keyring</span><span class="w"> </span><span class="k">using</span><span class="w"></span>
@@ -312,12 +426,13 @@
 <span class="w">  </span><span class="k">get</span><span class="w">     </span><span class="n">Looks</span><span class="w"> </span><span class="n">up</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="n">ODS</span><span class="w"> </span><span class="n">apikey</span><span class="w"> </span><span class="n">entry</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">keyring</span><span class="p">.</span><span class="w"></span>
 <span class="w">  </span><span class="n">remove</span><span class="w">  </span><span class="n">Removes</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="n">ODS</span><span class="w"> </span><span class="n">apikey</span><span class="w"> </span><span class="n">entry</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">keyring</span><span class="p">.</span><span class="w"></span>
 <span class="w">  </span><span class="k">set</span><span class="w">     </span><span class="n">Creates</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="n">ODS</span><span class="w"> </span><span class="n">apikey</span><span class="w"> </span><span class="n">entry</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">keyring</span><span class="p">.</span><span class="w"></span>
+<span class="w">  </span><span class="n">show</span><span class="w">    </span><span class="n">Shows</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">OS</span><span class="w"> </span><span class="n">credentials</span><span class="w"> </span><span class="n">manager</span><span class="w"> </span><span class="n">associated</span><span class="w"> </span><span class="k">with</span><span class="w"> </span><span class="k">current</span><span class="w"> </span><span class="n">keyring</span><span class="p">...</span><span class="w"></span>
 </code></pre></div>
 
 
 <p>For example:</p>
 <div class="codehilite"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">odskeys</span> <span class="k">get</span> <span class="o">-</span><span class="n">b</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">myodsplatform</span><span class="p">.</span><span class="n">com</span><span class="o">/</span>
-<span class="k">No</span> <span class="n">api</span> <span class="k">key</span> <span class="n">registered</span> <span class="k">for</span> <span class="n">platform</span> <span class="n">url</span>  <span class="s1">&#39;https://myodsplatform.com/&#39;</span>
+<span class="k">No</span> <span class="n">api</span> <span class="k">key</span> <span class="n">registered</span> <span class="k">for</span> <span class="n">platform</span> <span class="n">url</span> <span class="s1">&#39;https://myodsplatform.com/&#39;</span>
 
 <span class="o">&gt;&gt;&gt;</span> <span class="n">odskeys</span> <span class="k">set</span> <span class="o">-</span><span class="n">b</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">myodsplatform</span><span class="p">.</span><span class="n">com</span><span class="o">/</span>
 <span class="n">Please</span> <span class="n">enter</span> <span class="n">your</span> <span class="n">api</span> <span class="k">key</span><span class="p">:</span> <span class="p">...</span>
@@ -328,6 +443,20 @@
 <span class="o">&gt;&gt;&gt;</span> <span class="n">odskey</span> <span class="n">remove</span> <span class="o">-</span><span class="n">b</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">myodsplatform</span><span class="p">.</span><span class="n">com</span><span class="o">/</span>
 <span class="n">Api</span> <span class="k">key</span> <span class="n">removed</span> <span class="n">successfully</span> <span class="k">for</span> <span class="n">platform</span> <span class="n">url</span> <span class="s1">&#39;https://myodsplatform.com/&#39;</span>
 </code></pre></div>
+
+
+<h2 id="optional-management-gui">Optional management gui<a class="headerlink" href="#optional-management-gui" title="Permanent link">&para;</a></h2>
+<p>For some <code>keyring</code> backends there is an OS graphical user interface available, where you can see the inserted credentials. <code>odskeys show</code> opens this GUI if available.</p>
+<p>This section is work in progress - if your system configuration is not supported do not hesitate to open a <a href="https://github.com/smarie/python-odsclient/issues">ticket</a> ! </p>
+<h3 id="windows-credentials-manager">Windows - Credentials Manager<a class="headerlink" href="#windows-credentials-manager" title="Permanent link">&para;</a></h3>
+<p>On Windows (tested on windows 10), <code>odskeys show</code> yields the configuration panel management interface:</p>
+<p><img alt="win_gui" src="../imgs/WindowsCredMgr.png" /></p>
+<p><code>odskeys show --alt 1</code> yields the alternate legacy interface:</p>
+<p><img alt="win_alt_gui" src="../imgs/WindowsCredMgrLegacy.png" /></p>
+<h3 id="macos-keychain">MacOS - Keychain<a class="headerlink" href="#macos-keychain" title="Permanent link">&para;</a></h3>
+<p><strong>TODO - contributions appreciated</strong></p>
+<h3 id="linux-ubuntu-secretservice">Linux Ubuntu - SecretService<a class="headerlink" href="#linux-ubuntu-secretservice" title="Permanent link">&para;</a></h3>
+<p><strong>TODO - contributions appreciated</strong></p>
                 
                   
                 
