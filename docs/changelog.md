@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.5.1 - better packaging
+
+ - packaging improvements: set the "universal wheel" flag to 1, and cleaned up the `setup.py`. In particular removed dependency to `six` for setup and added `py.typed` file. Removed tests folder from package. Fixes [#19](https://github.com/smarie/python-odsclient/issues/19)
+
 ### 0.5.0 - odskeys improvements
 
  - New `odskeys show` command to open the OS GUI for keyring management. Fixed [#18](https://github.com/smarie/python-odsclient/issues/18)
