@@ -88,7 +88,7 @@ after_success:
       echo "File 'ci_tools/github_travis_rsa' has not been created, please check your encrypted repo token in .travis.yml, on the line starting with 'openssl aes-256-cbc...'"
     fi
   # -- create the _version.py file
-  - python ci_tools/write_version.py ./odsclient
+  # - python ci_tools/write_version.py ./odsclient
 
 deploy:
   # Deploy on PyPI on tags
