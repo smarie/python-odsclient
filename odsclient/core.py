@@ -114,7 +114,7 @@ class ODSClient(object):
             if platform_id != 'public' and platform_id is not None:
                 raise ValueError("Only one of `platform_id` and `base_url` should be provided. Received "
                                  "platform_id='%s' and base_url='%s'" % (platform_id, base_url))
-            # remove trailing slashs
+            # remove trailing slashes
             while base_url.endswith('/'):
                 base_url = base_url[:-1]
             self.base_url = base_url
@@ -196,6 +196,7 @@ class ODSClient(object):
         # Execute call in stream mode
         result = self._http_call(url, params=opts, stream=True)
         # print(iterable_to_stream(result.iter_content()).read())
+        # noinspection PyTypeChecker
         df = pd.read_csv(iterable_to_stream(result.iter_content()), sep=';')
 
         return df
@@ -257,17 +258,17 @@ class ODSClient(object):
 
     # noinspection PyShadowingBuiltins
     def push_dataset_realtime(self,
-                     dataset_id,         # type: str
-                     payload,            # type: List[Dict[str,Any]]
-                     push_key,           # type: str
-                     **other_opts
-                     ):
+                              dataset_id,         # type: str
+                              payload,            # type: List[Dict[str,Any]]
+                              push_key,           # type: str
+                              **other_opts
+                              ):
         """
         Pushes a Dataset.
 
         :param dataset_id:
-        :param format:
-        :param dataset: The dataset to push as a list of dists, where the dict keys are the column names
+        :param payload: The dataset to push as a list of dists, where the dict keys are the column names
+        :param push_key: The Push Key provided by the API for pushing this dataset
         :returns: HTTP Response status
         """
 
@@ -415,7 +416,6 @@ class ODSClient(object):
         """
 
         :param dataset_id:
-        :param format:
         :return:
         """
         return "%s/api/push/1.0/%s/realtime/push/" % (self.base_url, dataset_id)
