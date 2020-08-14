@@ -84,7 +84,7 @@ class ODSClient(object):
                  apikey_filepath='ods.apikey',                  # type: str
                  use_keyring=True,                              # type: bool
                  keyring_entries_username=KR_DEFAULT_USERNAME,  # type: str
-                 requests_session=None  # type: Session
+                 requests_session=None                          # type: Session
                  ):
         """
         Constructor for `ODSClient`s
@@ -155,7 +155,7 @@ class ODSClient(object):
         self.session = requests_session or Session()
 
     def get_whole_dataframe(self,
-                            dataset_id,  # type: str
+                            dataset_id,                  # type: str
                             use_labels_for_header=True,  # type: bool
                             **other_opts
                             ):
