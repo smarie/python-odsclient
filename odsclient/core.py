@@ -1,13 +1,16 @@
+import json
 import os
 from ast import literal_eval
 from getpass import getpass
 
 import io
+
 try:
     from json import loads, JSONDecodeError
 except ImportError:
     # python 2
     from json import loads
+
     JSONDecodeError = ValueError
 try:
     FileNotFoundError
@@ -28,10 +31,9 @@ except ImportError:
 
 try:
     # noinspection PyUnresolvedReferences
-    from typing import Dict
+    from typing import Dict, List, Any, Optional
 except ImportError:
     pass
-
 
 ODS_BASE_URL_TEMPLATE = "https://%s.opendatasoft.com"
 ENV_ODS_APIKEY = 'ODS_APIKEY'
@@ -44,8 +46,9 @@ class ODSClient(object):
     `https://<platform_id>.opendatasoft.com` with `platform_id='public'`. One can change either customize the platform
     id through the `platform_id` constructor argument, or the whole base url with `base_url`.
 
-    A client instance offers methods to interact with the various ODS API. Currently two high-level methods are
-    provided: `<client>.get_whole_dataset(dataset_id, ...)` and `<client>.get_whole_dataframe(dataset_id, ...)`
+    A client instance offers methods to interact with the various ODS API. Currently three high-level methods are
+    provided: `<client>.get_whole_dataset(dataset_id, ...)`, `<client>.get_whole_dataframe(dataset_id, ...)`
+    and `<client>.push_dataset_realtime(dataset_id, ...)`.
 
     You can customize the `requests.Session` object used for the HTTPS transport using `requests_session`.
 
@@ -72,6 +75,7 @@ class ODSClient(object):
     is the one you think you have configured through one of the above methods.
 
     """
+
     def __init__(self,
                  platform_id='public',                          # type: str
                  base_url=None,                                 # type: str
@@ -80,7 +84,7 @@ class ODSClient(object):
                  apikey_filepath='ods.apikey',                  # type: str
                  use_keyring=True,                              # type: bool
                  keyring_entries_username=KR_DEFAULT_USERNAME,  # type: str
-                 requests_session=None                          # type: Session
+                 requests_session=None  # type: Session
                  ):
         """
         Constructor for `ODSClient`s
@@ -151,7 +155,7 @@ class ODSClient(object):
         self.session = requests_session or Session()
 
     def get_whole_dataframe(self,
-                            dataset_id,                  # type: str
+                            dataset_id,  # type: str
                             use_labels_for_header=True,  # type: bool
                             **other_opts
                             ):
@@ -251,6 +255,32 @@ class ODSClient(object):
 
         return result
 
+    # noinspection PyShadowingBuiltins
+    def push_dataset_realtime(self,
+                     dataset_id,         # type: str
+                     payload,            # type: List[Dict[str,Any]]
+                     push_key,           # type: str
+                     **other_opts
+                     ):
+        """
+        Pushes a Dataset.
+
+        :param dataset_id:
+        :param format:
+        :param dataset: The dataset to push as a list of dists, where the dict keys are the column names
+        :returns: HTTP Response status
+        """
+
+        # Combine all the options
+        opts = other_opts
+        opts['pushkey'] = push_key
+
+        # The URL to call
+        url = self.get_realtime_push_url(dataset_id)
+
+        # Execute call
+        return self._http_call(url, method='post', body=json.dumps(payload), params=opts, decode=False)
+
     def store_apikey_in_keyring(self,
                                 apikey=None  # type: str
                                 ):
@@ -324,6 +354,7 @@ class ODSClient(object):
                 while k.endswith('/'):
                     k = k[:-1]
                 return k
+
             apikeys_dct = {_remove_trailing_slash(k): v for k, v in apikeys_dct.items()}
 
             # Try to get a match in the dict: first platform id, then base url, then default
@@ -376,6 +407,18 @@ class ODSClient(object):
         :return:
         """
         return "%s/explore/dataset/%s/download/" % (self.base_url, dataset_id)
+
+    def get_realtime_push_url(self,
+                              dataset_id,  # type: str
+                              ):
+        # type: (...) -> str
+        """
+
+        :param dataset_id:
+        :param format:
+        :return:
+        """
+        return "%s/api/push/1.0/%s/realtime/push/" % (self.base_url, dataset_id)
 
     def _http_call(self,
                    url,           # type: str
@@ -443,6 +486,7 @@ class NoODSAPIKeyFoundError(Exception):
     Raised when no api key was found (no explicit api key provided, no api key file, no env variable entry, no keyring
     entry)
     """
+
     def __init__(self,
                  odsclient  # type: ODSClient
                  ):
@@ -463,6 +507,7 @@ class InsufficientRightsForODSResourceError(Exception):
     Raised when a HTTP 200 is received from ODS together with an HTML page as body. This happens when api key is
     missing or does not grant the appropriate rights for the required resource.
     """
+
     def __init__(self, headers, contents):
         self.headers = headers
         self.contents = contents
@@ -477,6 +522,7 @@ class ODSException(Exception):
     """
     An error returned by the ODS API
     """
+
     def __init__(self, status_code, headers, **details):
         """
 
@@ -537,7 +583,7 @@ def create_session_for_proxy(http_proxyhost,                  # type: str
     s = Session()
     s.proxies = {
         'http': 'http://%s:%s' % (http_proxyhost, http_proxyport),
-        'https': '%s://%s:%s' % (https_proxy_protocol, https_proxyhost,  https_proxyport),
+        'https': '%s://%s:%s' % (https_proxy_protocol, https_proxyhost, https_proxyport),
     }
     if not (ssl_verify is None):
         s.verify = ssl_verify
@@ -558,6 +604,7 @@ def iterable_to_stream(iterable, buffer_size=io.DEFAULT_BUFFER_SIZE):
 
     Source: https://stackoverflow.com/a/20260030/7262247
     """
+
     class IterStream(io.RawIOBase):
         def __init__(self):
             self.leftover = None
@@ -573,5 +620,6 @@ def iterable_to_stream(iterable, buffer_size=io.DEFAULT_BUFFER_SIZE):
                 b[:len(output)] = output
                 return len(output)
             except StopIteration:
-                return 0    # indicate EOF
+                return 0  # indicate EOF
+
     return io.BufferedReader(IterStream(), buffer_size=buffer_size)
