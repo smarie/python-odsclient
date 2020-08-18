@@ -4,13 +4,11 @@ from ast import literal_eval
 from getpass import getpass
 
 import io
-
 try:
     from json import loads, JSONDecodeError
 except ImportError:
     # python 2
     from json import loads
-
     JSONDecodeError = ValueError
 try:
     FileNotFoundError
