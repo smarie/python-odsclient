@@ -1,14 +1,13 @@
-import json
 import os
 from ast import literal_eval
 from getpass import getpass
 
 import io
 try:
-    from json import loads, JSONDecodeError
+    from json import loads, JSONDecodeError, dumps
 except ImportError:
     # python 2
-    from json import loads
+    from json import loads, dumps
     JSONDecodeError = ValueError
 try:
     FileNotFoundError
@@ -278,7 +277,7 @@ class ODSClient(object):
         url = self.get_realtime_push_url(dataset_id)
 
         # Execute call
-        return self._http_call(url, method='post', body=json.dumps(payload), params=opts, decode=False)
+        return self._http_call(url, method='post', body=dumps(payload), params=opts, decode=False)
 
     def store_apikey_in_keyring(self,
                                 apikey=None  # type: str
