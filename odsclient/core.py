@@ -267,7 +267,7 @@ class ODSClient(object):
         Pushes a Dataset.
 
         :param dataset_id:
-        :param payload: The dataset to push as a list of dists, where the dict keys are the column names
+        :param payload: The dataset to push as a list of dicts, where the dict keys are the column names
         :param push_key: The Push Key provided by the API for pushing this dataset
         :returns: HTTP Response status
         """
