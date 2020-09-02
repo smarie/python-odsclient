@@ -206,7 +206,6 @@ If you have Pandas installed you can also use the `pandas` format:
 import pandas as pd
 from odsclient import ODSClient
 
-
 o = ODSClient('<<ODS-platform-id>>')
 
 dataset = [
