@@ -501,7 +501,7 @@ class ODSClient(object):
                 # }
                 details = loads(body)
             except JSONDecodeError:
-                # error parsing the json dataset?
+                # error parsing the json payload?
                 pass
             else:
                 raise ODSException(error.response.status_code, error.response.headers, **details)
