@@ -198,8 +198,8 @@ def push_dataset_realtime(platform_id,        # type: str
                           csv_separator=';',  # type: str
                           **other_opts
                           ):
-     """
-     Pushes a Dataset. This functions accepts either a Pandas Dataframe or a CSV string with header included.
+    """
+    Pushes a Dataset. This functions accepts either a Pandas Dataframe or a CSV string with header included.
 
     :param platform_id: the ods platform id to use. This id is used to construct the base URL based on the pattern
         https://<platform_id>.opendatasoft.com. Default is `'public'` which leads to the base url
