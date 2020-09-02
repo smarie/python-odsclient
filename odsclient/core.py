@@ -255,17 +255,18 @@ class ODSClient(object):
 
     # noinspection PyShadowingBuiltins
     def push_dataset_realtime(self,
-                              dataset_id,         # type: str
-                              payload,            # type: List[Dict[str,Any]]
-                              push_key,           # type: str
+                              dataset_id,  # type: str
+                              dataset,     # type: List[Dict[str,Any]]
+                              push_key,    # type: str
                               **other_opts
                               ):
         """
         Pushes a Dataset.
 
         :param dataset_id:
-        :param payload: The dataset to push as a list of dicts, where the dict keys are the column names
-        :param push_key: The Push Key provided by the API for pushing this dataset
+        :param dataset: The dataset to push as a list of dicts, where the dict keys are the column names
+        :param push_key: The Push Key provided by the API for pushing this dataset. Warning: This key is independent
+                         from the API key. It can be acquired from the Realtime Push API URL section in ODS.
         :returns: HTTP Response status
         """
 
@@ -277,7 +278,7 @@ class ODSClient(object):
         url = self.get_realtime_push_url(dataset_id)
 
         # Execute call
-        return self._http_call(url, method='post', body=dumps(payload), params=opts, decode=False)
+        return self._http_call(url, method='post', body=dumps(dataset), params=opts, decode=False)
 
     def store_apikey_in_keyring(self,
                                 apikey=None  # type: str
@@ -470,7 +471,7 @@ class ODSClient(object):
                 # }
                 details = loads(body)
             except JSONDecodeError:
-                # error parsing the json payload?
+                # error parsing the json dataset?
                 pass
             else:
                 raise ODSException(error.response.status_code, error.response.headers, **details)
