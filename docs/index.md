@@ -183,7 +183,6 @@ You can push the data as CSV or as a Pandas Dataframe.
 ```python
 from odsclient import ODSClient
 
-
 o = ODSClient('<<ODS-platform-id>>')
 
 csv = """column_1,column_2
