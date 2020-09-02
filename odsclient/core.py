@@ -1,13 +1,19 @@
-import os
 from ast import literal_eval
 from getpass import getpass
-
 import io
+import os
+import sys
+
+if sys.version >= "3":
+    from io import StringIO
+else:
+    from StringIO import StringIO
+
 try:
-    from json import loads, JSONDecodeError
+    from json import loads, JSONDecodeError, dumps
 except ImportError:
     # python 2
-    from json import loads
+    from json import loads, dumps
     JSONDecodeError = ValueError
 try:
     FileNotFoundError
@@ -28,10 +34,9 @@ except ImportError:
 
 try:
     # noinspection PyUnresolvedReferences
-    from typing import Dict
+    from typing import Dict, Union
 except ImportError:
     pass
-
 
 ODS_BASE_URL_TEMPLATE = "https://%s.opendatasoft.com"
 ENV_ODS_APIKEY = 'ODS_APIKEY'
@@ -44,8 +49,9 @@ class ODSClient(object):
     `https://<platform_id>.opendatasoft.com` with `platform_id='public'`. One can change either customize the platform
     id through the `platform_id` constructor argument, or the whole base url with `base_url`.
 
-    A client instance offers methods to interact with the various ODS API. Currently two high-level methods are
-    provided: `<client>.get_whole_dataset(dataset_id, ...)` and `<client>.get_whole_dataframe(dataset_id, ...)`
+    A client instance offers methods to interact with the various ODS API. Currently three high-level methods are
+    provided: `<client>.get_whole_dataset(dataset_id, ...)`, `<client>.get_whole_dataframe(dataset_id, ...)`
+    and `<client>.push_dataset_realtime(dataset_id, ...)`.
 
     You can customize the `requests.Session` object used for the HTTPS transport using `requests_session`.
 
@@ -72,6 +78,7 @@ class ODSClient(object):
     is the one you think you have configured through one of the above methods.
 
     """
+
     def __init__(self,
                  platform_id='public',                          # type: str
                  base_url=None,                                 # type: str
@@ -110,7 +117,7 @@ class ODSClient(object):
             if platform_id != 'public' and platform_id is not None:
                 raise ValueError("Only one of `platform_id` and `base_url` should be provided. Received "
                                  "platform_id='%s' and base_url='%s'" % (platform_id, base_url))
-            # remove trailing slashs
+            # remove trailing slashes
             while base_url.endswith('/'):
                 base_url = base_url[:-1]
             self.base_url = base_url
@@ -192,6 +199,7 @@ class ODSClient(object):
         # Execute call in stream mode
         result = self._http_call(url, params=opts, stream=True)
         # print(iterable_to_stream(result.iter_content()).read())
+        # noinspection PyTypeChecker
         df = pd.read_csv(iterable_to_stream(result.iter_content()), sep=';')
 
         return df
@@ -250,6 +258,57 @@ class ODSClient(object):
         result = self._http_call(url, params=opts)
 
         return result
+
+    # noinspection PyShadowingBuiltins
+    def push_dataset_realtime(self,
+                              dataset_id,         # type: str
+                              dataset,            # type: Union[str, pandas.DataFrame]
+                              push_key,           # type: str
+                              format='csv',       # type: str
+                              csv_separator=';',  # type: str
+                              **other_opts
+                              ):
+        """
+        Pushes a Dataset. This functions accepts either a Pandas Dataframe or a CSV string with header included.
+
+        :param dataset_id:
+        :param dataset: The dataset to push as a list of dicts, where the dict keys are the column names
+        :param push_key: The Push Key provided by the API for pushing this dataset. Warning: This key is independent
+                         from the API key. It can be acquired from the Realtime Push API URL section in ODS.
+        :param format: The format of the dataset to be pushed. Can be `pandas` or `csv`.
+        :param csv_separator: CSV separator character in case of a csv dataset input.
+        :returns: HTTP Response status
+        """
+
+        if format == 'pandas':
+            try:
+                import pandas as pd
+            except ImportError as e:
+                raise Exception("`push_dataset_realtime` with the `pandas` format requires `pandas` to be installed. [%s] %s" % (e.__class__, e))
+            # noinspection PyStatementEffect
+            dataset  # type:pandas.DataFrame
+            request_body = dataset.to_json(orient='records')
+        elif format == 'csv':
+            try:
+                import csv
+            except ImportError as e:
+                raise Exception("`push_dataset_realtime` with the `csv` format requires `csv` to be installed. [%s] %s" % (e.__class__, e))
+            # noinspection PyStatementEffect
+            dataset  # type:str
+            csv_reader = csv.DictReader(StringIO(dataset), delimiter=csv_separator)
+            request_body = dumps([r for r in csv_reader])
+        else:
+            raise ValueError("Dataset format must be either `pandas` or `csv`")
+
+        # Combine all the options
+        opts = other_opts
+        opts['pushkey'] = push_key
+
+        # The URL to call
+        url = self.get_realtime_push_url(dataset_id)
+
+        # Execute call
+        return self._http_call(url, method='post', body=request_body, params=opts, decode=False)
 
     def store_apikey_in_keyring(self,
                                 apikey=None  # type: str
@@ -324,6 +383,7 @@ class ODSClient(object):
                 while k.endswith('/'):
                     k = k[:-1]
                 return k
+
             apikeys_dct = {_remove_trailing_slash(k): v for k, v in apikeys_dct.items()}
 
             # Try to get a match in the dict: first platform id, then base url, then default
@@ -376,6 +436,17 @@ class ODSClient(object):
         :return:
         """
         return "%s/explore/dataset/%s/download/" % (self.base_url, dataset_id)
+
+    def get_realtime_push_url(self,
+                              dataset_id,  # type: str
+                              ):
+        # type: (...) -> str
+        """
+
+        :param dataset_id:
+        :return:
+        """
+        return "%s/api/push/1.0/%s/realtime/push/" % (self.base_url, dataset_id)
 
     def _http_call(self,
                    url,           # type: str
@@ -443,6 +514,7 @@ class NoODSAPIKeyFoundError(Exception):
     Raised when no api key was found (no explicit api key provided, no api key file, no env variable entry, no keyring
     entry)
     """
+
     def __init__(self,
                  odsclient  # type: ODSClient
                  ):
@@ -463,6 +535,7 @@ class InsufficientRightsForODSResourceError(Exception):
     Raised when a HTTP 200 is received from ODS together with an HTML page as body. This happens when api key is
     missing or does not grant the appropriate rights for the required resource.
     """
+
     def __init__(self, headers, contents):
         self.headers = headers
         self.contents = contents
@@ -477,6 +550,7 @@ class ODSException(Exception):
     """
     An error returned by the ODS API
     """
+
     def __init__(self, status_code, headers, **details):
         """
 
@@ -537,7 +611,7 @@ def create_session_for_proxy(http_proxyhost,                  # type: str
     s = Session()
     s.proxies = {
         'http': 'http://%s:%s' % (http_proxyhost, http_proxyport),
-        'https': '%s://%s:%s' % (https_proxy_protocol, https_proxyhost,  https_proxyport),
+        'https': '%s://%s:%s' % (https_proxy_protocol, https_proxyhost, https_proxyport),
     }
     if not (ssl_verify is None):
         s.verify = ssl_verify
@@ -558,6 +632,7 @@ def iterable_to_stream(iterable, buffer_size=io.DEFAULT_BUFFER_SIZE):
 
     Source: https://stackoverflow.com/a/20260030/7262247
     """
+
     class IterStream(io.RawIOBase):
         def __init__(self):
             self.leftover = None
@@ -573,5 +648,6 @@ def iterable_to_stream(iterable, buffer_size=io.DEFAULT_BUFFER_SIZE):
                 b[:len(output)] = output
                 return len(output)
             except StopIteration:
-                return 0    # indicate EOF
+                return 0  # indicate EOF
+
     return io.BufferedReader(IterStream(), buffer_size=buffer_size)

@@ -8,8 +8,10 @@ An `ODSClient` is a client for a given OpenDataSoft (ODS) platform. By default t
 `https://<platform_id>.opendatasoft.com` with `platform_id='public'`. One can change either customize the platform
 id through the `platform_id` constructor argument, or the whole base url with `base_url`.
 
-A client instance offers methods to interact with the various ODS API. Currently two high-level methods are 
-provided: `<client>.get_whole_dataset(dataset_id, ...)` and `<client>.get_whole_dataframe(dataset_id, ...)`
+A client instance offers methods to interact with the various ODS API. Currently three high-level methods are provided:
+ * `<client>.get_whole_dataset(dataset_id, ...)`
+ * `<client>.get_whole_dataframe(dataset_id, ...)`
+ * `<client>.push_dataset_realtime(dataset_id, ...)`
 
 You can customize the `requests.Session` object used for the HTTPS transport using `requests_session`.
 
@@ -34,6 +36,9 @@ A client is meant to use a single api key at a time, or none. You can force the 
 
 For debugging purposes, you may wish to use `<client>.get_apikey()` to check if the api key that is actually used 
 is the one you think you have configured through one of the above methods.
+
+Keep in mind that when you push a dataset to ODS the push API doesn't use the API keys provided. Instead, it uses a dataset-specific
+_pushkey_, which you can retrieve from the _Sources_ tab of the ODS data management page.
 
 ```python
 ODSClient(
@@ -76,5 +81,7 @@ from odsclient.shortcuts import (get_whole_dataset,
                                  get_apikey,
                                  store_apikey_in_keyring,
                                  get_apikey_from_keyring, 
-                                 remove_apikey_from_keyring)
+                                 remove_apikey_from_keyring,
+                                 push_dataset_realtime
+)
 ```
