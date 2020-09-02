@@ -28,16 +28,30 @@ def test_example():
     """basic test: retrieve an example dataset """
 
     # with debug_requests():
-    csv_str = get_whole_dataset("world-growth-since-the-industrial-revolution0",
+    csv_str = get_whole_dataset("evolution-trafic-de-voyageurs-reseaux-ferres-france-2010-2014",
                                 platform_id='public')
 #     csv_str = csv_str.replace('\r\n', '\n').replace('\r', '\n')
     print(csv_str)
 
-    ref_csv = """Year Ending;World output;World population;Per capita output
-2012-12-31;3.03783837;1.39292748;1.62231324
-1700-12-31;0.07352168;0.05783974;0.01567288
-1820-12-31;0.51654477;0.44594248;0.07028884
-1913-12-31;1.48929571;0.58556427;0.89847031
+    ref_csv = """Transport;Année;Millions de Voyageurs
+SNCF - Trains/RER (y compris T4);2013;12103
+RATP - Métro;2011;5022
+RATP - RER;2010;7486
+RATP - RER;;
+SNCF - Trains/RER (y compris T4);;
+RATP - RER;2011;7575
+RATP - RER;2014;7722
+RATP - Métro;2012;5130
+RATP - Métro;;
+RATP - Métro;2010;4892
+SNCF - Trains/RER (y compris T4);2010;11221
+RATP - Métro;2014;5194
+RATP - Métro;2013;5044
+SNCF - Trains/RER (y compris T4);2011;11583
+RATP - RER;2012;7675
+SNCF - Trains/RER (y compris T4);2014;12148
+SNCF - Trains/RER (y compris T4);2012;11816
+RATP - RER;2013;7605
 """
     # this does not work as returned order may change
     # assert csv_str == ref_csv
@@ -47,14 +61,14 @@ def test_example():
 
     # compare with ref
     ref_df = pd.read_csv(create_reading_buffer(ref_csv, is_literal=True), sep=';')
-    df = df.set_index('Year Ending').sort_index()
-    ref_df = ref_df.set_index('Year Ending').sort_index()
+    df = df.set_index(['Transport', 'Année']).sort_index()
+    ref_df = ref_df.set_index(['Transport', 'Année']).sort_index()
     pd.testing.assert_frame_equal(df, ref_df)
-    assert df.shape == (4, 3)
+    assert df.shape == (18, 1)
 
     # test the pandas direct streaming API
-    df2 = get_whole_dataframe("world-growth-since-the-industrial-revolution0")
-    df2 = df2.set_index('Year Ending').sort_index()
+    df2 = get_whole_dataframe("evolution-trafic-de-voyageurs-reseaux-ferres-france-2010-2014")
+    df2 = df2.set_index(['Transport', 'Année']).sort_index()
     pd.testing.assert_frame_equal(df, df2)
 
 

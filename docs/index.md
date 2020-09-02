@@ -30,12 +30,12 @@ Finally, if you plan to use api keys, we recommend that you install `keyring` as
 
 #### a- Downloading a "flat" dataset
 
-The most basic thing that you can do is to download a whole dataset, similarly to what you can get when clicking on the links with your browser on a dataset's ["Export" page](https://public.opendatasoft.com/explore/dataset/world-growth-since-the-industrial-revolution0/export/):
+The most basic thing that you can do is to download a whole dataset, similarly to what you can get when clicking on the links with your browser on a dataset's ["Export" page](https://public.opendatasoft.com/explore/dataset/opendatasoft-offices/export/):
 
 ```python
 from odsclient import get_whole_dataset
 
-csv_str = get_whole_dataset("world-growth-since-the-industrial-revolution0", 
+csv_str = get_whole_dataset("evolution-trafic-de-voyageurs-reseaux-ferres-france-2010-2014", 
                             platform_id='public')
 print(csv_str)
 ```
@@ -43,11 +43,11 @@ print(csv_str)
 yields
 
 ```
-Year Ending;World output;World population;Per capita output
-2012-12-31;3.03783837;1.39292748;1.62231324
-1700-12-31;0.07352168;0.05783974;0.01567288
-1820-12-31;0.51654477;0.44594248;0.07028884
-1913-12-31;1.48929571;0.58556427;0.89847031
+Transport;Année;Millions de Voyageurs
+SNCF - Trains/RER (y compris T4);2013;12103
+RATP - Métro;2011;5022
+RATP - RER;2010;7486
+...
 ```
 
 If you have `pandas` installed, you can get the dataset directly as a dataframe:
@@ -55,19 +55,20 @@ If you have `pandas` installed, you can get the dataset directly as a dataframe:
 ```python
 from odsclient import get_whole_dataframe
 
-df = get_whole_dataframe("world-growth-since-the-industrial-revolution0", 
+df = get_whole_dataframe("evolution-trafic-de-voyageurs-reseaux-ferres-france-2010-2014", 
                          platform_id='public')
-print(df)
+print(df.head())
 ```
 
 yields
 
 ```
-  Year Ending  World output  World population  Per capita output
-0  1820-12-31      0.516545          0.445942           0.070289
-1  1913-12-31      1.489296          0.585564           0.898470
-2  2012-12-31      3.037838          1.392927           1.622313
-3  1700-12-31      0.073522          0.057840           0.015673
+                          Transport   Année  Millions de Voyageurs
+0  SNCF - Trains/RER (y compris T4)  2013.0                12103.0
+1                      RATP - Métro  2011.0                 5022.0
+2                        RATP - RER  2010.0                 7486.0
+3                        RATP - RER     NaN                    NaN
+4  SNCF - Trains/RER (y compris T4)     NaN                    NaN
 ```
 
 #### b- Using another ODS platform
