@@ -1,8 +1,14 @@
-import os
 from ast import literal_eval
 from getpass import getpass
-
 import io
+import os
+import sys
+
+if sys.version >= "3":
+    from io import StringIO
+else:
+    from StringIO import StringIO
+
 try:
     from json import loads, JSONDecodeError, dumps
 except ImportError:
@@ -28,7 +34,7 @@ except ImportError:
 
 try:
     # noinspection PyUnresolvedReferences
-    from typing import Dict, List, Any, Optional
+    from typing import Dict, List, Any, Optional, Union
 except ImportError:
     pass
 
@@ -255,20 +261,44 @@ class ODSClient(object):
 
     # noinspection PyShadowingBuiltins
     def push_dataset_realtime(self,
-                              dataset_id,  # type: str
-                              dataset,     # type: List[Dict[str,Any]]
-                              push_key,    # type: str
+                              dataset_id,         # type: str
+                              dataset,            # type: Union[str, pandas.DataFrame]
+                              push_key,           # type: str
+                              format='csv',       # type: str
+                              csv_separator=';',  # type: str
                               **other_opts
                               ):
         """
-        Pushes a Dataset.
+        Pushes a Dataset. This functions accepts either a Pandas Dataframe or a CSV string with header included.
 
         :param dataset_id:
         :param dataset: The dataset to push as a list of dicts, where the dict keys are the column names
         :param push_key: The Push Key provided by the API for pushing this dataset. Warning: This key is independent
                          from the API key. It can be acquired from the Realtime Push API URL section in ODS.
+        :param format: The format of the dataset to be pushed. Can be `pandas` or `csv`.
+        :param csv_separator: CSV separator character in case of a csv dataset input.
         :returns: HTTP Response status
         """
+
+        if format == 'pandas':
+            try:
+                import pandas as pd
+            except ImportError as e:
+                raise Exception("`push_dataset_realtime` with the `pandas` format requires `pandas` to be installed. [%s] %s" % (e.__class__, e))
+            # noinspection PyStatementEffect
+            dataset  # type:pandas.DataFrame
+            request_body = dataset.to_json(orient='records')
+        elif format == 'csv':
+            try:
+                import csv
+            except ImportError as e:
+                raise Exception("`push_dataset_realtime` with the `csv` format requires `csv` to be installed. [%s] %s" % (e.__class__, e))
+            # noinspection PyStatementEffect
+            dataset  # type:str
+            csv_reader = csv.DictReader(StringIO(dataset), delimiter=csv_separator)
+            request_body = dumps([r for r in csv_reader])
+        else:
+            raise ValueError("Dataset format must be either `pandas` or `csv`")
 
         # Combine all the options
         opts = other_opts
@@ -278,7 +308,7 @@ class ODSClient(object):
         url = self.get_realtime_push_url(dataset_id)
 
         # Execute call
-        return self._http_call(url, method='post', body=dumps(dataset), params=opts, decode=False)
+        return self._http_call(url, method='post', body=request_body, params=opts, decode=False)
 
     def store_apikey_in_keyring(self,
                                 apikey=None  # type: str
