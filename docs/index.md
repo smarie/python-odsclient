@@ -167,6 +167,60 @@ from odsclient import get_apikey
 print("api key used: %s" % get_apikey(base_url="https://my_ods_server.com/"))
 ```
 
+#### d- Pushing a dataset to the Realtime API
+
+Pushing new data to the _Realtime_ API of ODS works through the `push_dataset_realtime` function.
+In order to push data you need to get a pushkey for your dataset at the _Sources_ tab
+on the dataset definition page in order to get this work.
+
+_Warning: Whe pushkey is independent from your API key. Passing your API key as the pushkey won't work._
+
+
+You can push the data as CSV or as a Pandas Dataframe.
+
+##### Example: Pushing in CSV format
+
+```python
+from odsclient import ODSClient
+
+
+o = ODSClient('<<ODS-platform-id>>')
+
+csv = """column_1,column_2
+1,2
+3,4
+"""
+
+res = o.push_dataset_realtime('<<dataset-id>>',
+                              csv,
+                              format='csv',
+                              csv_separator=',',
+                              push_key='<<your-push-key>>')
+```
+
+##### Example: Pushing in Pandas format
+
+If you have Pandas installed you can also use the `pandas` format:
+
+```python
+import pandas as pd
+from odsclient import ODSClient
+
+
+o = ODSClient('<<ODS-platform-id>>')
+
+dataset = [
+    {'a': 1, 'b': 2},
+    {'a': 3, 'b': 4},
+]
+p_df = pd.DataFrame(dataset)
+
+res = o.push_dataset_realtime("<<dataset-id>>",
+                              p_df,
+                              format='pandas',
+                              push_key='<<your-push-key>>')
+```
+
 See [API reference](api_reference.md) for details.
 
 

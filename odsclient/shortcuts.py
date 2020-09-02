@@ -1,3 +1,9 @@
+try:
+    # noinspection PyUnresolvedReferences
+    from typing import Union
+except ImportError:
+    pass
+
 from requests import Session
 
 from odsclient.core import KR_DEFAULT_USERNAME, ODSClient
@@ -176,9 +182,41 @@ def get_whole_dataset(dataset_id,                                    # type: str
     :param other_opts:
     :return:
     """
-    client = ODSClient(platform_id=platform_id, base_url=base_url,enforce_apikey=enforce_apikey, apikey=apikey,
+    client = ODSClient(platform_id=platform_id, base_url=base_url, enforce_apikey=enforce_apikey, apikey=apikey,
                        apikey_filepath=apikey_filepath, use_keyring=use_keyring,
                        keyring_entries_username=keyring_entries_username, requests_session=requests_session)
     return client.get_whole_dataset(dataset_id=dataset_id, format=format,
                                     timezone=timezone, use_labels_for_header=use_labels_for_header,
                                     csv_separator=csv_separator, **other_opts)
+
+
+def push_dataset_realtime(platform_id,        # type: str
+                          dataset_id,         # type: str
+                          dataset,            # type: Union[str, pandas.DataFrame]
+                          push_key,           # type: str
+                          format='csv',       # type: str
+                          csv_separator=';',  # type: str
+                          **other_opts
+                          ):
+    """
+    Pushes a Dataset. This functions accepts either a Pandas Dataframe or a CSV string with header included.
+
+   :param platform_id: the ods platform id to use. This id is used to construct the base URL based on the pattern
+        https://<platform_id>.opendatasoft.com. Default is `'public'` which leads to the base url
+        https://public.opendatasoft.com
+    :param dataset_id:
+    :param dataset: The dataset to push as a list of dicts, where the dict keys are the column names
+    :param push_key: The Push Key provided by the API for pushing this dataset. Warning: This key is independent
+                     from the API key. It can be acquired from the Realtime Push API URL section in ODS.
+    :param format: The format of the dataset to be pushed. Can be `pandas` or `csv`.
+    :param csv_separator: CSV separator character in case of a csv dataset input.
+    :returns: HTTP Response status
+    """
+
+    client = ODSClient(platform_id=platform_id)
+    return client.push_dataset_realtime(dataset_id=dataset_id,
+                                        dataset=dataset,
+                                        push_key=push_key,
+                                        format=format,
+                                        csv_separator=csv_separator,
+                                        **other_opts)
