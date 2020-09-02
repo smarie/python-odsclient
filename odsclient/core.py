@@ -34,7 +34,7 @@ except ImportError:
 
 try:
     # noinspection PyUnresolvedReferences
-    from typing import Dict, List, Any, Optional, Union
+    from typing import Dict, Union
 except ImportError:
     pass
 
