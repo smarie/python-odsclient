@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.6.0 - New feature: push dataset
+
+ - New `push_dataset_realtime` client method and shortcut, to push a CSV string or a `pandas` dataframe to an ODS server through the Realtime API. PR [#21](https://github.com/smarie/python-odsclient/pull/21) by [`@zoltanctoth`](https://github.com/zoltanctoth), thanks !
+
 ### 0.5.1 - better packaging
 
  - packaging improvements: set the "universal wheel" flag to 1, and cleaned up the `setup.py`. In particular removed dependency to `six` for setup and added `py.typed` file. Removed tests folder from package. Fixes [#19](https://github.com/smarie/python-odsclient/issues/19)
