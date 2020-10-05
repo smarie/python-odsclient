@@ -80,8 +80,10 @@ def test_other_platform(apikey_method):
     """Tests that the lib can connect to a different ODS platform with api key and custom url"""
 
     # shared info
-    dataset_id = "employment-by-sector-in-france-and-the-united-states-1800-2012"
-    base_url = "https://data.exchange.se.com/"
+    # dataset_id = "employment-by-sector-in-france-and-the-united-states-1800-2012"
+    # base_url = "https://data.exchange.se.com/"
+    dataset_id = "odsclient-reference-dataset"
+    base_url = "https://uat-data.exchange.se.com/"
     test_apikey = os.environ['EXCH_AKEY']  # <-- travis
 
     # various methods to get the api key
@@ -150,11 +152,25 @@ def test_other_platform(apikey_method):
     else:
         raise ValueError('wrong apikey_method: %s' % apikey_method)
 
-    ref_csv = """Year;France: Agriculture;France: Manufacturing;France: Services;USA: Agriculture;USA: Manufacturing;USA: Services
-1950-12-31;31.5;33.3;35.2;13.5;33.2;50.3
-1800-12-31;64.03737;21.58231;14.38032;68.42105;18.42105;13.15789
-2012-12-31;2.9;20.9;76.2;1.6;18.3;80.1
-1900-12-31;43.2;29.0;27.8;40.5;28.2;31.3
+    ref_csv = """Transport;Année;Millions de Voyageurs
+SNCF - Trains/RER (y compris T4);;
+RATP - RER;;
+RATP - RER;2011;7575
+RATP - Métro;;
+RATP - RER;2014;7722
+RATP - Métro;2014;5194
+SNCF - Trains/RER (y compris T4);2011;11583
+RATP - RER;2010;7486
+RATP - RER;2013;7605
+SNCF - Trains/RER (y compris T4);2013;12103
+RATP - Métro;2012;5130
+RATP - RER;2012;7675
+SNCF - Trains/RER (y compris T4);2014;12148
+SNCF - Trains/RER (y compris T4);2010;11221
+RATP - Métro;2013;5044
+RATP - Métro;2010;4892
+SNCF - Trains/RER (y compris T4);2012;11816
+RATP - Métro;2011;5022
 """
 
     # move to pandas
@@ -162,7 +178,7 @@ def test_other_platform(apikey_method):
 
     # compare with ref
     ref_df = pd.read_csv(create_reading_buffer(ref_csv, is_literal=True), sep=';')
-    df = df.set_index('Year').sort_index()
-    ref_df = ref_df.set_index('Year').sort_index()
+    df = df.set_index('Année').sort_index()
+    ref_df = ref_df.set_index('Année').sort_index()
     pd.testing.assert_frame_equal(df, ref_df)
-    assert df.shape == (4, 6)
+    assert df.shape == (18, 2)
