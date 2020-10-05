@@ -32,7 +32,7 @@ def test_example():
     csv_str = get_whole_dataset("evolution-trafic-de-voyageurs-reseaux-ferres-france-2010-2014",
                                 platform_id='public')
 #     csv_str = csv_str.replace('\r\n', '\n').replace('\r', '\n')
-    print(csv_str)
+    print(csv_str.encode('utf-8'))  # note: we encode ourselves so that the ascii terminal on travis works.
 
     ref_csv = """Transport;Année;Millions de Voyageurs
 SNCF - Trains/RER (y compris T4);2013;12103
