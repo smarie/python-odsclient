@@ -597,6 +597,9 @@
 <p><em>A nonofficial client for OpenDataSoft API.</em></p>
 <p><a href="https://pypi.python.org/pypi/odsclient/"><img alt="Python versions" src="https://img.shields.io/pypi/pyversions/odsclient.svg" /></a> <a href="https://travis-ci.org/smarie/python-odsclient"><img alt="Build Status" src="https://travis-ci.org/smarie/python-odsclient.svg?branch=master" /></a> <a href="https://smarie.github.io/python-odsclient/junit/report.html"><img alt="Tests Status" src="https://smarie.github.io/python-odsclient/junit/junit-badge.svg?dummy=8484744" /></a> <a href="https://codecov.io/gh/smarie/python-odsclient"><img alt="codecov" src="https://codecov.io/gh/smarie/python-odsclient/branch/master/graph/badge.svg" /></a></p>
 <p><a href="https://smarie.github.io/python-odsclient/"><img alt="Documentation" src="https://img.shields.io/badge/doc-latest-blue.svg" /></a> <a href="https://pypi.python.org/pypi/odsclient/"><img alt="PyPI" src="https://img.shields.io/pypi/v/odsclient.svg" /></a> <a href="https://pepy.tech/project/odsclient"><img alt="Downloads" src="https://pepy.tech/badge/odsclient" /></a> <a href="https://pepy.tech/project/odsclient"><img alt="Downloads per week" src="https://pepy.tech/badge/odsclient/week" /></a> <a href="https://github.com/smarie/python-odsclient/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/smarie/python-odsclient.svg" /></a></p>
+<div class="admonition success">
+<p class="admonition-title">New: stream-download huge datasets to csv files directly, and use <code>tqdm</code> progress bars !</p>
+</div>
 <p><code>odsclient</code> provides a minimal set of functions to grab a dataset or a collection of datasets from an OpenDataSoft (ODS) platform. </p>
 <p>Its initial purpose is not to cover the <a href="https://help.opendatasoft.com/en/apis/">full set of APIs available</a> but to get a minimum viable set of features to work easily with the datasets.</p>
 <h2 id="installing">Installing<a class="headerlink" href="#installing" title="Permanent link">&para;</a></h2>
@@ -604,7 +607,11 @@
 </code></pre></div>
 
 
-<p>If you wish to download datasets as dataframes, you should also install <code>pandas</code>. This is not mandatory, though.</p>
+<p>Optional:</p>
+<ul>
+<li>If you wish to display progress bars, you should also install <code>tqdm</code>.</li>
+<li>If you wish to download datasets as dataframes, you should also install <code>pandas</code>. </li>
+</ul>
 <p>Finally, if you plan to use api keys, we recommend that you install <code>keyring</code> as it will help you store the critical api keys in your operating system's password vault.</p>
 <div class="codehilite"><pre><span></span><code>&gt; pip install keyring
 </code></pre></div>
@@ -631,7 +638,16 @@
 </code></pre></div>
 
 
-<p>If you have <code>pandas</code> installed, you can get the dataset directly as a dataframe:</p>
+<p>In addition:</p>
+<ul>
+<li>
+<p>you might wish to display a progress bar using <code>tqdm=True</code> (<code>pip install tqdm</code> first). Note that on some ODS platforms the HTTP Header <code>Content-Length</code> is not set, so you might only see a download rate, not an actual progress bar.</p>
+</li>
+<li>
+<p>you might wish to download directly the dataset to a csv using streaming and without loading it in memory. This can be achieved by setting <code>to_path=&lt;path&gt;</code> where the path can be a string or a <code>pathlib.Path</code> instance.</p>
+</li>
+</ul>
+<p>Finally, if you have <code>pandas</code> installed, you can get the dataset directly as a dataframe:</p>
 <div class="codehilite"><pre><span></span><code><span class="kn">from</span> <span class="nn">odsclient</span> <span class="kn">import</span> <span class="n">get_whole_dataframe</span>
 
 <span class="n">df</span> <span class="o">=</span> <span class="n">get_whole_dataframe</span><span class="p">(</span><span class="s2">&quot;evolution-trafic-de-voyageurs-reseaux-ferres-france-2010-2014&quot;</span><span class="p">,</span> 
@@ -853,7 +869,7 @@ on the dataset definition page in order to get this work.</p>
     </div>
     
       <script src="assets/javascripts/vendor.77e55a48.min.js"></script>
-      <script src="assets/javascripts/bundle.9554a270.min.js"></script><script id="__lang" type="application/json">{"search.config.lang": "en", "search.result.more.other": "# more on this page", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.result.none": "No matching documents", "search.result.other": "# matching documents", "clipboard.copied": "Copied to clipboard", "search.result.more.one": "1 more on this page", "search.result.placeholder": "Type to start searching", "search.result.one": "1 matching document", "search.result.term.missing": "Missing", "clipboard.copy": "Copy to clipboard"}</script>
+      <script src="assets/javascripts/bundle.9554a270.min.js"></script><script id="__lang" type="application/json">{"search.result.term.missing": "Missing", "search.result.more.one": "1 more on this page", "search.config.separator": "[\\s\\-]+", "search.result.one": "1 matching document", "search.result.none": "No matching documents", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.result.placeholder": "Type to start searching", "search.result.more.other": "# more on this page", "search.config.pipeline": "trimmer, stopWordFilter", "clipboard.copied": "Copied to clipboard", "search.result.other": "# matching documents"}</script>
       
       <script>
         app = initialize({
