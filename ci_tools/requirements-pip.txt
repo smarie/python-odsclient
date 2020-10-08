@@ -2,6 +2,7 @@
 pytest-runner
 setuptools_scm
 six
+tqdm
 
 # --- to install
 requests

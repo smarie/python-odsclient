@@ -16,7 +16,7 @@ from setuptools_scm import get_version  # noqa: E402
 INSTALL_REQUIRES = ['requests']
 DEPENDENCY_LINKS = []
 SETUP_REQUIRES = ['pytest-runner', 'setuptools_scm']
-TESTS_REQUIRE = ['pytest', 'pandas', 'keyring']
+TESTS_REQUIRE = ['pytest', 'pandas', 'keyring', 'tqdm']
 EXTRAS_REQUIRE = {}
 
 # ************** ID card *****************
