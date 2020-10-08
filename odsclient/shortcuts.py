@@ -4,6 +4,12 @@ try:
 except ImportError:
     pass
 
+try:
+    from pathlib import Path
+except ImportError:
+    # do not care: only used for type hinting
+    pass
+
 from requests import Session
 
 from odsclient.core import KR_DEFAULT_USERNAME, ODSClient
@@ -100,6 +106,8 @@ def get_apikey(platform_id='public',                          # type: str
 
 def get_whole_dataframe(dataset_id,                                    # type: str
                         use_labels_for_header=True,                    # type: bool
+                        tqdm=False,                                    # type: bool
+                        block_size=1024,                               # type: int
                         platform_id='public',                          # type: str
                         base_url=None,                                 # type: str
                         enforce_apikey=False,                          # type: bool
@@ -116,6 +124,8 @@ def get_whole_dataframe(dataset_id,                                    # type: s
 
     :param dataset_id:
     :param use_labels_for_header:
+    :param tqdm: a boolean indicating if a progress bar using tqdm should be displayed. tqdm should be installed
+    :param block_size: an int block size used in streaming mode when to_csv or tqdm is used
     :param platform_id: the ods platform id to use. This id is used to construct the base URL based on the pattern
         https://<platform_id>.opendatasoft.com. Default is `'public'` which leads to the base url
         https://public.opendatasoft.com
@@ -137,7 +147,8 @@ def get_whole_dataframe(dataset_id,                                    # type: s
     client = ODSClient(platform_id=platform_id, base_url=base_url, enforce_apikey=enforce_apikey, apikey=apikey,
                        apikey_filepath=apikey_filepath, use_keyring=use_keyring,
                        keyring_entries_username=keyring_entries_username, requests_session=requests_session)
-    return client.get_whole_dataframe(dataset_id=dataset_id, use_labels_for_header=use_labels_for_header, **other_opts)
+    return client.get_whole_dataframe(dataset_id=dataset_id, use_labels_for_header=use_labels_for_header,
+                                      tqdm=tqdm, block_size=block_size, **other_opts)
 
 
 # noinspection PyShadowingBuiltins
@@ -146,6 +157,9 @@ def get_whole_dataset(dataset_id,                                    # type: str
                       timezone=None,                                 # type: str
                       use_labels_for_header=True,                    # type: bool
                       csv_separator=';',                             # type: str
+                      tqdm=False,                                    # type: bool
+                      to_path=None,                                  # type: Union[str, Path]
+                      block_size=1024,                               # type: int
                       platform_id='public',                          # type: str
                       base_url=None,                                 # type: str
                       enforce_apikey=False,                          # type: bool
@@ -164,6 +178,9 @@ def get_whole_dataset(dataset_id,                                    # type: str
     :param timezone:
     :param use_labels_for_header:
     :param csv_separator:
+    :param tqdm: a boolean indicating if a progress bar using tqdm should be displayed. tqdm should be installed
+    :param to_path: a string indicating the file path where to write the csv. In that case nothing is returned
+    :param block_size: an int block size used in streaming mode when to_csv or tqdm is used
     :param platform_id: the ods platform id to use. This id is used to construct the base URL based on the pattern
         https://<platform_id>.opendatasoft.com. Default is `'public'` which leads to the base url
         https://public.opendatasoft.com
@@ -187,7 +204,8 @@ def get_whole_dataset(dataset_id,                                    # type: str
                        keyring_entries_username=keyring_entries_username, requests_session=requests_session)
     return client.get_whole_dataset(dataset_id=dataset_id, format=format,
                                     timezone=timezone, use_labels_for_header=use_labels_for_header,
-                                    csv_separator=csv_separator, **other_opts)
+                                    csv_separator=csv_separator, tqdm=tqdm, to_path=to_path, block_size=block_size,
+                                    **other_opts)
 
 
 def push_dataset_realtime(platform_id,        # type: str

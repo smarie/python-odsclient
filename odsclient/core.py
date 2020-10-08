@@ -2,6 +2,11 @@ from ast import literal_eval
 from getpass import getpass
 import io
 import os
+try:
+    from pathlib import Path
+except ImportError:
+    # do not care: only used for type hinting
+    pass
 import sys
 
 if sys.version >= "3":
@@ -160,6 +165,8 @@ class ODSClient(object):
     def get_whole_dataframe(self,
                             dataset_id,                  # type: str
                             use_labels_for_header=True,  # type: bool
+                            tqdm=False,                  # type: bool
+                            block_size=1024,             # type: int
                             **other_opts
                             ):
         """
@@ -167,6 +174,8 @@ class ODSClient(object):
 
         :param dataset_id:
         :param use_labels_for_header:
+        :param tqdm: a boolean indicating if a progress bar using tqdm should be displayed. tqdm should be installed
+        :param block_size: an int block size used in streaming mode when tqdm is used
         :param other_opts:
         :return:
         """
@@ -200,7 +209,20 @@ class ODSClient(object):
         result = self._http_call(url, params=opts, stream=True)
         # print(iterable_to_stream(result.iter_content()).read())
         # noinspection PyTypeChecker
-        df = pd.read_csv(iterable_to_stream(result.iter_content()), sep=';')
+
+        if tqdm:
+            from tqdm import tqdm as _tqdm
+
+            total_size = int(result.headers.get('Content-Length', 0))
+            with _tqdm(desc=url, total=total_size,
+                       unit='B' if block_size == 1024 else 'it',
+                       unit_scale=True,
+                       unit_divisor=block_size
+                       ) as bar:
+                df = pd.read_csv(iterable_to_stream(result.iter_content(), buffer_size=block_size, progressbar=bar),
+                                 sep=';')
+        else:
+            df = pd.read_csv(iterable_to_stream(result.iter_content(chunk_size=block_size)), sep=';')
 
         return df
 
@@ -211,6 +233,9 @@ class ODSClient(object):
                           timezone=None,               # type: str
                           use_labels_for_header=True,  # type: bool
                           csv_separator=';',           # type: str
+                          tqdm=False,                  # type: bool
+                          to_path=None,                # type: Union[str, Path]
+                          block_size=1024,             # type: int
                           **other_opts
                           ):
         """
@@ -221,6 +246,9 @@ class ODSClient(object):
         :param timezone:
         :param use_labels_for_header:
         :param csv_separator: ';', ','...
+        :param tqdm: a boolean indicating if a progress bar using tqdm should be displayed. tqdm should be installed
+        :param to_path: a string indicating the file path where to write the csv. In that case nothing is returned
+        :param block_size: an int block size used in streaming mode when to_csv or tqdm is used
         :param other_opts:
         :return:
         """
@@ -255,7 +283,43 @@ class ODSClient(object):
         url = self.get_download_url(dataset_id)
 
         # Execute call
-        result = self._http_call(url, params=opts)
+        result = None
+        if not tqdm:
+            if to_path is None:
+                # return csv string
+                result = self._http_call(url, params=opts)
+            else:
+                # stream to csv file
+                r = self._http_call(url, params=opts, stream=True)
+                with open(str(to_path), 'wb') as f:
+                    for data in r.iter_content(block_size):
+                        f.write(data)
+        else:
+            # we need streaming mode anyway
+            r = self._http_call(url, params=opts, stream=True)
+            total_size = int(r.headers.get('Content-Length', 0))
+
+            from tqdm import tqdm as _tqdm
+            with _tqdm(desc=url, total=total_size,
+                       unit='B' if block_size == 1024 else 'it',
+                       unit_scale=True,
+                       unit_divisor=block_size
+                       ) as bar:
+                if to_path is None:
+                    # stream to a string in memory
+                    result = io.StringIO()
+                    for data in r.iter_content(block_size):
+                        bar.update(len(data))
+                        result.write(data.decode(r.encoding))
+                    result = result.getvalue()
+                else:
+                    # stream to csv file: directly transfer the bytes
+                    with open(str(to_path), 'wb') as f:
+                        for data in r.iter_content(block_size):
+                            bar.update(len(data))
+                            f.write(data)
+            if total_size != 0 and t.n != total_size:
+                print("ERROR, something went wrong")
 
         return result
 
@@ -622,7 +686,7 @@ def create_session_for_proxy(http_proxyhost,                  # type: str
     return s
 
 
-def iterable_to_stream(iterable, buffer_size=io.DEFAULT_BUFFER_SIZE):
+def iterable_to_stream(iterable, buffer_size=io.DEFAULT_BUFFER_SIZE, progressbar=None):
     """
     Lets you use an iterable (e.g. a generator) that yields bytestrings as a read-only
     input stream.
@@ -646,6 +710,8 @@ def iterable_to_stream(iterable, buffer_size=io.DEFAULT_BUFFER_SIZE):
                 chunk = self.leftover or next(iterable)
                 output, self.leftover = chunk[:ln], chunk[ln:]
                 b[:len(output)] = output
+                if progressbar:
+                    progressbar.update(len(output))
                 return len(output)
             except StopIteration:
                 return 0  # indicate EOF
