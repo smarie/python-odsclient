@@ -89,7 +89,7 @@ class ODSClient(object):
                  base_url=None,                                 # type: str
                  enforce_apikey=False,                          # type: bool
                  apikey=None,                                   # type: str
-                 apikey_filepath='ods.apikey',                  # type: str
+                 apikey_filepath='ods.apikey',                  # type: Union[str, Path]
                  use_keyring=True,                              # type: bool
                  keyring_entries_username=KR_DEFAULT_USERNAME,  # type: str
                  requests_session=None                          # type: Session
@@ -142,7 +142,7 @@ class ODSClient(object):
         elif apikey_filepath is not None:
             try:
                 # read the api key from the file
-                with open(apikey_filepath) as f:
+                with open(str(apikey_filepath)) as f:
                     self.apikey = f.read()
             except FileNotFoundError:
                 self.apikey = None

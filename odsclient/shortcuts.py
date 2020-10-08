@@ -112,7 +112,7 @@ def get_whole_dataframe(dataset_id,                                    # type: s
                         base_url=None,                                 # type: str
                         enforce_apikey=False,                          # type: bool
                         apikey=None,                                   # type: str
-                        apikey_filepath='ods.apikey',                  # type: str
+                        apikey_filepath='ods.apikey',                  # type: Union[str, Path]
                         use_keyring=True,                              # type: bool
                         keyring_entries_username=KR_DEFAULT_USERNAME,  # type: str
                         requests_session=None,                         # type: Session
@@ -164,7 +164,7 @@ def get_whole_dataset(dataset_id,                                    # type: str
                       base_url=None,                                 # type: str
                       enforce_apikey=False,                          # type: bool
                       apikey=None,                                   # type: str
-                      apikey_filepath='ods.apikey',                  # type: str
+                      apikey_filepath='ods.apikey',                  # type: Union[str, Path]
                       use_keyring=True,                              # type: bool
                       keyring_entries_username=KR_DEFAULT_USERNAME,  # type: str
                       requests_session=None,                         # type: Session
