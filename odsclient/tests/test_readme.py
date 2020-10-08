@@ -25,14 +25,26 @@ from odsclient import get_whole_dataset, get_whole_dataframe, store_apikey_in_ke
     remove_apikey_from_keyring, get_apikey
 
 
-def test_example():
+@pytest.mark.parametrize("save_to_file", [False, True], ids="save_to_file={}".format)
+@pytest.mark.parametrize("progress_bar", [False, True], ids="progress_bar={}".format)
+def test_example(save_to_file, progress_bar, tmp_path):
     """basic test: retrieve an example dataset """
 
     # with debug_requests():
+    to_path = tmp_path / "tmp.csv" if save_to_file else None
     csv_str = get_whole_dataset("evolution-trafic-de-voyageurs-reseaux-ferres-france-2010-2014",
-                                platform_id='public')
+                                platform_id='public', to_path=to_path, tqdm=progress_bar)
 #     csv_str = csv_str.replace('\r\n', '\n').replace('\r', '\n')
-    print(csv_str.encode('utf-8'))  # note: we encode ourselves so that the ascii terminal on travis works.
+    if save_to_file:
+        assert csv_str is None
+        csv_str = to_path.read_text(encoding="utf-8")
+        os.remove(str(to_path))
+
+    # for debug
+    # if sys.version_info < (3, 0):
+    #     print(csv_str.encode("utf-8"))  # note: we encode ourselves so that the ascii terminal on travis works.
+    # else:
+    #     print(csv_str)
 
     ref_csv = """Transport;Année;Millions de Voyageurs
 SNCF - Trains/RER (y compris T4);2013;12103

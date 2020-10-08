@@ -6,6 +6,8 @@
 
 [![Documentation](https://img.shields.io/badge/doc-latest-blue.svg)](https://smarie.github.io/python-odsclient/) [![PyPI](https://img.shields.io/pypi/v/odsclient.svg)](https://pypi.python.org/pypi/odsclient/) [![Downloads](https://pepy.tech/badge/odsclient)](https://pepy.tech/project/odsclient) [![Downloads per week](https://pepy.tech/badge/odsclient/week)](https://pepy.tech/project/odsclient) [![GitHub stars](https://img.shields.io/github/stars/smarie/python-odsclient.svg)](https://github.com/smarie/python-odsclient/stargazers)
 
+!!! success "New: stream-download huge datasets to csv files directly, and use `tqdm` progress bars !"
+
 `odsclient` provides a minimal set of functions to grab a dataset or a collection of datasets from an OpenDataSoft (ODS) platform. 
 
 Its initial purpose is not to cover the [full set of APIs available](https://help.opendatasoft.com/en/apis/) but to get a minimum viable set of features to work easily with the datasets.
@@ -16,7 +18,10 @@ Its initial purpose is not to cover the [full set of APIs available](https://hel
 > pip install odsclient
 ```
 
-If you wish to download datasets as dataframes, you should also install `pandas`. This is not mandatory, though.
+Optional:
+
+ - If you wish to display progress bars, you should also install `tqdm`.
+ - If you wish to download datasets as dataframes, you should also install `pandas`. 
 
 Finally, if you plan to use api keys, we recommend that you install `keyring` as it will help you store the critical api keys in your operating system's password vault.
 
@@ -50,7 +55,13 @@ RATP - RER;2010;7486
 ...
 ```
 
-If you have `pandas` installed, you can get the dataset directly as a dataframe:
+In addition:
+
+ - you might wish to display a progress bar using `tqdm=True` (`pip install tqdm` first). Note that on some ODS platforms the HTTP Header `Content-Length` is not set, so you might only see a download rate, not an actual progress bar.
+
+ - you might wish to download directly the dataset to a csv using streaming and without loading it in memory. This can be achieved by setting `to_path=<path>` where the path can be a string or a `pathlib.Path` instance.
+
+Finally, if you have `pandas` installed, you can get the dataset directly as a dataframe:
 
 ```python
 from odsclient import get_whole_dataframe
