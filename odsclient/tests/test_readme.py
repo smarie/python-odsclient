@@ -2,24 +2,11 @@
 from __future__ import print_function
 
 import os
-
 import pytest
-import sys
 import pandas as pd
 import keyring
 
-from io import BytesIO   # to handle byte strings
-from io import StringIO  # to handle unicode strings
-
-if sys.version_info >= (3, 0):
-    def create_reading_buffer(value, is_literal):
-        return StringIO(value)
-else:
-    def create_reading_buffer(value, is_literal):
-        if is_literal:
-            return BytesIO(value)
-        else:
-            return StringIO(value)
+from .ref_datasets import ref_dataset_public_platform, create_reading_buffer, ref_dataset_other_platform
 
 from odsclient import get_whole_dataset, get_whole_dataframe, store_apikey_in_keyring, \
     remove_apikey_from_keyring, get_apikey
@@ -30,9 +17,11 @@ from odsclient import get_whole_dataset, get_whole_dataframe, store_apikey_in_ke
 def test_example(save_to_file, progress_bar, tmp_path):
     """basic test: retrieve an example dataset """
 
+    dataset_id, ref_csv, ref_df, ref_shape = ref_dataset_public_platform()
+
     # with debug_requests():
     to_path = tmp_path / "tmp.csv" if save_to_file else None
-    csv_str = get_whole_dataset("evolution-trafic-de-voyageurs-reseaux-ferres-france-2010-2014",
+    csv_str = get_whole_dataset(dataset_id,
                                 platform_id='public', to_path=to_path, tqdm=progress_bar)
 #     csv_str = csv_str.replace('\r\n', '\n').replace('\r', '\n')
     if save_to_file:
@@ -46,26 +35,6 @@ def test_example(save_to_file, progress_bar, tmp_path):
     # else:
     #     print(csv_str)
 
-    ref_csv = """Transport;Année;Millions de Voyageurs
-SNCF - Trains/RER (y compris T4);2013;12103
-RATP - Métro;2011;5022
-RATP - RER;2010;7486
-RATP - RER;;
-SNCF - Trains/RER (y compris T4);;
-RATP - RER;2011;7575
-RATP - RER;2014;7722
-RATP - Métro;2012;5130
-RATP - Métro;;
-RATP - Métro;2010;4892
-SNCF - Trains/RER (y compris T4);2010;11221
-RATP - Métro;2014;5194
-RATP - Métro;2013;5044
-SNCF - Trains/RER (y compris T4);2011;11583
-RATP - RER;2012;7675
-SNCF - Trains/RER (y compris T4);2014;12148
-SNCF - Trains/RER (y compris T4);2012;11816
-RATP - RER;2013;7605
-"""
     # this does not work as returned order may change
     # assert csv_str == ref_csv
 
@@ -73,15 +42,13 @@ RATP - RER;2013;7605
     df = pd.read_csv(create_reading_buffer(csv_str, is_literal=False), sep=';')
 
     # compare with ref
-    ref_df = pd.read_csv(create_reading_buffer(ref_csv, is_literal=True), sep=';')
-    df = df.set_index(['Transport', 'Année']).sort_index()
-    ref_df = ref_df.set_index(['Transport', 'Année']).sort_index()
+    # df = df.set_index(['Transport', 'Année']).sort_index()
     pd.testing.assert_frame_equal(df, ref_df)
-    assert df.shape == (18, 1)
+    assert df.shape == ref_shape
 
     # test the pandas direct streaming API
-    df2 = get_whole_dataframe("evolution-trafic-de-voyageurs-reseaux-ferres-france-2010-2014")
-    df2 = df2.set_index(['Transport', 'Année']).sort_index()
+    df2 = get_whole_dataframe(dataset_id)
+    # df2 = df2.set_index(['Transport', 'Année']).sort_index()
     pd.testing.assert_frame_equal(df, df2)
 
 
@@ -92,11 +59,8 @@ RATP - RER;2013;7605
 def test_other_platform(apikey_method):
     """Tests that the lib can connect to a different ODS platform with api key and custom url"""
 
-    # shared info
-    # dataset_id = "employment-by-sector-in-france-and-the-united-states-1800-2012"
-    # base_url = "https://data.exchange.se.com/"
-    dataset_id = "odsclient-reference-dataset"
-    base_url = "https://uat-data.exchange.se.com/"
+    base_url, dataset_id, ref_csv, ref_df, ref_shape = ref_dataset_other_platform()
+
     test_apikey = os.environ['EXCH_AKEY']  # <-- travis
 
     # various methods to get the api key
@@ -165,33 +129,10 @@ def test_other_platform(apikey_method):
     else:
         raise ValueError('wrong apikey_method: %s' % apikey_method)
 
-    ref_csv = """Transport;Année;Millions de Voyageurs
-SNCF - Trains/RER (y compris T4);;
-RATP - RER;;
-RATP - RER;2011;7575
-RATP - Métro;;
-RATP - RER;2014;7722
-RATP - Métro;2014;5194
-SNCF - Trains/RER (y compris T4);2011;11583
-RATP - RER;2010;7486
-RATP - RER;2013;7605
-SNCF - Trains/RER (y compris T4);2013;12103
-RATP - Métro;2012;5130
-RATP - RER;2012;7675
-SNCF - Trains/RER (y compris T4);2014;12148
-SNCF - Trains/RER (y compris T4);2010;11221
-RATP - Métro;2013;5044
-RATP - Métro;2010;4892
-SNCF - Trains/RER (y compris T4);2012;11816
-RATP - Métro;2011;5022
-"""
-
     # move to pandas
     df = pd.read_csv(create_reading_buffer(csv_str, is_literal=False), sep=';')
 
     # compare with ref
-    ref_df = pd.read_csv(create_reading_buffer(ref_csv, is_literal=True), sep=';')
-    df = df.set_index('Année').sort_index()
-    ref_df = ref_df.set_index('Année').sort_index()
+    df = df.set_index(['Transport', 'Année']).sort_index()
     pd.testing.assert_frame_equal(df, ref_df)
-    assert df.shape == (18, 2)
+    assert df.shape == ref_shape
