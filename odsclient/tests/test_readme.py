@@ -147,7 +147,7 @@ def test_other_platform(apikey_method, file_cache):
 
     elif apikey_method == 'file_default':
         f_name = 'ods.apikey'
-        assert not os.path.exists(f_name)
+        assert not os.path.exists(f_name), "File '%s' already exists, please delete it first" % f_name
         with open(f_name, 'w+') as f:
             f.write(test_apikey)
 
