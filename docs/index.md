@@ -6,6 +6,8 @@
 
 [![Documentation](https://img.shields.io/badge/doc-latest-blue.svg)](https://smarie.github.io/python-odsclient/) [![PyPI](https://img.shields.io/pypi/v/odsclient.svg)](https://pypi.python.org/pypi/odsclient/) [![Downloads](https://pepy.tech/badge/odsclient)](https://pepy.tech/project/odsclient) [![Downloads per week](https://pepy.tech/badge/odsclient/week)](https://pepy.tech/project/odsclient) [![GitHub stars](https://img.shields.io/github/stars/smarie/python-odsclient.svg)](https://github.com/smarie/python-odsclient/stargazers)
 
+!!! success "New: you can now use a local file cache ! Check it out [below](#a-caching)."
+
 !!! success "New: stream-download huge datasets to csv files directly, and use `tqdm` progress bars !"
 
 `odsclient` provides a minimal set of functions to grab a dataset or a collection of datasets from an OpenDataSoft (ODS) platform. 
@@ -237,12 +239,37 @@ See [API reference](api_reference.md) for details.
 
 ### 2. Advanced
 
-**TODO**
+#### a. Caching
+
+If you use some datasets often, you might not wish to make a query to the ODS platform everytime your code runs. To avoid useless calls, you can now use the `file_cache` argument, in any of the dataset retrieval methods. It can either receive a path-like object indicating the folder to use as the cache root, or a boolean (`True` means `.odsclient/`, `False` means cache disabled).
+
+```python
+csv_str = get_whole_dataset("opendatasoft-offices", file_cache=True)
+```
+
+You should see the following file created:
+
+![cache_fs](./imgs/cache1.png)
+
+The next usage of this dataset (through `get_whole_dataset` or through `get_whole_dataframe`) will not make a network call and will instead reuse this local file.
+
+In addition you have access to two utility methods : 
+
+ - `clean_cache` cleans parts or all of the cache. Note that this is equivalent to removing the folders/files by hand, so you can do this too.
+   
+ - `get_cached_dataset_entry` or `<ODSClient>.get_cached_dataset_entry` returns a `CacheEntry` object representing the cached file. This object contains its path and provides handy methods to read and write the file.
+
+!!! note "All files in the cache are converted to `utf-8` encoding"
+    In order to avoid storing encoding information in the cache folder, `odsclient` converts all downloaded datasets to `utf-8` encoding before storing them in the cache. This should have no side-effect for you except if you try to read the cached file directly without using the `CacheEntry.read()` method, or if your dataset contains [old/alternative forms of east asian kanji](https://en.wikipedia.org/wiki/Unicode#Issues) that cannot be represented with unicode encodings.
+
 
 ## Main features / benefits
 
  - Simple access to ODS API to retrive a whole dataset as text (csv) or dataframe
+   
  - Support for many methods to define an api key, independently of the source code: different users may use different methods (env variable, api key file, keyring) while using the same odsclient code.
+   
+ - Easy-to-use caching capabilities on the local disk.
 
 ## See Also
 

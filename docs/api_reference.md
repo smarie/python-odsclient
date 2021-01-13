@@ -13,6 +13,8 @@ A client instance offers methods to interact with the various ODS API. Currently
  * `<client>.get_whole_dataframe(dataset_id, ...)`
  * `<client>.push_dataset_realtime(dataset_id, ...)`
 
+A file cache can be activated for the two `get` methods by setting `file_cache` to `True` or to a path-like (string or `Path`) indicating a custom cache root path. `True` will use the default cache root folder `.odsclient`. `<client>.get_cached_dataset_entry` can be used to get a `CacheEntry` object representing the (possibly non-existing) cache entry for a given dataset.
+
 You can customize the `requests.Session` object used for the HTTPS transport using `requests_session`.
 
 A client is meant to use a single api key at a time, or none. You can force the api key to be mandatory using
@@ -82,6 +84,15 @@ from odsclient.shortcuts import (get_whole_dataset,
                                  store_apikey_in_keyring,
                                  get_apikey_from_keyring, 
                                  remove_apikey_from_keyring,
-                                 push_dataset_realtime
+                                 push_dataset_realtime,
+                                 get_cached_dataset_entry
 )
 ```
+
+### `clean_cache`
+
+TODO
+
+## `CacheEntry`
+
+TODO
