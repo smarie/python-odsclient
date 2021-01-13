@@ -8,8 +8,9 @@
       
       
       
+      
       <link rel="shortcut icon" href="assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.0.2">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.2.4">
     
     
       
@@ -17,10 +18,10 @@
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.38780c08.min.css">
+      <link rel="stylesheet" href="assets/stylesheets/main.15aa0b43.min.css">
       
         
-        <link rel="stylesheet" href="assets/stylesheets/palette.3f72e892.min.css">
+        <link rel="stylesheet" href="assets/stylesheets/palette.75751829.min.css">
         
       
     
@@ -28,7 +29,7 @@
     
       
         
-        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
         <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
       
@@ -50,6 +51,7 @@
     <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
       
   
+    
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" for="__drawer"></label>
@@ -65,7 +67,9 @@
       
     </div>
     
-      <header class="md-header" data-md-component="header">
+      
+
+<header class="md-header" data-md-component="header">
   <nav class="md-header-nav md-grid" aria-label="Header">
     <a href="." title="odsclient" class="md-header-nav__button md-logo" aria-label="odsclient">
       
@@ -77,18 +81,20 @@
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
     </label>
     <div class="md-header-nav__title" data-md-component="header-title">
-      
-        <div class="md-header-nav__ellipsis">
-          <span class="md-header-nav__topic md-ellipsis">
+      <div class="md-header-nav__ellipsis">
+        <div class="md-header-nav__topic">
+          <span class="md-ellipsis">
             odsclient
           </span>
-          <span class="md-header-nav__topic md-ellipsis">
+        </div>
+        <div class="md-header-nav__topic">
+          <span class="md-ellipsis">
             
               Home
             
           </span>
         </div>
-      
+      </div>
     </div>
     
       <label class="md-header-nav__button md-icon" for="__search">
@@ -99,7 +105,7 @@
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" name="search">
-      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
       <label class="md-search__icon md-icon" for="__search">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
@@ -147,10 +153,16 @@
         <div class="md-main__inner md-grid">
           
             
-              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation" >
                 <div class="md-sidebar__scrollwrap">
                   <div class="md-sidebar__inner">
-                    <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+                    
+
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="." title="odsclient" class="md-nav__button md-logo" aria-label="odsclient">
       
@@ -179,6 +191,7 @@
       
       
       
+
 
   
 
@@ -320,6 +333,19 @@
     2. Advanced
   </a>
   
+    <nav class="md-nav" aria-label="2. Advanced">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-caching" class="md-nav__link">
+    a. Caching
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
       </ul>
@@ -373,6 +399,7 @@
       
 
 
+
   <li class="md-nav__item">
     <a href="odskey/" class="md-nav__link">
       odskey command
@@ -385,6 +412,7 @@
       
 
 
+
   <li class="md-nav__item">
     <a href="api_reference/" class="md-nav__link">
       API reference
@@ -395,6 +423,7 @@
       
       
       
+
 
 
   <li class="md-nav__item">
@@ -411,7 +440,8 @@
               </div>
             
             
-              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc" >
                 <div class="md-sidebar__scrollwrap">
                   <div class="md-sidebar__inner">
                     
@@ -535,6 +565,19 @@
     2. Advanced
   </a>
   
+    <nav class="md-nav" aria-label="2. Advanced">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-caching" class="md-nav__link">
+    a. Caching
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
       </ul>
@@ -595,8 +638,11 @@
                 
                 <h1 id="odsclient">odsclient<a class="headerlink" href="#odsclient" title="Permanent link">&para;</a></h1>
 <p><em>A nonofficial client for OpenDataSoft API.</em></p>
-<p><a href="https://pypi.python.org/pypi/odsclient/"><img alt="Python versions" src="https://img.shields.io/pypi/pyversions/odsclient.svg" /></a> <a href="https://travis-ci.org/smarie/python-odsclient"><img alt="Build Status" src="https://travis-ci.org/smarie/python-odsclient.svg?branch=master" /></a> <a href="https://smarie.github.io/python-odsclient/junit/report.html"><img alt="Tests Status" src="https://smarie.github.io/python-odsclient/junit/junit-badge.svg?dummy=8484744" /></a> <a href="https://codecov.io/gh/smarie/python-odsclient"><img alt="codecov" src="https://codecov.io/gh/smarie/python-odsclient/branch/master/graph/badge.svg" /></a></p>
+<p><a href="https://pypi.python.org/pypi/odsclient/"><img alt="Python versions" src="https://img.shields.io/pypi/pyversions/odsclient.svg" /></a> <a href="https://travis-ci.com/smarie/python-odsclient"><img alt="Build Status" src="https://travis-ci.com/smarie/python-odsclient.svg?branch=master" /></a> <a href="https://smarie.github.io/python-odsclient/junit/report.html"><img alt="Tests Status" src="https://smarie.github.io/python-odsclient/junit/junit-badge.svg?dummy=8484744" /></a> <a href="https://codecov.io/gh/smarie/python-odsclient"><img alt="codecov" src="https://codecov.io/gh/smarie/python-odsclient/branch/master/graph/badge.svg" /></a></p>
 <p><a href="https://smarie.github.io/python-odsclient/"><img alt="Documentation" src="https://img.shields.io/badge/doc-latest-blue.svg" /></a> <a href="https://pypi.python.org/pypi/odsclient/"><img alt="PyPI" src="https://img.shields.io/pypi/v/odsclient.svg" /></a> <a href="https://pepy.tech/project/odsclient"><img alt="Downloads" src="https://pepy.tech/badge/odsclient" /></a> <a href="https://pepy.tech/project/odsclient"><img alt="Downloads per week" src="https://pepy.tech/badge/odsclient/week" /></a> <a href="https://github.com/smarie/python-odsclient/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/smarie/python-odsclient.svg" /></a></p>
+<div class="admonition success">
+<p class="admonition-title">New: you can now use a local file cache ! Check it out <a href="#a-caching">below</a>.</p>
+</div>
 <div class="admonition success">
 <p class="admonition-title">New: stream-download huge datasets to csv files directly, and use <code>tqdm</code> progress bars !</p>
 </div>
@@ -684,8 +730,8 @@
 
 <p>yields</p>
 <div class="codehilite"><pre><span></span><code><span class="k">Default</span><span class="o">:</span>               <span class="n">https</span><span class="o">://</span><span class="n">public</span><span class="p">.</span><span class="n">opendatasoft</span><span class="p">.</span><span class="n">com</span>
-<span class="n">Custom</span> <span class="n">`platform_id`</span><span class="o">:</span>  <span class="n">https</span><span class="o">://</span><span class="n">my_ods</span><span class="p">.</span><span class="n">opendatasoft</span><span class="p">.</span><span class="n">com</span>
-<span class="n">Custom</span> <span class="n">`base_url`</span><span class="o">:</span>     <span class="n">https</span><span class="o">://</span><span class="n">my_ods_server</span><span class="p">.</span><span class="n">com</span>
+<span class="n">Custom</span> <span class="n n-Quoted">`platform_id`</span><span class="o">:</span>  <span class="n">https</span><span class="o">://</span><span class="n">my_ods</span><span class="p">.</span><span class="n">opendatasoft</span><span class="p">.</span><span class="n">com</span>
+<span class="n">Custom</span> <span class="n n-Quoted">`base_url`</span><span class="o">:</span>     <span class="n">https</span><span class="o">://</span><span class="n">my_ods_server</span><span class="p">.</span><span class="n">com</span>
 </code></pre></div>
 
 
@@ -734,9 +780,9 @@
 
 <p>If no api key is found, the above yields:</p>
 <div class="codehilite"><pre><span></span><code><span class="n">odsclient</span><span class="p">.</span><span class="n">core</span><span class="p">.</span><span class="n">NoODSAPIKeyFoundError</span><span class="o">:</span> <span class="n">ODS</span> <span class="n">API</span> <span class="k">key</span> <span class="k">file</span> <span class="k">not</span> <span class="k">found</span><span class="p">,</span> <span class="k">while</span> <span class="n">it</span> <span class="k">is</span> 
-    <span class="n">marked</span> <span class="k">as</span> <span class="n">mandatory</span> <span class="k">for</span> <span class="n">this</span> <span class="k">call</span> <span class="p">(</span><span class="n">`enforce_apikey=True`</span><span class="p">).</span> <span class="n">It</span> <span class="n">should</span> <span class="n">either</span> 
-    <span class="n">be</span> <span class="n">put</span> <span class="k">in</span> <span class="n">a</span> <span class="kt">text</span> <span class="k">file</span> <span class="k">at</span> <span class="k">path</span> <span class="s1">&#39;ods.apikey&#39;</span><span class="p">,</span> <span class="k">or</span> <span class="k">in</span> <span class="n">the</span> <span class="n">`ODS_APIKEY`</span> <span class="n">OS</span> 
-    <span class="n">environment</span> <span class="n">variable</span><span class="p">,</span> <span class="k">or</span> <span class="p">(</span><span class="n">recommended</span><span class="p">,</span> <span class="n">most</span> <span class="n">secure</span><span class="p">)</span> <span class="k">in</span> <span class="n">the</span> <span class="k">local</span> <span class="n">`keyring`</span><span class="p">.</span>
+    <span class="n">marked</span> <span class="k">as</span> <span class="n">mandatory</span> <span class="k">for</span> <span class="n">this</span> <span class="k">call</span> <span class="p">(</span><span class="n n-Quoted">`enforce_apikey=True`</span><span class="p">).</span> <span class="n">It</span> <span class="n">should</span> <span class="n">either</span> 
+    <span class="n">be</span> <span class="n">put</span> <span class="k">in</span> <span class="n">a</span> <span class="kt">text</span> <span class="k">file</span> <span class="k">at</span> <span class="k">path</span> <span class="s1">&#39;ods.apikey&#39;</span><span class="p">,</span> <span class="k">or</span> <span class="k">in</span> <span class="n">the</span> <span class="n n-Quoted">`ODS_APIKEY`</span> <span class="n">OS</span> 
+    <span class="n">environment</span> <span class="n">variable</span><span class="p">,</span> <span class="k">or</span> <span class="p">(</span><span class="n">recommended</span><span class="p">,</span> <span class="n">most</span> <span class="n">secure</span><span class="p">)</span> <span class="k">in</span> <span class="n">the</span> <span class="k">local</span> <span class="n n-Quoted">`keyring`</span><span class="p">.</span>
     <span class="n">See</span> <span class="n">documentation</span> <span class="k">for</span> <span class="n">details</span><span class="o">:</span> 
     <span class="n">https</span><span class="o">://</span><span class="n">smarie</span><span class="p">.</span><span class="n">github</span><span class="p">.</span><span class="k">io</span><span class="o">/</span><span class="n">python</span><span class="o">-</span><span class="n">odsclient</span><span class="o">/</span><span class="c1">#c-declaring-an-api-key. </span>
     <span class="n">Note</span> <span class="n">that</span> <span class="n">you</span> <span class="n">can</span> <span class="n">generate</span> <span class="n">an</span> <span class="n">API</span> <span class="k">key</span> <span class="k">on</span> <span class="n">this</span> <span class="n">web</span> <span class="k">page</span><span class="o">:</span> <span class="err">[</span><span class="p">...</span><span class="err">]</span><span class="p">.</span>
@@ -799,11 +845,39 @@ on the dataset definition page in order to get this work.</p>
 
 <p>See <a href="api_reference/">API reference</a> for details.</p>
 <h3 id="2-advanced">2. Advanced<a class="headerlink" href="#2-advanced" title="Permanent link">&para;</a></h3>
-<p><strong>TODO</strong></p>
+<h4 id="a-caching">a. Caching<a class="headerlink" href="#a-caching" title="Permanent link">&para;</a></h4>
+<p>If you use some datasets often, you might not wish to make a query to the ODS platform everytime your code runs. To avoid useless calls, you can now use the <code>file_cache</code> argument, in any of the dataset retrieval methods. It can either receive a path-like object indicating the folder to use as the cache root, or a boolean (<code>True</code> means <code>.odsclient/</code>, <code>False</code> means cache disabled).</p>
+<div class="codehilite"><pre><span></span><code><span class="n">csv_str</span> <span class="o">=</span> <span class="n">get_whole_dataset</span><span class="p">(</span><span class="s2">&quot;opendatasoft-offices&quot;</span><span class="p">,</span> <span class="n">file_cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
+
+
+<p>You should see the following file created:</p>
+<p><img alt="cache_fs" src="./imgs/cache1.png" /></p>
+<p>The next usage of this dataset (through <code>get_whole_dataset</code> or through <code>get_whole_dataframe</code>) will not make a network call and will instead reuse this local file.</p>
+<p>In addition you have access to two utility methods : </p>
+<ul>
+<li>
+<p><code>clean_cache</code> cleans parts or all of the cache. Note that this is equivalent to removing the folders/files by hand, so you can do this too.</p>
+</li>
+<li>
+<p><code>get_cached_dataset_entry</code> or <code>&lt;ODSClient&gt;.get_cached_dataset_entry</code> returns a <code>CacheEntry</code> object representing the cached file. This object contains its path and provides handy methods to read and write the file.</p>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">All files in the cache are converted to <code>utf-8</code> encoding</p>
+<p>In order to avoid storing encoding information in the cache folder, <code>odsclient</code> converts all downloaded datasets to <code>utf-8</code> encoding before storing them in the cache. This should have no side-effect for you except if you try to read the cached file directly without using the <code>CacheEntry.read()</code> method, or if your dataset contains <a href="https://en.wikipedia.org/wiki/Unicode#Issues">old/alternative forms of east asian kanji</a> that cannot be represented with unicode encodings.</p>
+</div>
 <h2 id="main-features-benefits">Main features / benefits<a class="headerlink" href="#main-features-benefits" title="Permanent link">&para;</a></h2>
 <ul>
-<li>Simple access to ODS API to retrive a whole dataset as text (csv) or dataframe</li>
-<li>Support for many methods to define an api key, independently of the source code: different users may use different methods (env variable, api key file, keyring) while using the same odsclient code.</li>
+<li>
+<p>Simple access to ODS API to retrive a whole dataset as text (csv) or dataframe</p>
+</li>
+<li>
+<p>Support for many methods to define an api key, independently of the source code: different users may use different methods (env variable, api key file, keyring) while using the same odsclient code.</p>
+</li>
+<li>
+<p>Easy-to-use caching capabilities on the local disk.</p>
+</li>
 </ul>
 <h2 id="see-also">See Also<a class="headerlink" href="#see-also" title="Permanent link">&para;</a></h2>
 <p>This library was inspired by:</p>
@@ -868,15 +942,15 @@ on the dataset definition page in order to get this work.</p>
       
     </div>
     
-      <script src="assets/javascripts/vendor.77e55a48.min.js"></script>
-      <script src="assets/javascripts/bundle.9554a270.min.js"></script><script id="__lang" type="application/json">{"search.result.other": "# matching documents", "search.config.separator": "[\\s\\-]+", "clipboard.copied": "Copied to clipboard", "search.result.term.missing": "Missing", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.result.one": "1 matching document", "clipboard.copy": "Copy to clipboard", "search.result.none": "No matching documents", "search.result.placeholder": "Type to start searching"}</script>
+      <script src="assets/javascripts/vendor.93c04032.min.js"></script>
+      <script src="assets/javascripts/bundle.83e5331e.min.js"></script><script id="__lang" type="application/json">{"search.result.term.missing": "Missing", "clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.placeholder": "Search", "search.config.pipeline": "trimmer, stopWordFilter", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.one": "1 matching document", "search.result.placeholder": "Type to start searching", "search.config.lang": "en", "search.config.separator": "[\\s\\-]+"}</script>
       
       <script>
         app = initialize({
           base: ".",
           features: [],
           search: Object.assign({
-            worker: "assets/javascripts/worker/search.4ac00218.min.js"
+            worker: "assets/javascripts/worker/search.8c7e0a7e.min.js"
           }, typeof search !== "undefined" && search)
         })
       </script>
