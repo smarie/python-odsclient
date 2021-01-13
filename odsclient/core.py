@@ -1,12 +1,23 @@
+import warnings
 from ast import literal_eval
 from getpass import getpass
 import io
 import os
+from shutil import copyfile
+from threading import Lock
+
+try:
+    # Python 3
+    from urllib.parse import urlparse, parse_qs
+except ImportError:
+    # Python 2
+    from urlparse import urlparse, parse_qs
+
 try:
     from pathlib import Path
 except ImportError:
-    # do not care: only used for type hinting
-    pass
+    from pathlib2 import Path  # python 2
+
 import sys
 
 if sys.version >= "3":
@@ -39,10 +50,12 @@ except ImportError:
 
 try:
     # noinspection PyUnresolvedReferences
-    from typing import Dict, Union
+    from typing import Dict, Union, Iterable
 except ImportError:
     pass
 
+CACHE_ROOT_FOLDER = ".odsclient"
+CACHE_ENCODING = "utf-8"
 ODS_BASE_URL_TEMPLATE = "https://%s.opendatasoft.com"
 ENV_ODS_APIKEY = 'ODS_APIKEY'
 KR_DEFAULT_USERNAME = 'apikey_user'
@@ -57,6 +70,11 @@ class ODSClient(object):
     A client instance offers methods to interact with the various ODS API. Currently three high-level methods are
     provided: `<client>.get_whole_dataset(dataset_id, ...)`, `<client>.get_whole_dataframe(dataset_id, ...)`
     and `<client>.push_dataset_realtime(dataset_id, ...)`.
+
+    A file cache can be activated for the two `get` methods by setting `file_cache` to `True` or to a path-like (string
+    or `Path`) indicating a custom cache root path. `True` will use the default cache root folder `.odsclient`.
+    `<client>.get_cached_dataset_entry` can be used to get a `CacheEntry` object representing the (possibly
+    non-existing) cache entry for a given dataset.
 
     You can customize the `requests.Session` object used for the HTTPS transport using `requests_session`.
 
@@ -167,6 +185,7 @@ class ODSClient(object):
                             use_labels_for_header=True,  # type: bool
                             tqdm=False,                  # type: bool
                             block_size=1024,             # type: int
+                            file_cache=False,            # type: bool
                             **other_opts
                             ):
         """
@@ -176,6 +195,8 @@ class ODSClient(object):
         :param use_labels_for_header:
         :param tqdm: a boolean indicating if a progress bar using tqdm should be displayed. tqdm should be installed
         :param block_size: an int block size used in streaming mode when tqdm is used
+        :param file_cache: a boolean (default False) indicating whether the file should be written to a local cache
+            `.odsclient/<base_url>_<dataset_id>.<format>`. Or a path-like object with the custom cache root folder.
         :param other_opts:
         :return:
         """
@@ -197,16 +218,34 @@ class ODSClient(object):
             raise ValueError("'timezone' should not be specified with this method")
         if 'format' in opts:
             raise ValueError("'format' should not be specified with this method")
-        opts['format'] = 'csv'
+        opts['format'] = format = 'csv'
         if 'csv_separator' in opts:
             raise ValueError("'csv_separator' should not be specified with this method")
         opts['csv_separator'] = ';'
 
+        # Cache usage
+        if file_cache:
+            # it can be a boolean or a path
+            if file_cache is True:
+                file_cache = CACHE_ROOT_FOLDER
+            cached_file = self.get_cached_dataset_entry(dataset_id=dataset_id, format=format, cache_root=file_cache)
+            try:
+                # try to read the cached file in a thread-safe operation
+                with cached_file.rw_lock:
+                    cached_file.assert_exists()
+                    df = pd.read_csv(str(cached_file.file_path), sep=';')
+                    return df
+            except CacheFileNotFoundError:
+                pass  # does not exist. continue to query
+        else:
+            cached_file = None
+        del file_cache
+
         # The URL to call
         url = self.get_download_url(dataset_id)
 
-        # Execute call in stream mode
-        result = self._http_call(url, params=opts, stream=True)
+        # Execute call in stream mode with automatic content-type decoding
+        result = self._http_call(url, params=opts, stream=True, decode=True)
         # print(iterable_to_stream(result.iter_content()).read())
         # noinspection PyTypeChecker
 
@@ -219,10 +258,26 @@ class ODSClient(object):
                        unit_scale=True,
                        unit_divisor=block_size
                        ) as bar:
-                df = pd.read_csv(iterable_to_stream(result.iter_content(), buffer_size=block_size, progressbar=bar),
-                                 sep=';')
+                if not cached_file:
+                    # Directly stream to memory with updates of the progress bar
+                    df = pd.read_csv(iterable_to_stream(result.iter_content(), buffer_size=block_size, progressbar=bar),
+                                     sep=';')
+                else:
+                    # stream to cache file and read the dataframe from the cache (use the lock to make sure it is here)
+                    with cached_file.rw_lock:
+                        cached_file.fill_from_iterable(result.iter_content(block_size), it_encoding=result.encoding,
+                                                       progress_bar=bar, lock=False)
+                        df = pd.read_csv(str(cached_file.file_path), sep=';')
         else:
-            df = pd.read_csv(iterable_to_stream(result.iter_content(chunk_size=block_size)), sep=';')
+            if not cached_file:
+                # directly stream to memory dataframe
+                df = pd.read_csv(iterable_to_stream(result.iter_content(block_size)), sep=';')
+            else:
+                # stream to cache file and read the dataframe from the cache (use the lock to make sure it is here)
+                with cached_file.rw_lock:
+                    cached_file.fill_from_iterable(result.iter_content(block_size), it_encoding=result.encoding,
+                                                   lock=False)
+                    df = pd.read_csv(str(cached_file.file_path), sep=';')
 
         return df
 
@@ -235,6 +290,7 @@ class ODSClient(object):
                           csv_separator=';',           # type: str
                           tqdm=False,                  # type: bool
                           to_path=None,                # type: Union[str, Path]
+                          file_cache=False,            # type: bool
                           block_size=1024,             # type: int
                           **other_opts
                           ):
@@ -247,7 +303,9 @@ class ODSClient(object):
         :param use_labels_for_header:
         :param csv_separator: ';', ','...
         :param tqdm: a boolean indicating if a progress bar using tqdm should be displayed. tqdm should be installed
-        :param to_path: a string indicating the file path where to write the csv. In that case nothing is returned
+        :param to_path: a string indicating the file path where to write the csv. In that case None is returned
+        :param file_cache: a boolean (default False) indicating whether the file should be written to a local cache
+            `.odsclient/<base_url>_<dataset_id>.<format>`. Or a path-like object with the custom cache root folder.
         :param block_size: an int block size used in streaming mode when to_csv or tqdm is used
         :param other_opts:
         :return:
@@ -282,21 +340,52 @@ class ODSClient(object):
         # The URL to call
         url = self.get_download_url(dataset_id)
 
-        # Execute call
+        # Should we write anything to disk ?
+        # -- Because it is the target
+        if to_path is not None:
+            Path(to_path).parent.mkdir(parents=True, exist_ok=True)  # make sure the parents exist
+
+        # -- Because the cache is used
+        if file_cache:
+            # it can be a boolean or a path
+            if file_cache is True:
+                file_cache = CACHE_ROOT_FOLDER
+            cached_file = self.get_cached_dataset_entry(dataset_id=dataset_id, format=format, cache_root=file_cache)
+            try:
+                # Do NOT call cached_file.exists(): not thread-safe
+                if to_path is None:
+                    return cached_file.read()          # this is atomic: thread-safe
+                else:
+                    cached_file.copy_to_file(to_path)  # this is atomic: thread-safe
+                    return None
+            except CacheFileNotFoundError:
+                # does not exist. continue to query
+                pass
+        else:
+            cached_file = None
+        del file_cache
+
+        # Execute call, since no cache was used
         result = None
         if not tqdm:
             if to_path is None:
-                # return csv string
-                result = self._http_call(url, params=opts)
+                # We need to return a csv string, so load everything in memory
+                result, content_type = self._http_call(url, params=opts, stream=False, decode=True)
+
+                if cached_file:  # cache it in local cache if needed
+                    cached_file.fill_from_str(txt_initial_encoding=content_type, decoded_txt=result)
             else:
-                # stream to csv file
-                r = self._http_call(url, params=opts, stream=True)
-                with open(str(to_path), 'wb') as f:
+                # No need to return a csv string: stream directly to csv file (no decoding/encoding)
+                r = self._http_call(url, params=opts, stream=True, decode=False)
+                with open(str(to_path), mode='wb') as f:
                     for data in r.iter_content(block_size):
                         f.write(data)
+
+                if cached_file:  # cache it in local cache if needed
+                    cached_file.fill_from_file(file_path=to_path, file_encoding=r.encoding)
         else:
-            # we need streaming mode anyway
-            r = self._http_call(url, params=opts, stream=True)
+            # Progress bar is needed: we need streaming mode
+            r = self._http_call(url, params=opts, stream=True, decode=False)
             total_size = int(r.headers.get('Content-Length', 0))
 
             from tqdm import tqdm as _tqdm
@@ -306,20 +395,25 @@ class ODSClient(object):
                        unit_divisor=block_size
                        ) as bar:
                 if to_path is None:
-                    # stream to a string in memory
-                    result = io.StringIO()
-                    for data in r.iter_content(block_size):
-                        bar.update(len(data))
-                        result.write(data.decode(r.encoding))
+                    result = io.StringIO()                     # stream to a string in memory
+                    for data in r.iter_content(block_size):    # block by block
+                        bar.update(len(data))                  # - update progress bar
+                        result.write(data.decode(r.encoding))  # - decode with proper encoding
                     result = result.getvalue()
+
+                    if cached_file:                            # cache it in local cache if needed
+                        cached_file.fill_from_str(txt_initial_encoding=r.encoding, decoded_txt=result)
                 else:
-                    # stream to csv file: directly transfer the bytes
-                    with open(str(to_path), 'wb') as f:
-                        for data in r.iter_content(block_size):
-                            bar.update(len(data))
-                            f.write(data)
-            if total_size != 0 and t.n != total_size:
-                print("ERROR, something went wrong")
+                    with open(str(to_path), 'wb') as f:          # stream to csv file in binary mode
+                        for data in r.iter_content(block_size):  # block by block
+                            bar.update(len(data))                # - update progress bar
+                            f.write(data)                        # - direct copy (no decoding/encoding)
+
+                    if cached_file:                              # cache it in local cache if needed
+                        cached_file.fill_from_file(file_path=to_path, file_encoding=r.encoding)
+
+            if total_size != 0 and bar.n != total_size:
+                raise ValueError("ERROR, something went wrong")
 
         return result
 
@@ -501,6 +595,25 @@ class ODSClient(object):
         """
         return "%s/explore/dataset/%s/download/" % (self.base_url, dataset_id)
 
+    def get_cached_dataset_entry(self,
+                                 dataset_id,       # type: str
+                                 format,           # type: str
+                                 cache_root=None   # type: Union[str, Path]
+                                 ):
+        # type: (...) -> CacheEntry
+        """
+        Returns a `CacheEntry` for the given dataset
+        :param dataset_id:
+        :param format:
+        :param cache_root:
+        :return:
+        """
+        if self.platform_id is not None:
+            p = self.platform_id
+        else:
+            p = baseurl_to_id_str(self.base_url)
+        return CacheEntry(dataset_id=dataset_id, dataset_format=format, platform_pseudo_id=p, cache_root=cache_root)
+
     def get_realtime_push_url(self,
                               dataset_id,  # type: str
                               ):
@@ -524,11 +637,16 @@ class ODSClient(object):
         """
         Sub-routine for HTTP web service call. If Body is None, a GET is performed
 
+        :param url:
         :param body:
         :param headers:
-        :param method
-        :param url:
-        :return:
+        :param method:
+        :param params:
+        :param decode: a boolean (default True) indicating if the contents should be automatically decoded following
+            the content-type encoding received in the HTTP response. If this is True and stream=False (default), the
+            function returns a tuple (body, content type)
+        :param stream:
+        :return: either a tuple (text, encoding) (if stream=False and decode=True), or the response object
         """
         try:
             # Send the request (DO NOT encode the params, this is done automatically)
@@ -546,7 +664,7 @@ class ODSClient(object):
                 if decode:
                     # Contents (encoding is automatically used to read the body when calling response.text)
                     result = response.text
-                    return result
+                    return result, response.encoding
                 else:
                     return response
             else:
@@ -717,3 +835,234 @@ def iterable_to_stream(iterable, buffer_size=io.DEFAULT_BUFFER_SIZE, progressbar
                 return 0  # indicate EOF
 
     return io.BufferedReader(IterStream(), buffer_size=buffer_size)
+
+
+class CacheFileNotFoundError(FileNotFoundError):
+    pass
+
+
+class CacheEntry(object):
+    """
+    Represents a cache entry for a dataset, under `cache_root` (default CACHE_ROOT_FOLDER).
+    It may not exist.
+
+    Access to the file are thread-safe (atomic) to avoid collisions while the file is updated.
+    """
+    __slots__ = ('dataset_id', 'dataset_format', 'platform_pseudo_id', '_cache_root', 'rw_lock')
+
+    def __init__(self,
+                 dataset_id,          # type: str
+                 dataset_format,      # type: str
+                 platform_pseudo_id,  # type: str
+                 cache_root=None      # type: Union[str, Path]
+                 ):
+        """Constructor from a dataset id and an optional root cache path"""
+        self.dataset_id = dataset_id
+        self.dataset_format = dataset_format
+        self.platform_pseudo_id = platform_pseudo_id
+        self.rw_lock = Lock()
+
+        if cache_root is None:
+            self._cache_root = None
+        else:
+            if isinstance(cache_root, str):
+                cache_root = Path(cache_root)
+            self._cache_root = cache_root
+
+    def __repr__(self):
+        return "CacheEntry(path='%s')" % self.file_path
+
+    def exists(self):
+        """Return True if there is a file for this cache entry, at self.file_path. Note that in multithread context
+        this does not ensure that this will remain True at next python code step :) """
+        return self.file_path.exists()
+
+    @property
+    def cache_root(self):
+        # type: (...) -> Path
+        """The root folder of the cache where this entry sits"""
+        return self._cache_root if self._cache_root is not None else CACHE_ROOT_FOLDER
+
+    @property
+    def file_path(self):
+        # type: (...) -> Path
+        """The file where this entry sits (it may exist or not)"""
+        return Path("%s/%s/%s.%s" % (self.cache_root, self.platform_pseudo_id, self.dataset_id, self.dataset_format))
+
+    def assert_exists(self):
+        """Raises an error if the file does not exist"""
+        if not self.exists():
+            raise CacheFileNotFoundError("Cached file entry can not be read as it does not exist: '%s'" % self.file_path)
+
+    def read(self):
+        # type: (...) -> str
+        """
+        Returns a string read from the cached file.
+        Preserve line endings thanks to newline='' see See https://stackoverflow.com/a/50996542/7262247
+        """
+        with self.rw_lock:  # potentially wait for ongoing write/read to be completed, and prevent others to happen
+            self.assert_exists()
+            with self.file_path.open(mode="rt", newline='', encoding=CACHE_ENCODING) as f:
+                result = f.read()
+            return result
+
+    def copy_to_file(self,
+                     file_path  # type: Union[str, Path]
+                     ):
+        """
+        Copy this cached file to to_path. Note that it will be encoded using CACHE_ENCODING
+        but a warning was already issued at dataset retrieval time if original encoding was different
+        """
+        with self.rw_lock:  # potentially wait for ongoing write/read to be completed, and prevent others to happen
+            self.assert_exists()
+            copyfile(str(self.file_path), str(file_path))
+
+    def delete(self):
+        """
+        Removes this cache entry with thread-safe protection
+        """
+        with self.rw_lock:
+            if not self.exists():
+                warnings.warn("Can not delete file entry: file does not exist: '%s'" % self.file_path)
+            else:
+                os.remove(str(self.file_path))
+
+    def prepare_for_writing(self):
+        """
+        Makes all parent directories if needed
+        Issues a warning if the file exists and is therefore overridden
+        """
+        if self.exists():
+            warnings.warn("Cached file entry already exists and will be overridden: '%s'" % self.file_path)
+
+        # make sure the parents exist
+        self.file_path.parent.mkdir(parents=True, exist_ok=True)
+
+    def fill_from_str(self,
+                      txt_initial_encoding,  # type: str
+                      decoded_txt,           # type: str
+                      ):
+        """Writes a text string (already decoded) to the cache, according to the cache's encoding
+
+        If the original encoding is not equal to the cache encoding, a warning is issued.
+        """
+        with self.rw_lock:  # potentially wait for ongoing write/read to be completed, and prevent others to happen
+            self.prepare_for_writing()
+            # Our cache uses utf-8 for all files, in order not to have to remember encodings to read back
+            if txt_initial_encoding != CACHE_ENCODING:
+                self.warn_encoding(original_encoding=txt_initial_encoding, cache_encoding=CACHE_ENCODING)
+
+            # copy with the correct encoding
+            self.file_path.write_bytes(decoded_txt.encode(CACHE_ENCODING))
+
+    def _fill_from_it_no_lock(self,
+                              it,                 # type: Iterable
+                              it_encoding,        # type: str
+                              progress_bar=None,
+                              ):
+        """The no-lock version of fill from iterable"""
+
+        self.prepare_for_writing()
+        if it_encoding == CACHE_ENCODING:
+            # no encoding change: direct copy
+            with open(str(self.file_path), 'wb') as f:  # stream to csv file in binary mode
+                for data in it:  # block by block
+                    if progress_bar:
+                        progress_bar.update(len(data))  # - update progress bar
+                    f.write(data)  # - direct copy (no decoding/encoding)
+        else:
+            # Our cache uses utf-8 for all files, in order not to have to remember encodings to read back
+            self.warn_encoding(original_encoding=it_encoding, cache_encoding=CACHE_ENCODING)
+
+            # we will need transcoding. Fully stream to memory string and dump to cache and datframe after
+            csv_str_io = io.StringIO()  # stream to a string in memory
+            for data in it:  # block by block
+                if progress_bar:
+                    progress_bar.update(len(data))  # - update progress bar
+                csv_str_io.write(data.decode(it_encoding))  # - decode with proper encoding
+            csv_str = csv_str_io.getvalue()
+
+            # store in cache with proper encoding
+            self.file_path.write_bytes(csv_str.encode(CACHE_ENCODING))
+
+    def fill_from_iterable(self,
+                           it,                # type: Iterable
+                           it_encoding,       # type: str
+                           progress_bar=None,
+                           lock=True
+                           ):
+        """
+        Fill this cache entry from an iterable of bytes
+        :param it:
+        :param it_encoding:
+        :param progress_bar:
+        :return: csv_str if it was streamed to memory in the process (if transcoding was needed)
+        """
+        if lock:
+            with self.rw_lock:  # potentially wait for ongoing write/read to be completed, and prevent others to happen
+                self._fill_from_it_no_lock(it=it, it_encoding=it_encoding, progress_bar=progress_bar)
+        else:
+            self._fill_from_it_no_lock(it=it, it_encoding=it_encoding, progress_bar=progress_bar)
+
+    def fill_from_file(self,
+                       file_path,      # type: Union[str, Path]
+                       file_encoding,  # type: str
+                       ):
+        """Copies a file to the cache.
+
+        If the original encoding is not equal to the cache encoding, conversion happens and a warning is issued.
+        """
+        with self.rw_lock:  # potentially wait for ongoing write/read to be completed, and prevent others to happen
+            self.prepare_for_writing()
+            if file_encoding == CACHE_ENCODING:
+                # no encoding change: direct copy
+                copyfile(str(file_path), str(self.file_path))
+            else:
+                # Our cache uses utf-8 for all files, in order not to have to remember encodings to read back
+                self.warn_encoding(original_encoding=file_encoding, cache_encoding=CACHE_ENCODING)
+                # read with newline-preserve and with original encoding
+                with open(str(file_path), mode="rt", newline='', encoding=file_encoding) as f_src:
+                    contents = f_src.read()
+                # write with the cache encoding
+                with open(str(self.file_path), mode='wt', encoding=CACHE_ENCODING) as f_dest:
+                    f_dest.write(contents)
+
+    def warn_encoding(self, original_encoding, cache_encoding):
+        """
+        Issues a warning when the original encoding was different from the one in the cache and a conversion occured
+        """
+        warnings.warn(
+            "[odsclient-cache] Cached file for dataset %r will use %r encoding while original encoding on "
+            " ODS was %r. This will most probably have no side effects except if your dataset"
+            " contains characters that can not be encoded in utf-8 such as old/alternative"
+            " forms of east asian kanji. See https://en.wikipedia.org/wiki/Unicode#Issues"
+            % (self.dataset_id, cache_encoding, original_encoding))
+
+
+def baseurl_to_id_str(base_url):
+    """ Transform an ODS platform url into an identifier string usable for example as file/folder name"""
+
+    o = urlparse(base_url)
+
+    # start with host name
+    result_str = o.netloc
+
+    # simplify the public ODS site
+    if result_str.endswith(".opendatasoft.com"):
+        result_str = result_str.replace(".opendatasoft.com", "")
+
+    # optionally add custom sub-path
+    if o.path and o.path != "/":
+        _path = o.path.replace("/", "_")
+
+        # ensure trailing _
+        if not _path.startswith("_"):
+            _path = "_" + _path
+
+        # ensure no ending _
+        if _path.endswith("_"):
+            _path = _path[:-1]
+
+        result_str += _path
+
+    return result_str

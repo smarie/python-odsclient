@@ -4,6 +4,7 @@ import pytest
 import requests
 
 from odsclient import get_whole_dataset, ODSException, NoODSAPIKeyFoundError, InsufficientRightsForODSResourceError
+from odsclient.core import baseurl_to_id_str
 
 
 def test_error_bad_dataset_id():
@@ -47,3 +48,19 @@ def test_keyring_unit():
     base_url = "https://data.exchange.se.com/"
     keyring.set_password(base_url, 'apikey', 'blah')
     assert keyring.get_password(base_url, 'apikey') == 'blah'
+
+
+@pytest.mark.parametrize("protocol", ["http://", "ftp://", "https://"])
+@pytest.mark.parametrize("ending_slash", [False, True])
+def test_baseurl_to_id_str(protocol, ending_slash):
+    base_url = protocol + "public.opendatasoft.com"
+    if ending_slash:
+        base_url += "/"
+    pseudo_id = baseurl_to_id_str(base_url)
+    assert pseudo_id == "public"
+
+    base_url = protocol + "data.exchange.se.com/ho"
+    if ending_slash:
+        base_url += "/"
+    pseudo_id = baseurl_to_id_str(base_url)
+    assert pseudo_id == "data.exchange.se.com_ho"

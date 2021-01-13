@@ -1,3 +1,7 @@
+import os
+from glob import glob
+from shutil import rmtree
+
 try:
     # noinspection PyUnresolvedReferences
     from typing import Union
@@ -12,7 +16,7 @@ except ImportError:
 
 from requests import Session
 
-from odsclient.core import KR_DEFAULT_USERNAME, ODSClient
+from odsclient.core import KR_DEFAULT_USERNAME, ODSClient, CACHE_ROOT_FOLDER, baseurl_to_id_str, CacheEntry
 
 
 def store_apikey_in_keyring(platform_id='public',                          # type: str
@@ -151,6 +155,72 @@ def get_whole_dataframe(dataset_id,                                    # type: s
                                       tqdm=tqdm, block_size=block_size, **other_opts)
 
 
+def clean_cache(dataset_id=None,   # type: str
+                # format='csv',    # type: str
+                platform_id=None,  # type: str
+                base_url=None,     # type: str
+                cache_root=None    # type: Union[str, Path]
+                ):
+    """
+    Cleans the file cache
+
+    :param dataset_id:
+    :param platform_id:
+    :param base_url:
+    :return:
+    """
+    if dataset_id is not None:
+        # clean a specific dataset on a specific platform
+        path_pattern = get_cached_dataset_entry(dataset_id, format="*", platform_id=platform_id, base_url=base_url,
+                                                cache_root=cache_root)
+        for cached_file in glob(str(path_pattern.file_path)):
+            print("[odsclient] Removing cached dataset entry for %r: %r" % (dataset_id, cached_file))
+            os.remove(cached_file)
+    else:
+        if cache_root is None:
+            cache_root = CACHE_ROOT_FOLDER
+        else:
+            cache_root = str(cache_root)
+
+        if platform_id is not None:
+            p = platform_id
+        elif base_url is not None:
+            p = baseurl_to_id_str(base_url)
+        else:
+            p = None
+
+        if p is None:
+            # clean the whole cache
+            print("[odsclient] Removing entire cache folder %r" % cache_root)
+            rmtree(cache_root, ignore_errors=True)
+        else:
+            # clean an entire platform cache
+            path_to_delete = "%s/%s/" % (cache_root, p)
+            print("[odsclient] Removing cache for platform %r: folder %r" % (p, path_to_delete))
+            rmtree(path_to_delete, ignore_errors=True)
+
+
+def get_cached_dataset_entry(dataset_id,            # type: str
+                             format='csv',          # type: str
+                             platform_id='public',  # type: str
+                             base_url=None,         # type: str
+                             cache_root=None        # type: Union[str, Path]
+                             ):
+    # type: (...) -> CacheEntry
+    """
+    Shortcut method for ODSClient(...).get_cached_dataset_entry(...)
+
+    :param dataset_id:
+    :param format:
+    :param platform_id:
+    :param base_url:
+    :param cache_root:
+    :return:
+    """
+    client = ODSClient(platform_id=platform_id, base_url=base_url)
+    return client.get_cached_dataset_entry(dataset_id=dataset_id, format=format, cache_root=cache_root)
+
+
 # noinspection PyShadowingBuiltins
 def get_whole_dataset(dataset_id,                                    # type: str
                       format='csv',                                  # type: str
@@ -159,6 +229,7 @@ def get_whole_dataset(dataset_id,                                    # type: str
                       csv_separator=';',                             # type: str
                       tqdm=False,                                    # type: bool
                       to_path=None,                                  # type: Union[str, Path]
+                      file_cache=False,                              # type: bool
                       block_size=1024,                               # type: int
                       platform_id='public',                          # type: str
                       base_url=None,                                 # type: str
@@ -179,7 +250,10 @@ def get_whole_dataset(dataset_id,                                    # type: str
     :param use_labels_for_header:
     :param csv_separator:
     :param tqdm: a boolean indicating if a progress bar using tqdm should be displayed. tqdm should be installed
-    :param to_path: a string indicating the file path where to write the csv. In that case nothing is returned
+    :param to_path: a string indicating the file path where to write the dataset (csv or other format). In that case
+        nothing is returned
+    :param file_cache: a boolean (default False) indicating whether the file should be written to a local cache
+        `.odsclient/<pseudo_platform_id>_<dataset_id>.<format>`. See `get_cached_datasset_entry` for details.
     :param block_size: an int block size used in streaming mode when to_csv or tqdm is used
     :param platform_id: the ods platform id to use. This id is used to construct the base URL based on the pattern
         https://<platform_id>.opendatasoft.com. Default is `'public'` which leads to the base url
@@ -202,7 +276,7 @@ def get_whole_dataset(dataset_id,                                    # type: str
     client = ODSClient(platform_id=platform_id, base_url=base_url, enforce_apikey=enforce_apikey, apikey=apikey,
                        apikey_filepath=apikey_filepath, use_keyring=use_keyring,
                        keyring_entries_username=keyring_entries_username, requests_session=requests_session)
-    return client.get_whole_dataset(dataset_id=dataset_id, format=format,
+    return client.get_whole_dataset(dataset_id=dataset_id, format=format, file_cache=file_cache,
                                     timezone=timezone, use_labels_for_header=use_labels_for_header,
                                     csv_separator=csv_separator, tqdm=tqdm, to_path=to_path, block_size=block_size,
                                     **other_opts)
