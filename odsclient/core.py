@@ -343,7 +343,9 @@ class ODSClient(object):
         # Should we write anything to disk ?
         # -- Because it is the target
         if to_path is not None:
-            Path(to_path).parent.mkdir(parents=True, exist_ok=True)  # make sure the parents exist
+            if isinstance(to_path, str):
+                to_path = Path(to_path)
+            to_path.parent.mkdir(parents=True, exist_ok=True)  # make sure the parents exist
 
         # -- Because the cache is used
         if file_cache:
