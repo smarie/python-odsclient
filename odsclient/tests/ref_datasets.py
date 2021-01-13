@@ -1,3 +1,4 @@
+# coding: utf-8
 import pandas as pd
 
 from odsclient.utils import create_reading_buffer
@@ -29,9 +30,10 @@ Colissimo guichet J + 2;objectif;0.86;2009
 """.replace("\n", "\r\n")
 
     # we keep this explicit just in case the ref_df reading does not work as expected
-    ref_shape = (17, 4)
+    ref_shape = (17, 1)
 
     ref_df = pd.read_csv(create_reading_buffer(ref_csv, is_literal=True), sep=';')
+    ref_df = ref_df.set_index(['Catégorie', 'Objectif ou Réalisation', 'Annee']).sort_index()
 
     return dataset_id, ref_csv, ref_df, ref_shape
 
