@@ -2,6 +2,8 @@
 from __future__ import print_function
 
 import os
+import sys
+
 import pytest
 import pandas as pd
 import keyring
@@ -12,6 +14,11 @@ try:
     from pathlib import Path
 except ImportError:
     from pathlib2 import Path  # python 2
+
+if sys.version_info < (3,):
+    # We need a version of open that supports encoding and nline endings
+    # See https://stackoverflow.com/a/10975371/7262247
+    from io import open
 
 from .ref_datasets import ref_dataset_public_platform, create_reading_buffer, ref_dataset_other_platform
 
@@ -148,8 +155,8 @@ def test_other_platform(apikey_method, file_cache):
     elif apikey_method == 'file_default':
         f_name = 'ods.apikey'
         assert not os.path.exists(f_name), "File '%s' already exists, please delete it first" % f_name
-        with open(f_name, 'w+') as f:
-            f.write(test_apikey)
+        with open(f_name, 'wb') as f:
+            f.write(test_apikey.encode("utf-8"))
 
         assert get_apikey(base_url=base_url) == test_apikey
         try:
@@ -160,8 +167,8 @@ def test_other_platform(apikey_method, file_cache):
     elif apikey_method == 'file_custom':
         f_name = 'tmp.tmp'
         assert not os.path.exists(f_name), "File '%s' already exists, please delete it first" % f_name
-        with open(f_name, 'w+') as f:
-            f.write(test_apikey)
+        with open(f_name, 'wb') as f:
+            f.write(test_apikey.encode("utf-8"))
         assert get_apikey(base_url=base_url, apikey_filepath=f_name) == test_apikey
         try:
             csv_str = get_whole_dataset(dataset_id=dataset_id, file_cache=file_cache, base_url=base_url,

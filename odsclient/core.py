@@ -20,10 +20,15 @@ except ImportError:
 
 import sys
 
-if sys.version >= "3":
-    from io import StringIO
-else:
+if sys.version_info < (3,):
+    # py2: we need a version of open that supports encoding and nline endings
+    # See https://stackoverflow.com/a/10975371/7262247
+    from io import open
     from StringIO import StringIO
+    string_types = (str, bytes)
+else:
+    from io import StringIO
+    string_types = (str,)
 
 try:
     from json import loads, JSONDecodeError, dumps
@@ -343,7 +348,7 @@ class ODSClient(object):
         # Should we write anything to disk ?
         # -- Because it is the target
         if to_path is not None:
-            if isinstance(to_path, str):
+            if isinstance(to_path, string_types):
                 to_path = Path(to_path)
             to_path.parent.mkdir(parents=True, exist_ok=True)  # make sure the parents exist
 
@@ -867,7 +872,7 @@ class CacheEntry(object):
         if cache_root is None:
             self._cache_root = None
         else:
-            if isinstance(cache_root, str):
+            if isinstance(cache_root, string_types):
                 cache_root = Path(cache_root)
             self._cache_root = cache_root
 
