@@ -38,7 +38,8 @@ Lettre recommandée J + 2;réalisation;0.9460000000000001;2014
 Lettre verte J + 2;réalisation;0.932;2014
 Courrier industriel J + 2;objectif;0.9500000000000001;2014
 Colissimo guichet J + 2;objectif;0.86;2009
-"""
+""".replace("\n", "\r\n")
+
     # we keep this explicit just in case the ref_df reading does not work as expected
     ref_shape = (17, 4)
 
@@ -75,7 +76,7 @@ RATP - Métro;2013;5044
 RATP - Métro;2010;4892
 SNCF - Trains/RER (y compris T4);2012;11816
 RATP - Métro;2011;5022
-"""
+""".replace("\n", "\r\n")
     ref_df = pd.read_csv(create_reading_buffer(ref_csv, is_literal=True), sep=';')
     ref_df = ref_df.set_index(['Transport', 'Année']).sort_index()
 
