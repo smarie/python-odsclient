@@ -13,7 +13,8 @@ pkg_resources.require("setuptools_scm")
 from setuptools_scm import get_version  # noqa: E402
 
 # *************** Dependencies *********
-INSTALL_REQUIRES = ['requests']
+INSTALL_REQUIRES = ['requests',
+                    'pathlib2;python_version<"3.2"']
 DEPENDENCY_LINKS = []
 SETUP_REQUIRES = ['pytest-runner', 'setuptools_scm']
 TESTS_REQUIRE = ['pytest', 'pandas', 'keyring', 'tqdm']
