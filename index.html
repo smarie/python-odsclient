@@ -10,7 +10,7 @@
       
       
       <link rel="shortcut icon" href="assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.2.4">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.2.7">
     
     
       
@@ -18,10 +18,10 @@
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.15aa0b43.min.css">
+      <link rel="stylesheet" href="assets/stylesheets/main.cb6bc1d0.min.css">
       
         
-        <link rel="stylesheet" href="assets/stylesheets/palette.75751829.min.css">
+        <link rel="stylesheet" href="assets/stylesheets/palette.39b8e14a.min.css">
         
       
     
@@ -192,27 +192,28 @@
       
       
 
-
   
-
-
-  <li class="md-nav__item md-nav__item--active">
+  
     
-    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
       
-    
-    
-      <label class="md-nav__link md-nav__link--active" for="__toc">
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Home
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="." class="md-nav__link md-nav__link--active">
         Home
-        <span class="md-nav__icon md-icon"></span>
-      </label>
-    
-    <a href="." class="md-nav__link md-nav__link--active">
-      Home
-    </a>
-    
+      </a>
       
+        
 <nav class="md-nav md-nav--secondary" aria-label="Table of contents">
   
   
@@ -390,47 +391,54 @@
     </ul>
   
 </nav>
-    
-  </li>
-
-    
       
-      
-      
-
-
-
-  <li class="md-nav__item">
-    <a href="odskey/" class="md-nav__link">
-      odskey command
-    </a>
-  </li>
+    </li>
+  
 
     
       
       
       
 
-
-
-  <li class="md-nav__item">
-    <a href="api_reference/" class="md-nav__link">
-      API reference
-    </a>
-  </li>
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="odskey/" class="md-nav__link">
+        odskey command
+      </a>
+    </li>
+  
 
     
       
       
       
 
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="api_reference/" class="md-nav__link">
+        API reference
+      </a>
+    </li>
+  
 
+    
+      
+      
+      
 
-  <li class="md-nav__item">
-    <a href="changelog/" class="md-nav__link">
-      Changelog
-    </a>
-  </li>
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="changelog/" class="md-nav__link">
+        Changelog
+      </a>
+    </li>
+  
 
     
   </ul>
@@ -669,17 +677,19 @@
 <p>The most basic thing that you can do is to download a whole dataset, similarly to what you can get when clicking on the links with your browser on a dataset's <a href="https://public.opendatasoft.com/explore/dataset/opendatasoft-offices/export/">"Export" page</a>:</p>
 <div class="codehilite"><pre><span></span><code><span class="kn">from</span> <span class="nn">odsclient</span> <span class="kn">import</span> <span class="n">get_whole_dataset</span>
 
-<span class="n">csv_str</span> <span class="o">=</span> <span class="n">get_whole_dataset</span><span class="p">(</span><span class="s2">&quot;evolution-trafic-de-voyageurs-reseaux-ferres-france-2010-2014&quot;</span><span class="p">,</span> 
-                            <span class="n">platform_id</span><span class="o">=</span><span class="s1">&#39;public&#39;</span><span class="p">)</span>
+<span class="n">dataset_id</span> <span class="o">=</span> <span class="s2">&quot;respect-des-delais-dacheminement-courrier&quot;</span>
+<span class="n">csv_str</span> <span class="o">=</span> <span class="n">get_whole_dataset</span><span class="p">(</span><span class="n">dataset_id</span><span class="p">,</span> <span class="n">platform_id</span><span class="o">=</span><span class="s1">&#39;public&#39;</span><span class="p">)</span>
+
 <span class="nb">print</span><span class="p">(</span><span class="n">csv_str</span><span class="p">)</span>
 </code></pre></div>
 
 
 <p>yields</p>
-<div class="codehilite"><pre><span></span><code><span class="err">Transport;Année;Millions de Voyageurs</span>
-<span class="err">SNCF - Trains/RER (y compris T4);2013;12103</span>
-<span class="err">RATP - Métro;2011;5022</span>
-<span class="err">RATP - RER;2010;7486</span>
+<div class="codehilite"><pre><span></span><code><span class="err">Catégorie;Objectif ou Réalisation;Pourcentage;Annee</span>
+<span class="err">Lettre prioritaire J + 1;objectif;0.84;2009</span>
+<span class="err">Lettre recommandée J + 2;réalisation;0.9460000000000001;2014</span>
+<span class="err">Courrier industriel J + 2;objectif;0.9500000000000001;2009</span>
+<span class="err">Colissimo guichet J + 2;réalisation;0.877;2009</span>
 <span class="err">...</span>
 </code></pre></div>
 
@@ -696,19 +706,20 @@
 <p>Finally, if you have <code>pandas</code> installed, you can get the dataset directly as a dataframe:</p>
 <div class="codehilite"><pre><span></span><code><span class="kn">from</span> <span class="nn">odsclient</span> <span class="kn">import</span> <span class="n">get_whole_dataframe</span>
 
-<span class="n">df</span> <span class="o">=</span> <span class="n">get_whole_dataframe</span><span class="p">(</span><span class="s2">&quot;evolution-trafic-de-voyageurs-reseaux-ferres-france-2010-2014&quot;</span><span class="p">,</span> 
-                         <span class="n">platform_id</span><span class="o">=</span><span class="s1">&#39;public&#39;</span><span class="p">)</span>
+<span class="n">dataset_id</span> <span class="o">=</span> <span class="s2">&quot;respect-des-delais-dacheminement-courrier&quot;</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">get_whole_dataframe</span><span class="p">(</span><span class="n">dataset_id</span><span class="p">,</span> <span class="n">platform_id</span><span class="o">=</span><span class="s1">&#39;public&#39;</span><span class="p">)</span>
+
 <span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
 </code></pre></div>
 
 
 <p>yields</p>
-<div class="codehilite"><pre><span></span><code><span class="err">                          Transport   Année  Millions de Voyageurs</span>
-<span class="err">0  SNCF - Trains/RER (y compris T4)  2013.0                12103.0</span>
-<span class="err">1                      RATP - Métro  2011.0                 5022.0</span>
-<span class="err">2                        RATP - RER  2010.0                 7486.0</span>
-<span class="err">3                        RATP - RER     NaN                    NaN</span>
-<span class="err">4  SNCF - Trains/RER (y compris T4)     NaN                    NaN</span>
+<div class="codehilite"><pre><span></span><code><span class="err">                   Catégorie Objectif ou Réalisation  Pourcentage  Annee</span>
+<span class="err">0   Lettre prioritaire J + 1                objectif        0.840   2009</span>
+<span class="err">1   Lettre recommandée J + 2             réalisation        0.946   2014</span>
+<span class="err">2  Courrier industriel J + 2                objectif        0.950   2009</span>
+<span class="err">3    Colissimo guichet J + 2             réalisation        0.877   2009</span>
+<span class="err">4         Lettre verte J + 2             réalisation        0.932   2014</span>
 </code></pre></div>
 
 
@@ -942,15 +953,15 @@ on the dataset definition page in order to get this work.</p>
       
     </div>
     
-      <script src="assets/javascripts/vendor.93c04032.min.js"></script>
-      <script src="assets/javascripts/bundle.83e5331e.min.js"></script><script id="__lang" type="application/json">{"search.config.pipeline": "trimmer, stopWordFilter", "search.result.placeholder": "Type to start searching", "search.result.more.other": "# more on this page", "clipboard.copied": "Copied to clipboard", "search.placeholder": "Search", "search.config.separator": "[\\s\\-]+", "search.result.other": "# matching documents", "search.result.term.missing": "Missing", "search.config.lang": "en", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.more.one": "1 more on this page", "clipboard.copy": "Copy to clipboard"}</script>
+      <script src="assets/javascripts/vendor.53cc9318.min.js"></script>
+      <script src="assets/javascripts/bundle.e9c9f54f.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "search.result.more.other": "# more on this page", "clipboard.copied": "Copied to clipboard", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.one": "1 matching document", "search.config.lang": "en", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.placeholder": "Search", "search.config.pipeline": "trimmer, stopWordFilter", "search.result.none": "No matching documents", "search.result.term.missing": "Missing"}</script>
       
       <script>
         app = initialize({
           base: ".",
           features: [],
           search: Object.assign({
-            worker: "assets/javascripts/worker/search.8c7e0a7e.min.js"
+            worker: "assets/javascripts/worker/search.9c0e82ba.min.js"
           }, typeof search !== "undefined" && search)
         })
       </script>
