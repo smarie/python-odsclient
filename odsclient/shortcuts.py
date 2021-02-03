@@ -112,6 +112,7 @@ def get_whole_dataframe(dataset_id,                                    # type: s
                         use_labels_for_header=True,                    # type: bool
                         tqdm=False,                                    # type: bool
                         block_size=1024,                               # type: int
+                        file_cache=False,                              # type: bool
                         platform_id='public',                          # type: str
                         base_url=None,                                 # type: str
                         enforce_apikey=False,                          # type: bool
@@ -152,7 +153,7 @@ def get_whole_dataframe(dataset_id,                                    # type: s
                        apikey_filepath=apikey_filepath, use_keyring=use_keyring,
                        keyring_entries_username=keyring_entries_username, requests_session=requests_session)
     return client.get_whole_dataframe(dataset_id=dataset_id, use_labels_for_header=use_labels_for_header,
-                                      tqdm=tqdm, block_size=block_size, **other_opts)
+                                      tqdm=tqdm, block_size=block_size, file_cache=file_cache, **other_opts)
 
 
 def clean_cache(dataset_id=None,   # type: str
