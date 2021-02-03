@@ -42,18 +42,20 @@ The most basic thing that you can do is to download a whole dataset, similarly t
 ```python
 from odsclient import get_whole_dataset
 
-csv_str = get_whole_dataset("evolution-trafic-de-voyageurs-reseaux-ferres-france-2010-2014", 
-                            platform_id='public')
+dataset_id = "respect-des-delais-dacheminement-courrier"
+csv_str = get_whole_dataset(dataset_id, platform_id='public')
+
 print(csv_str)
 ```
 
 yields
 
 ```
-Transport;Année;Millions de Voyageurs
-SNCF - Trains/RER (y compris T4);2013;12103
-RATP - Métro;2011;5022
-RATP - RER;2010;7486
+Catégorie;Objectif ou Réalisation;Pourcentage;Annee
+Lettre prioritaire J + 1;objectif;0.84;2009
+Lettre recommandée J + 2;réalisation;0.9460000000000001;2014
+Courrier industriel J + 2;objectif;0.9500000000000001;2009
+Colissimo guichet J + 2;réalisation;0.877;2009
 ...
 ```
 
@@ -68,20 +70,21 @@ Finally, if you have `pandas` installed, you can get the dataset directly as a d
 ```python
 from odsclient import get_whole_dataframe
 
-df = get_whole_dataframe("evolution-trafic-de-voyageurs-reseaux-ferres-france-2010-2014", 
-                         platform_id='public')
+dataset_id = "respect-des-delais-dacheminement-courrier"
+df = get_whole_dataframe(dataset_id, platform_id='public')
+
 print(df.head())
 ```
 
 yields
 
 ```
-                          Transport   Année  Millions de Voyageurs
-0  SNCF - Trains/RER (y compris T4)  2013.0                12103.0
-1                      RATP - Métro  2011.0                 5022.0
-2                        RATP - RER  2010.0                 7486.0
-3                        RATP - RER     NaN                    NaN
-4  SNCF - Trains/RER (y compris T4)     NaN                    NaN
+                   Catégorie Objectif ou Réalisation  Pourcentage  Annee
+0   Lettre prioritaire J + 1                objectif        0.840   2009
+1   Lettre recommandée J + 2             réalisation        0.946   2014
+2  Courrier industriel J + 2                objectif        0.950   2009
+3    Colissimo guichet J + 2             réalisation        0.877   2009
+4         Lettre verte J + 2             réalisation        0.932   2014
 ```
 
 #### b- Using another ODS platform
