@@ -1,5 +1,9 @@
 # Changelog
 
+### 0.8.1 - `file_cache` on `get_whole_dataframe`
+
+ - `file_cache` is now available on package-level `get_whole_dataframe`. Fixes [#24](https://github.com/smarie/python-odsclient/issues/24)
+
 ### 0.8.0 - New cache feature
 
  - New cache functionality: a `file_cache` argument is available on most methods. The cache is by default located under `.odsclient/` and contains `utf-8`-encoded versions of the dataset files. New util methods `clean_cache` and `get_cached_dataset_entry`. Fixes [#20](https://github.com/smarie/python-odsclient/issues/20)
