@@ -660,7 +660,6 @@
 <div class="codehilite"><pre><span></span><code>&gt; pip install odsclient
 </code></pre></div>
 
-
 <p>Optional:</p>
 <ul>
 <li>If you wish to display progress bars, you should also install <code>tqdm</code>.</li>
@@ -669,7 +668,6 @@
 <p>Finally, if you plan to use api keys, we recommend that you install <code>keyring</code> as it will help you store the critical api keys in your operating system's password vault.</p>
 <div class="codehilite"><pre><span></span><code>&gt; pip install keyring
 </code></pre></div>
-
 
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
 <h3 id="1-basics">1. Basics<a class="headerlink" href="#1-basics" title="Permanent link">&para;</a></h3>
@@ -683,7 +681,6 @@
 <span class="nb">print</span><span class="p">(</span><span class="n">csv_str</span><span class="p">)</span>
 </code></pre></div>
 
-
 <p>yields</p>
 <div class="codehilite"><pre><span></span><code><span class="err">Catégorie;Objectif ou Réalisation;Pourcentage;Annee</span>
 <span class="err">Lettre prioritaire J + 1;objectif;0.84;2009</span>
@@ -692,7 +689,6 @@
 <span class="err">Colissimo guichet J + 2;réalisation;0.877;2009</span>
 <span class="err">...</span>
 </code></pre></div>
-
 
 <p>In addition:</p>
 <ul>
@@ -712,7 +708,6 @@
 <span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
 </code></pre></div>
 
-
 <p>yields</p>
 <div class="codehilite"><pre><span></span><code><span class="err">                   Catégorie Objectif ou Réalisation  Pourcentage  Annee</span>
 <span class="err">0   Lettre prioritaire J + 1                objectif        0.840   2009</span>
@@ -721,7 +716,6 @@
 <span class="err">3    Colissimo guichet J + 2             réalisation        0.877   2009</span>
 <span class="err">4         Lettre verte J + 2             réalisation        0.932   2014</span>
 </code></pre></div>
-
 
 <h4 id="b-using-another-ods-platform">b- Using another ODS platform<a class="headerlink" href="#b-using-another-ods-platform" title="Permanent link">&para;</a></h4>
 <p>By default the base url used to access the OpenDataSoft platform is <code>https://&lt;platform_id&gt;.opendatasoft.com</code>, with <code>platform_id='public'</code>. In the methods above, you can change either the platform id with <code>platform_id=...</code> if your target ODS platform has a standard host name, or the entire base url with <code>base_url=...</code>.</p>
@@ -738,13 +732,11 @@
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Custom `base_url`:     </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">client_with_custom_baseurl</span><span class="o">.</span><span class="n">base_url</span><span class="p">)</span>
 </code></pre></div>
 
-
 <p>yields</p>
 <div class="codehilite"><pre><span></span><code><span class="k">Default</span><span class="o">:</span>               <span class="n">https</span><span class="o">://</span><span class="n">public</span><span class="p">.</span><span class="n">opendatasoft</span><span class="p">.</span><span class="n">com</span>
 <span class="n">Custom</span> <span class="n n-Quoted">`platform_id`</span><span class="o">:</span>  <span class="n">https</span><span class="o">://</span><span class="n">my_ods</span><span class="p">.</span><span class="n">opendatasoft</span><span class="p">.</span><span class="n">com</span>
 <span class="n">Custom</span> <span class="n n-Quoted">`base_url`</span><span class="o">:</span>     <span class="n">https</span><span class="o">://</span><span class="n">my_ods_server</span><span class="p">.</span><span class="n">com</span>
 </code></pre></div>
-
 
 <p>Note that any trailing slash is automatically removed from custom base urls.</p>
 <h4 id="c-declaring-an-api-key">c- Declaring an API key<a class="headerlink" href="#c-declaring-an-api-key" title="Permanent link">&para;</a></h4>
@@ -755,7 +747,6 @@
                             <span class="n">apikey</span><span class="o">=</span><span class="s2">&quot;my_non_working_api_key&quot;</span><span class="p">)</span>
 </code></pre></div>
 
-
 <h5 id="interactive">interactive<a class="headerlink" href="#interactive" title="Permanent link">&para;</a></h5>
 <p>If your application tolerates user interaction through the terminal, you can make the above more secure by using <a href="https://docs.python.org/3/library/getpass.html"><code>getpass()</code></a> so that users are prompted for the api key at runtime:</p>
 <div class="codehilite"><pre><span></span><code><span class="kn">from</span> <span class="nn">getpass</span> <span class="kn">import</span> <span class="n">getpass</span>
@@ -763,12 +754,10 @@
                             <span class="n">apikey</span><span class="o">=</span><span class="n">getpass</span><span class="p">())</span>
 </code></pre></div>
 
-
 <h5 id="permanent">permanent<a class="headerlink" href="#permanent" title="Permanent link">&para;</a></h5>
 <p>In all other cases, we recommend that you write apikey-agnostic code such as the one below:</p>
 <div class="codehilite"><pre><span></span><code><span class="n">csv_str</span> <span class="o">=</span> <span class="n">get_whole_dataset</span><span class="p">(</span><span class="s2">&quot;world-growth-since-the-industrial-revolution0&quot;</span><span class="p">)</span>
 </code></pre></div>
-
 
 <p>In that case, <code>odsclient</code> will try several strategies to find an api key:</p>
 <ul>
@@ -788,7 +777,6 @@
                             <span class="p">)</span>
 </code></pre></div>
 
-
 <p>If no api key is found, the above yields:</p>
 <div class="codehilite"><pre><span></span><code><span class="n">odsclient</span><span class="p">.</span><span class="n">core</span><span class="p">.</span><span class="n">NoODSAPIKeyFoundError</span><span class="o">:</span> <span class="n">ODS</span> <span class="n">API</span> <span class="k">key</span> <span class="k">file</span> <span class="k">not</span> <span class="k">found</span><span class="p">,</span> <span class="k">while</span> <span class="n">it</span> <span class="k">is</span> 
     <span class="n">marked</span> <span class="k">as</span> <span class="n">mandatory</span> <span class="k">for</span> <span class="n">this</span> <span class="k">call</span> <span class="p">(</span><span class="n n-Quoted">`enforce_apikey=True`</span><span class="p">).</span> <span class="n">It</span> <span class="n">should</span> <span class="n">either</span> 
@@ -799,13 +787,11 @@
     <span class="n">Note</span> <span class="n">that</span> <span class="n">you</span> <span class="n">can</span> <span class="n">generate</span> <span class="n">an</span> <span class="n">API</span> <span class="k">key</span> <span class="k">on</span> <span class="n">this</span> <span class="n">web</span> <span class="k">page</span><span class="o">:</span> <span class="err">[</span><span class="p">...</span><span class="err">]</span><span class="p">.</span>
 </code></pre></div>
 
-
 <p>This can be handy if you wish your users to see a quick help at first call reminding them on the various ways to provide an api key.</p>
 <p>Finally, for debugging purposes, you may wish to use <code>get_apikey()</code> to check if the api key that is actually used is the one you think you have configured (through a file, env variable, or keyring):</p>
 <div class="codehilite"><pre><span></span><code><span class="kn">from</span> <span class="nn">odsclient</span> <span class="kn">import</span> <span class="n">get_apikey</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;api key used: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">get_apikey</span><span class="p">(</span><span class="n">base_url</span><span class="o">=</span><span class="s2">&quot;https://my_ods_server.com/&quot;</span><span class="p">))</span>
 </code></pre></div>
-
 
 <h4 id="d-pushing-a-dataset-realtime-api">d- Pushing a dataset (Realtime API)<a class="headerlink" href="#d-pushing-a-dataset-realtime-api" title="Permanent link">&para;</a></h4>
 <p>Pushing new data to the <em>Realtime</em> API of ODS works through the <code>push_dataset_realtime</code> function.
@@ -833,7 +819,6 @@ on the dataset definition page in order to get this work.</p>
                               <span class="n">push_key</span><span class="o">=</span><span class="s1">&#39;&lt;&lt;your-push-key&gt;&gt;&#39;</span><span class="p">)</span>
 </code></pre></div>
 
-
 <h5 id="pushing-a-dataframe">Pushing a DataFrame<a class="headerlink" href="#pushing-a-dataframe" title="Permanent link">&para;</a></h5>
 <p>If you have <code>pandas</code> installed you can also push a <code>DataFrame</code> directly:</p>
 <div class="codehilite"><pre><span></span><code><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
@@ -853,14 +838,12 @@ on the dataset definition page in order to get this work.</p>
                               <span class="n">push_key</span><span class="o">=</span><span class="s1">&#39;&lt;&lt;your-push-key&gt;&gt;&#39;</span><span class="p">)</span>
 </code></pre></div>
 
-
 <p>See <a href="api_reference/">API reference</a> for details.</p>
 <h3 id="2-advanced">2. Advanced<a class="headerlink" href="#2-advanced" title="Permanent link">&para;</a></h3>
 <h4 id="a-caching">a. Caching<a class="headerlink" href="#a-caching" title="Permanent link">&para;</a></h4>
 <p>If you use some datasets often, you might not wish to make a query to the ODS platform everytime your code runs. To avoid useless calls, you can now use the <code>file_cache</code> argument, in any of the dataset retrieval methods. It can either receive a path-like object indicating the folder to use as the cache root, or a boolean (<code>True</code> means <code>.odsclient/</code>, <code>False</code> means cache disabled).</p>
 <div class="codehilite"><pre><span></span><code><span class="n">csv_str</span> <span class="o">=</span> <span class="n">get_whole_dataset</span><span class="p">(</span><span class="s2">&quot;opendatasoft-offices&quot;</span><span class="p">,</span> <span class="n">file_cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </code></pre></div>
-
 
 <p>You should see the following file created:</p>
 <p><img alt="cache_fs" src="./imgs/cache1.png" /></p>
@@ -954,7 +937,7 @@ on the dataset definition page in order to get this work.</p>
     </div>
     
       <script src="assets/javascripts/vendor.53cc9318.min.js"></script>
-      <script src="assets/javascripts/bundle.e9c9f54f.min.js"></script><script id="__lang" type="application/json">{"search.config.lang": "en", "search.config.separator": "[\\s\\-]+", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.config.pipeline": "trimmer, stopWordFilter", "clipboard.copy": "Copy to clipboard", "search.result.none": "No matching documents", "search.result.term.missing": "Missing", "clipboard.copied": "Copied to clipboard", "search.result.more.other": "# more on this page"}</script>
+      <script src="assets/javascripts/bundle.e9c9f54f.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
       
       <script>
         app = initialize({
