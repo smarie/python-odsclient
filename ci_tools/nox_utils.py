@@ -637,7 +637,11 @@ def patched_popen(
             loop = asyncio.get_event_loop()
             return_code, outlines = loop.run_until_complete(async_popen())
 
+            # just in case, flush everything
             log_file_stream.flush()
+            sys.stdout.flush()
+            sys.stderr.flush()
+
             if silent:
                 # same behaviour as in nox: this will be passed to the logger, and it will act depending on verbose flag
                 out = "\n".join(outlines) if len(outlines) > 0 else ""
