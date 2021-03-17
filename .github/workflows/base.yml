@@ -72,7 +72,7 @@ jobs:
       # 4) Run nox tests
       - name: Run nox tests on all python versions
         shell: bash -l {0}  # so that conda works
-        run: nox -s tests
+        run: nox -s tests -- keyrings.alt  # this posarg to install (unsafe) keyrings.alt since CI has no kr backend
 
       # -------------- only on Ubuntu + MASTER PUSH (no pull request, no tag) -----------
 
