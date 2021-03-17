@@ -1,5 +1,11 @@
 # Changelog
 
+### 0.8.2 - Auto-closing `requests.Session` 
+
+ - The underlying `requests.Session` is now automatically closed by `ODSClient` objects when they are garbaged out, to avoid leaving hanging Sockets around. This is not the case if a custom `Session` is passed. An advanced boolean parameter `auto_close_session` can be used to turn this feature off. Fixes [#27](https://github.com/smarie/python-odsclient/issues/27)
+
+ - New CI/CD: github actions !
+
 ### 0.8.1 - `file_cache` on `get_whole_dataframe`
 
  - `file_cache` is now available on package-level `get_whole_dataframe`. Fixes [#24](https://github.com/smarie/python-odsclient/issues/24)
