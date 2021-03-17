@@ -9,8 +9,8 @@
       
       
       
-      <link rel="shortcut icon" href="assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.2.7">
+      <link rel="icon" href="assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-7.0.6">
     
     
       
@@ -18,10 +18,10 @@
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.cb6bc1d0.min.css">
+      <link rel="stylesheet" href="assets/stylesheets/main.2c0c5eaf.min.css">
       
         
-        <link rel="stylesheet" href="assets/stylesheets/palette.39b8e14a.min.css">
+        <link rel="stylesheet" href="assets/stylesheets/palette.7fa14f5b.min.css">
         
       
     
@@ -31,7 +31,7 @@
         
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
-        <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
+        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
       
     
     
@@ -67,27 +67,25 @@
       
     </div>
     
-      
-
-<header class="md-header" data-md-component="header">
-  <nav class="md-header-nav md-grid" aria-label="Header">
-    <a href="." title="odsclient" class="md-header-nav__button md-logo" aria-label="odsclient">
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="." title="odsclient" class="md-header__button md-logo" aria-label="odsclient" data-md-component="logo">
       
   
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
 
     </a>
-    <label class="md-header-nav__button md-icon" for="__drawer">
+    <label class="md-header__button md-icon" for="__drawer">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
     </label>
-    <div class="md-header-nav__title" data-md-component="header-title">
-      <div class="md-header-nav__ellipsis">
-        <div class="md-header-nav__topic">
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
           <span class="md-ellipsis">
             odsclient
           </span>
         </div>
-        <div class="md-header-nav__topic">
+        <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
               Home
@@ -96,9 +94,12 @@
         </div>
       </div>
     </div>
+    <div class="md-header__options">
+      
+    </div>
     
-      <label class="md-header-nav__button md-icon" for="__search">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
       </label>
       
 <div class="md-search" data-md-component="search" role="dialog">
@@ -107,10 +108,10 @@
     <form class="md-search__form" name="search">
       <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
       <label class="md-search__icon md-icon" for="__search">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
       </label>
-      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" data-md-component="search-reset" tabindex="-1">
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
       </button>
     </form>
@@ -128,12 +129,12 @@
 </div>
     
     
-      <div class="md-header-nav__source">
+      <div class="md-header__source">
         
-<a href="https://github.com/smarie/python-odsclient/" title="Go to repository" class="md-source">
+<a href="https://github.com/smarie/python-odsclient/" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 00-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 01-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 000 40.81l195.61 195.6a28.86 28.86 0 0040.8 0l194.69-194.69a28.86 28.86 0 000-40.81z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
   </div>
   <div class="md-source__repository">
     GitHub
@@ -154,20 +155,18 @@
           
             
               
-              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation" >
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
                 <div class="md-sidebar__scrollwrap">
                   <div class="md-sidebar__inner">
                     
 
 
-
-
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="." title="odsclient" class="md-nav__button md-logo" aria-label="odsclient">
+    <a href="." title="odsclient" class="md-nav__button md-logo" aria-label="odsclient" data-md-component="logo">
       
   
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
 
     </a>
     odsclient
@@ -175,10 +174,10 @@
   
     <div class="md-nav__source">
       
-<a href="https://github.com/smarie/python-odsclient/" title="Go to repository" class="md-source">
+<a href="https://github.com/smarie/python-odsclient/" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 00-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 01-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 000 40.81l195.61 195.6a28.86 28.86 0 0040.8 0l194.69-194.69a28.86 28.86 0 000-40.81z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
   </div>
   <div class="md-source__repository">
     GitHub
@@ -224,7 +223,7 @@
       <span class="md-nav__icon md-icon"></span>
       Table of contents
     </label>
-    <ul class="md-nav__list" data-md-scrollfix>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
   <a href="#installing" class="md-nav__link">
@@ -340,6 +339,13 @@
           <li class="md-nav__item">
   <a href="#a-caching" class="md-nav__link">
     a. Caching
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b-custom-requestssession" class="md-nav__link">
+    b. Custom requests.Session
   </a>
   
 </li>
@@ -449,7 +455,7 @@
             
             
               
-              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc" >
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
                 <div class="md-sidebar__scrollwrap">
                   <div class="md-sidebar__inner">
                     
@@ -463,7 +469,7 @@
       <span class="md-nav__icon md-icon"></span>
       Table of contents
     </label>
-    <ul class="md-nav__list" data-md-scrollfix>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
   <a href="#installing" class="md-nav__link">
@@ -583,6 +589,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#b-custom-requestssession" class="md-nav__link">
+    b. Custom requests.Session
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -635,7 +648,7 @@
               </div>
             
           
-          <div class="md-content">
+          <div class="md-content" data-md-component="content">
             <article class="md-content__inner md-typeset">
               
                 
@@ -646,7 +659,7 @@
                 
                 <h1 id="odsclient">odsclient<a class="headerlink" href="#odsclient" title="Permanent link">&para;</a></h1>
 <p><em>A nonofficial client for OpenDataSoft API.</em></p>
-<p><a href="https://pypi.python.org/pypi/odsclient/"><img alt="Python versions" src="https://img.shields.io/pypi/pyversions/odsclient.svg" /></a> <a href="https://travis-ci.com/smarie/python-odsclient"><img alt="Build Status" src="https://travis-ci.com/smarie/python-odsclient.svg?branch=master" /></a> <a href="https://smarie.github.io/python-odsclient/junit/report.html"><img alt="Tests Status" src="https://smarie.github.io/python-odsclient/junit/junit-badge.svg?dummy=8484744" /></a> <a href="https://codecov.io/gh/smarie/python-odsclient"><img alt="codecov" src="https://codecov.io/gh/smarie/python-odsclient/branch/master/graph/badge.svg" /></a></p>
+<p><a href="https://pypi.python.org/pypi/odsclient/"><img alt="Python versions" src="https://img.shields.io/pypi/pyversions/odsclient.svg" /></a> <a href="https://github.com/smarie/python-odsclient/actions/workflows/base.yml"><img alt="Build Status" src="https://github.com/smarie/python-odsclient/actions/workflows/base.yml/badge.svg" /></a> <a href="https://smarie.github.io/python-odsclient/junit/report.html"><img alt="Tests Status" src="https://smarie.github.io/python-odsclient/junit/junit-badge.svg?dummy=8484744" /></a> <a href="https://codecov.io/gh/smarie/python-odsclient"><img alt="codecov" src="https://codecov.io/gh/smarie/python-odsclient/branch/master/graph/badge.svg" /></a></p>
 <p><a href="https://smarie.github.io/python-odsclient/"><img alt="Documentation" src="https://img.shields.io/badge/doc-latest-blue.svg" /></a> <a href="https://pypi.python.org/pypi/odsclient/"><img alt="PyPI" src="https://img.shields.io/pypi/v/odsclient.svg" /></a> <a href="https://pepy.tech/project/odsclient"><img alt="Downloads" src="https://pepy.tech/badge/odsclient" /></a> <a href="https://pepy.tech/project/odsclient"><img alt="Downloads per week" src="https://pepy.tech/badge/odsclient/week" /></a> <a href="https://github.com/smarie/python-odsclient/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/smarie/python-odsclient.svg" /></a></p>
 <div class="admonition success">
 <p class="admonition-title">New: you can now use a local file cache ! Check it out <a href="#a-caching">below</a>.</p>
@@ -657,39 +670,35 @@
 <p><code>odsclient</code> provides a minimal set of functions to grab a dataset or a collection of datasets from an OpenDataSoft (ODS) platform. </p>
 <p>Its initial purpose is not to cover the <a href="https://help.opendatasoft.com/en/apis/">full set of APIs available</a> but to get a minimum viable set of features to work easily with the datasets.</p>
 <h2 id="installing">Installing<a class="headerlink" href="#installing" title="Permanent link">&para;</a></h2>
-<div class="codehilite"><pre><span></span><code>&gt; pip install odsclient
+<div class="highlight"><pre><span></span><code>&gt; pip install odsclient
 </code></pre></div>
-
 <p>Optional:</p>
 <ul>
 <li>If you wish to display progress bars, you should also install <code>tqdm</code>.</li>
 <li>If you wish to download datasets as dataframes, you should also install <code>pandas</code>. </li>
 </ul>
 <p>Finally, if you plan to use api keys, we recommend that you install <code>keyring</code> as it will help you store the critical api keys in your operating system's password vault.</p>
-<div class="codehilite"><pre><span></span><code>&gt; pip install keyring
+<div class="highlight"><pre><span></span><code>&gt; pip install keyring
 </code></pre></div>
-
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
 <h3 id="1-basics">1. Basics<a class="headerlink" href="#1-basics" title="Permanent link">&para;</a></h3>
 <h4 id="a-downloading-a-flat-dataset">a- Downloading a "flat" dataset<a class="headerlink" href="#a-downloading-a-flat-dataset" title="Permanent link">&para;</a></h4>
 <p>The most basic thing that you can do is to download a whole dataset, similarly to what you can get when clicking on the links with your browser on a dataset's <a href="https://public.opendatasoft.com/explore/dataset/opendatasoft-offices/export/">"Export" page</a>:</p>
-<div class="codehilite"><pre><span></span><code><span class="kn">from</span> <span class="nn">odsclient</span> <span class="kn">import</span> <span class="n">get_whole_dataset</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">odsclient</span> <span class="kn">import</span> <span class="n">get_whole_dataset</span>
 
 <span class="n">dataset_id</span> <span class="o">=</span> <span class="s2">&quot;respect-des-delais-dacheminement-courrier&quot;</span>
 <span class="n">csv_str</span> <span class="o">=</span> <span class="n">get_whole_dataset</span><span class="p">(</span><span class="n">dataset_id</span><span class="p">,</span> <span class="n">platform_id</span><span class="o">=</span><span class="s1">&#39;public&#39;</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">csv_str</span><span class="p">)</span>
 </code></pre></div>
-
 <p>yields</p>
-<div class="codehilite"><pre><span></span><code><span class="err">Catégorie;Objectif ou Réalisation;Pourcentage;Annee</span>
-<span class="err">Lettre prioritaire J + 1;objectif;0.84;2009</span>
-<span class="err">Lettre recommandée J + 2;réalisation;0.9460000000000001;2014</span>
-<span class="err">Courrier industriel J + 2;objectif;0.9500000000000001;2009</span>
-<span class="err">Colissimo guichet J + 2;réalisation;0.877;2009</span>
-<span class="err">...</span>
+<div class="highlight"><pre><span></span><code>Catégorie;Objectif ou Réalisation;Pourcentage;Annee
+Lettre prioritaire J + 1;objectif;0.84;2009
+Lettre recommandée J + 2;réalisation;0.9460000000000001;2014
+Courrier industriel J + 2;objectif;0.9500000000000001;2009
+Colissimo guichet J + 2;réalisation;0.877;2009
+...
 </code></pre></div>
-
 <p>In addition:</p>
 <ul>
 <li>
@@ -700,27 +709,25 @@
 </li>
 </ul>
 <p>Finally, if you have <code>pandas</code> installed, you can get the dataset directly as a dataframe:</p>
-<div class="codehilite"><pre><span></span><code><span class="kn">from</span> <span class="nn">odsclient</span> <span class="kn">import</span> <span class="n">get_whole_dataframe</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">odsclient</span> <span class="kn">import</span> <span class="n">get_whole_dataframe</span>
 
 <span class="n">dataset_id</span> <span class="o">=</span> <span class="s2">&quot;respect-des-delais-dacheminement-courrier&quot;</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">get_whole_dataframe</span><span class="p">(</span><span class="n">dataset_id</span><span class="p">,</span> <span class="n">platform_id</span><span class="o">=</span><span class="s1">&#39;public&#39;</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
 </code></pre></div>
-
 <p>yields</p>
-<div class="codehilite"><pre><span></span><code><span class="err">                   Catégorie Objectif ou Réalisation  Pourcentage  Annee</span>
-<span class="err">0   Lettre prioritaire J + 1                objectif        0.840   2009</span>
-<span class="err">1   Lettre recommandée J + 2             réalisation        0.946   2014</span>
-<span class="err">2  Courrier industriel J + 2                objectif        0.950   2009</span>
-<span class="err">3    Colissimo guichet J + 2             réalisation        0.877   2009</span>
-<span class="err">4         Lettre verte J + 2             réalisation        0.932   2014</span>
+<div class="highlight"><pre><span></span><code>                   Catégorie Objectif ou Réalisation  Pourcentage  Annee
+0   Lettre prioritaire J + 1                objectif        0.840   2009
+1   Lettre recommandée J + 2             réalisation        0.946   2014
+2  Courrier industriel J + 2                objectif        0.950   2009
+3    Colissimo guichet J + 2             réalisation        0.877   2009
+4         Lettre verte J + 2             réalisation        0.932   2014
 </code></pre></div>
-
 <h4 id="b-using-another-ods-platform">b- Using another ODS platform<a class="headerlink" href="#b-using-another-ods-platform" title="Permanent link">&para;</a></h4>
 <p>By default the base url used to access the OpenDataSoft platform is <code>https://&lt;platform_id&gt;.opendatasoft.com</code>, with <code>platform_id='public'</code>. In the methods above, you can change either the platform id with <code>platform_id=...</code> if your target ODS platform has a standard host name, or the entire base url with <code>base_url=...</code>.</p>
 <p>If you wish to check the result without executing the method, you can create an <code>ODSClient</code> object with the same parameters and inspect its <code>&lt;client&gt;.base_url</code> :</p>
-<div class="codehilite"><pre><span></span><code><span class="kn">from</span> <span class="nn">odsclient</span> <span class="kn">import</span> <span class="n">ODSClient</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">odsclient</span> <span class="kn">import</span> <span class="n">ODSClient</span>
 
 <span class="n">default_client</span> <span class="o">=</span> <span class="n">ODSClient</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Default:               </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">default_client</span><span class="o">.</span><span class="n">base_url</span><span class="p">)</span>
@@ -731,34 +738,29 @@
 <span class="n">client_with_custom_baseurl</span> <span class="o">=</span> <span class="n">ODSClient</span><span class="p">(</span><span class="n">base_url</span><span class="o">=</span><span class="s2">&quot;https://my_ods_server.com/&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Custom `base_url`:     </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">client_with_custom_baseurl</span><span class="o">.</span><span class="n">base_url</span><span class="p">)</span>
 </code></pre></div>
-
 <p>yields</p>
-<div class="codehilite"><pre><span></span><code><span class="k">Default</span><span class="o">:</span>               <span class="n">https</span><span class="o">://</span><span class="n">public</span><span class="p">.</span><span class="n">opendatasoft</span><span class="p">.</span><span class="n">com</span>
-<span class="n">Custom</span> <span class="n n-Quoted">`platform_id`</span><span class="o">:</span>  <span class="n">https</span><span class="o">://</span><span class="n">my_ods</span><span class="p">.</span><span class="n">opendatasoft</span><span class="p">.</span><span class="n">com</span>
-<span class="n">Custom</span> <span class="n n-Quoted">`base_url`</span><span class="o">:</span>     <span class="n">https</span><span class="o">://</span><span class="n">my_ods_server</span><span class="p">.</span><span class="n">com</span>
+<div class="highlight"><pre><span></span><code>Default:               https://public.opendatasoft.com
+Custom `platform_id`:  https://my_ods.opendatasoft.com
+Custom `base_url`:     https://my_ods_server.com
 </code></pre></div>
-
 <p>Note that any trailing slash is automatically removed from custom base urls.</p>
 <h4 id="c-declaring-an-api-key">c- Declaring an API key<a class="headerlink" href="#c-declaring-an-api-key" title="Permanent link">&para;</a></h4>
 <p>Most ODS servers require some sort of authentication to access some of their contents. <code>odsclient</code> supports authentication through API keys (see <a href="https://help.opendatasoft.com/en/apis/">ODS API Documentation</a>). There are several ways that you can use to specify an api key to use for your ODS interactions.</p>
 <h5 id="explicit-temporary">explicit, temporary<a class="headerlink" href="#explicit-temporary" title="Permanent link">&para;</a></h5>
 <p>If your need is a "quick and dirty" test, you can use direct <code>apikey=...</code> argument passing. This is the <strong>most insecure</strong> way of all, since your code will contain the key as a readable string. It should only be used as a temporary workaround, and should never be committed with the source code.</p>
-<div class="codehilite"><pre><span></span><code><span class="n">csv_str</span> <span class="o">=</span> <span class="n">get_whole_dataset</span><span class="p">(</span><span class="s2">&quot;world-growth-since-the-industrial-revolution0&quot;</span><span class="p">,</span> 
+<div class="highlight"><pre><span></span><code><span class="n">csv_str</span> <span class="o">=</span> <span class="n">get_whole_dataset</span><span class="p">(</span><span class="s2">&quot;world-growth-since-the-industrial-revolution0&quot;</span><span class="p">,</span> 
                             <span class="n">apikey</span><span class="o">=</span><span class="s2">&quot;my_non_working_api_key&quot;</span><span class="p">)</span>
 </code></pre></div>
-
 <h5 id="interactive">interactive<a class="headerlink" href="#interactive" title="Permanent link">&para;</a></h5>
 <p>If your application tolerates user interaction through the terminal, you can make the above more secure by using <a href="https://docs.python.org/3/library/getpass.html"><code>getpass()</code></a> so that users are prompted for the api key at runtime:</p>
-<div class="codehilite"><pre><span></span><code><span class="kn">from</span> <span class="nn">getpass</span> <span class="kn">import</span> <span class="n">getpass</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">getpass</span> <span class="kn">import</span> <span class="n">getpass</span>
 <span class="n">csv_str</span> <span class="o">=</span> <span class="n">get_whole_dataset</span><span class="p">(</span><span class="s2">&quot;world-growth-since-the-industrial-revolution0&quot;</span><span class="p">,</span> 
                             <span class="n">apikey</span><span class="o">=</span><span class="n">getpass</span><span class="p">())</span>
 </code></pre></div>
-
 <h5 id="permanent">permanent<a class="headerlink" href="#permanent" title="Permanent link">&para;</a></h5>
 <p>In all other cases, we recommend that you write apikey-agnostic code such as the one below:</p>
-<div class="codehilite"><pre><span></span><code><span class="n">csv_str</span> <span class="o">=</span> <span class="n">get_whole_dataset</span><span class="p">(</span><span class="s2">&quot;world-growth-since-the-industrial-revolution0&quot;</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="n">csv_str</span> <span class="o">=</span> <span class="n">get_whole_dataset</span><span class="p">(</span><span class="s2">&quot;world-growth-since-the-industrial-revolution0&quot;</span><span class="p">)</span>
 </code></pre></div>
-
 <p>In that case, <code>odsclient</code> will try several strategies to find an api key:</p>
 <ul>
 <li>
@@ -772,27 +774,24 @@
 </li>
 </ul>
 <p>If you wish to <strong>force</strong> usage of an api key (and prevent any ODS query to be made if none is found), you may wish to set <code>enforce_apikey=True</code>:</p>
-<div class="codehilite"><pre><span></span><code><span class="n">csv_str</span> <span class="o">=</span> <span class="n">get_whole_dataset</span><span class="p">(</span><span class="s2">&quot;world-growth-since-the-industrial-revolution0&quot;</span><span class="p">,</span>
+<div class="highlight"><pre><span></span><code><span class="n">csv_str</span> <span class="o">=</span> <span class="n">get_whole_dataset</span><span class="p">(</span><span class="s2">&quot;world-growth-since-the-industrial-revolution0&quot;</span><span class="p">,</span>
                             <span class="n">enforce_apikey</span><span class="o">=</span><span class="kc">True</span>  <span class="c1"># raise if no apikey is found</span>
                             <span class="p">)</span>
 </code></pre></div>
-
 <p>If no api key is found, the above yields:</p>
-<div class="codehilite"><pre><span></span><code><span class="n">odsclient</span><span class="p">.</span><span class="n">core</span><span class="p">.</span><span class="n">NoODSAPIKeyFoundError</span><span class="o">:</span> <span class="n">ODS</span> <span class="n">API</span> <span class="k">key</span> <span class="k">file</span> <span class="k">not</span> <span class="k">found</span><span class="p">,</span> <span class="k">while</span> <span class="n">it</span> <span class="k">is</span> 
-    <span class="n">marked</span> <span class="k">as</span> <span class="n">mandatory</span> <span class="k">for</span> <span class="n">this</span> <span class="k">call</span> <span class="p">(</span><span class="n n-Quoted">`enforce_apikey=True`</span><span class="p">).</span> <span class="n">It</span> <span class="n">should</span> <span class="n">either</span> 
-    <span class="n">be</span> <span class="n">put</span> <span class="k">in</span> <span class="n">a</span> <span class="kt">text</span> <span class="k">file</span> <span class="k">at</span> <span class="k">path</span> <span class="s1">&#39;ods.apikey&#39;</span><span class="p">,</span> <span class="k">or</span> <span class="k">in</span> <span class="n">the</span> <span class="n n-Quoted">`ODS_APIKEY`</span> <span class="n">OS</span> 
-    <span class="n">environment</span> <span class="n">variable</span><span class="p">,</span> <span class="k">or</span> <span class="p">(</span><span class="n">recommended</span><span class="p">,</span> <span class="n">most</span> <span class="n">secure</span><span class="p">)</span> <span class="k">in</span> <span class="n">the</span> <span class="k">local</span> <span class="n n-Quoted">`keyring`</span><span class="p">.</span>
-    <span class="n">See</span> <span class="n">documentation</span> <span class="k">for</span> <span class="n">details</span><span class="o">:</span> 
-    <span class="n">https</span><span class="o">://</span><span class="n">smarie</span><span class="p">.</span><span class="n">github</span><span class="p">.</span><span class="k">io</span><span class="o">/</span><span class="n">python</span><span class="o">-</span><span class="n">odsclient</span><span class="o">/</span><span class="c1">#c-declaring-an-api-key. </span>
-    <span class="n">Note</span> <span class="n">that</span> <span class="n">you</span> <span class="n">can</span> <span class="n">generate</span> <span class="n">an</span> <span class="n">API</span> <span class="k">key</span> <span class="k">on</span> <span class="n">this</span> <span class="n">web</span> <span class="k">page</span><span class="o">:</span> <span class="err">[</span><span class="p">...</span><span class="err">]</span><span class="p">.</span>
+<div class="highlight"><pre><span></span><code>odsclient.core.NoODSAPIKeyFoundError: ODS API key file not found, while it is 
+    marked as mandatory for this call (`enforce_apikey=True`). It should either 
+    be put in a text file at path &#39;ods.apikey&#39;, or in the `ODS_APIKEY` OS 
+    environment variable, or (recommended, most secure) in the local `keyring`.
+    See documentation for details: 
+    https://smarie.github.io/python-odsclient/#c-declaring-an-api-key. 
+    Note that you can generate an API key on this web page: [...].
 </code></pre></div>
-
 <p>This can be handy if you wish your users to see a quick help at first call reminding them on the various ways to provide an api key.</p>
 <p>Finally, for debugging purposes, you may wish to use <code>get_apikey()</code> to check if the api key that is actually used is the one you think you have configured (through a file, env variable, or keyring):</p>
-<div class="codehilite"><pre><span></span><code><span class="kn">from</span> <span class="nn">odsclient</span> <span class="kn">import</span> <span class="n">get_apikey</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">odsclient</span> <span class="kn">import</span> <span class="n">get_apikey</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;api key used: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">get_apikey</span><span class="p">(</span><span class="n">base_url</span><span class="o">=</span><span class="s2">&quot;https://my_ods_server.com/&quot;</span><span class="p">))</span>
 </code></pre></div>
-
 <h4 id="d-pushing-a-dataset-realtime-api">d- Pushing a dataset (Realtime API)<a class="headerlink" href="#d-pushing-a-dataset-realtime-api" title="Permanent link">&para;</a></h4>
 <p>Pushing new data to the <em>Realtime</em> API of ODS works through the <code>push_dataset_realtime</code> function.
 In order to push data you need to get a pushkey for your dataset at the <em>Sources</em> tab
@@ -803,7 +802,7 @@ on the dataset definition page in order to get this work.</p>
 <p>You can push the data as CSV or as a <code>pandas</code> dataframe, as shown below.</p>
 <h5 id="pushing-a-csv">Pushing a CSV<a class="headerlink" href="#pushing-a-csv" title="Permanent link">&para;</a></h5>
 <p>The simplest way to push a dataset is to provide a string following the CSV format:</p>
-<div class="codehilite"><pre><span></span><code><span class="kn">from</span> <span class="nn">odsclient</span> <span class="kn">import</span> <span class="n">ODSClient</span>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">odsclient</span> <span class="kn">import</span> <span class="n">ODSClient</span>
 
 <span class="n">o</span> <span class="o">=</span> <span class="n">ODSClient</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;ODS-platform-id&gt;&gt;&#39;</span><span class="p">)</span>
 
@@ -818,10 +817,9 @@ on the dataset definition page in order to get this work.</p>
                               <span class="n">csv_separator</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">,</span>
                               <span class="n">push_key</span><span class="o">=</span><span class="s1">&#39;&lt;&lt;your-push-key&gt;&gt;&#39;</span><span class="p">)</span>
 </code></pre></div>
-
 <h5 id="pushing-a-dataframe">Pushing a DataFrame<a class="headerlink" href="#pushing-a-dataframe" title="Permanent link">&para;</a></h5>
 <p>If you have <code>pandas</code> installed you can also push a <code>DataFrame</code> directly:</p>
-<div class="codehilite"><pre><span></span><code><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">odsclient</span> <span class="kn">import</span> <span class="n">ODSClient</span>
 
 <span class="n">o</span> <span class="o">=</span> <span class="n">ODSClient</span><span class="p">(</span><span class="s1">&#39;&lt;&lt;ODS-platform-id&gt;&gt;&#39;</span><span class="p">)</span>
@@ -837,16 +835,14 @@ on the dataset definition page in order to get this work.</p>
                               <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;pandas&#39;</span><span class="p">,</span>
                               <span class="n">push_key</span><span class="o">=</span><span class="s1">&#39;&lt;&lt;your-push-key&gt;&gt;&#39;</span><span class="p">)</span>
 </code></pre></div>
-
 <p>See <a href="api_reference/">API reference</a> for details.</p>
 <h3 id="2-advanced">2. Advanced<a class="headerlink" href="#2-advanced" title="Permanent link">&para;</a></h3>
 <h4 id="a-caching">a. Caching<a class="headerlink" href="#a-caching" title="Permanent link">&para;</a></h4>
 <p>If you use some datasets often, you might not wish to make a query to the ODS platform everytime your code runs. To avoid useless calls, you can now use the <code>file_cache</code> argument, in any of the dataset retrieval methods. It can either receive a path-like object indicating the folder to use as the cache root, or a boolean (<code>True</code> means <code>.odsclient/</code>, <code>False</code> means cache disabled).</p>
-<div class="codehilite"><pre><span></span><code><span class="n">csv_str</span> <span class="o">=</span> <span class="n">get_whole_dataset</span><span class="p">(</span><span class="s2">&quot;opendatasoft-offices&quot;</span><span class="p">,</span> <span class="n">file_cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="n">csv_str</span> <span class="o">=</span> <span class="n">get_whole_dataset</span><span class="p">(</span><span class="s2">&quot;opendatasoft-offices&quot;</span><span class="p">,</span> <span class="n">file_cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </code></pre></div>
-
 <p>You should see the following file created:</p>
-<p><img alt="cache_fs" src="./imgs/cache1.png" /></p>
+<p><img alt="cache_fs" src="imgs/cache1.png" /></p>
 <p>The next usage of this dataset (through <code>get_whole_dataset</code> or through <code>get_whole_dataframe</code>) will not make a network call and will instead reuse this local file.</p>
 <p>In addition you have access to two utility methods : </p>
 <ul>
@@ -861,6 +857,8 @@ on the dataset definition page in order to get this work.</p>
 <p class="admonition-title">All files in the cache are converted to <code>utf-8</code> encoding</p>
 <p>In order to avoid storing encoding information in the cache folder, <code>odsclient</code> converts all downloaded datasets to <code>utf-8</code> encoding before storing them in the cache. This should have no side-effect for you except if you try to read the cached file directly without using the <code>CacheEntry.read()</code> method, or if your dataset contains <a href="https://en.wikipedia.org/wiki/Unicode#Issues">old/alternative forms of east asian kanji</a> that cannot be represented with unicode encodings.</p>
 </div>
+<h4 id="b-custom-requestssession">b. Custom <code>requests.Session</code><a class="headerlink" href="#b-custom-requestssession" title="Permanent link">&para;</a></h4>
+<p>By default a new <code>requests.Session</code> object is created for each instance of <code>ODSClient</code>. When this <code>ODSClient</code> is garbaged out, the <code>requests.Session</code> object is closed to avoid leaving Sockets hanging (see <a href="https://github.com/smarie/python-odsclient/issues/27">#27</a>). You can provide a custom <code>requests.Session</code> to the constructor (or to any of the shortcuts) with the <code>requests_session</code> argument. In which case it will not be closed by default. You can change this behaviour by setting <code>auto_close_session=True</code>. See <a href="api_reference/#odsclient">API reference</a>.</p>
 <h2 id="main-features-benefits">Main features / benefits<a class="headerlink" href="#main-features-benefits" title="Permanent link">&para;</a></h2>
 <ul>
 <li>
@@ -899,26 +897,24 @@ on the dataset definition page in order to get this work.</p>
         
 <footer class="md-footer">
   
-    <div class="md-footer-nav">
-      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
-        
-        
-          <a href="odskey/" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
-            <div class="md-footer-nav__title">
-              <div class="md-ellipsis">
-                <span class="md-footer-nav__direction">
-                  Next
-                </span>
-                odskey command
-              </div>
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+      
+        <a href="odskey/" class="md-footer__link md-footer__link--next" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              odskey command
             </div>
-            <div class="md-footer-nav__button md-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
-            </div>
-          </a>
-        
-      </nav>
-    </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">
@@ -928,6 +924,7 @@ on the dataset definition page in order to get this work.</p>
         <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
           Material for MkDocs
         </a>
+        
       </div>
       
     </div>
@@ -935,19 +932,13 @@ on the dataset definition page in order to get this work.</p>
 </footer>
       
     </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": ".", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}, "search": "assets/javascripts/workers/search.fb4a9340.min.js", "version": null}</script>
     
-      <script src="assets/javascripts/vendor.53cc9318.min.js"></script>
-      <script src="assets/javascripts/bundle.e9c9f54f.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
-      
-      <script>
-        app = initialize({
-          base: ".",
-          features: [],
-          search: Object.assign({
-            worker: "assets/javascripts/worker/search.9c0e82ba.min.js"
-          }, typeof search !== "undefined" && search)
-        })
-      </script>
+    
+      <script src="assets/javascripts/bundle.a1c7c35e.min.js"></script>
       
     
   </body>
