@@ -679,6 +679,7 @@ def tee(linebytes, sinklist, sinkstream, verbosepipe, quiet, label=""):
 
     if not quiet and verbosepipe is not None:
         print(label, line, file=verbosepipe)
+        verbosepipe.flush()
 
 
 def patch_popen():
