@@ -35,7 +35,7 @@ nox.options.default_venv_backend = "conda"
 # nox.options.verbose = True
 
 nox_logger = logging.getLogger("nox")
-nox_logger.setLevel(logging.INFO)
+# nox_logger.setLevel(logging.INFO)  NO !!!! this prevents the "verbose" nox flag to work !
 
 
 class Folders:
