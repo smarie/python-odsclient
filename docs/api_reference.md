@@ -51,7 +51,8 @@ ODSClient(
           apikey_filepath='ods.apikey',                  # type: Union[str, Path]
           use_keyring=True,                              # type: bool
           keyring_entries_username=KR_DEFAULT_USERNAME,  # type: str
-          requests_session=None                          # type: Session
+          requests_session=None,                         # type: Session
+          auto_close_session=True                        # type: bool
           ):
 ```
 
@@ -72,6 +73,7 @@ ODSClient(
     the base url for the service id, however the user name can be anything. By default we use a string:
     'apikey_user'.
  * `requests_session`: an optional `Session` object to use (from `requests` lib)
+ * `auto_close_session`: an optional boolean indicating if (True, default) `self.session` should be closed when this object is garbaged out. Turning this to `False` can leave hanging Sockets unclosed.
 
 ## Shortcuts
 

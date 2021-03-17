@@ -107,6 +107,19 @@ class ODSClient(object):
 
     """
 
+    def __del__(self):
+        """
+        This is called when the garbage collector deletes this object.
+        Let's use this opportunity to close the requests Session to avoid
+        leaving hanging Sockets, see https://github.com/smarie/python-odsclient/issues/27
+        """
+        if self.auto_close_session and self.session is not None:
+            try:
+                # close the underlying `requests.Session`
+                self.session.close()
+            except Exception as e:
+                warnings.warn("Error while closing session: %r" % e)
+
     def __init__(self,
                  platform_id='public',                          # type: str
                  base_url=None,                                 # type: str
@@ -115,7 +128,8 @@ class ODSClient(object):
                  apikey_filepath='ods.apikey',                  # type: Union[str, Path]
                  use_keyring=True,                              # type: bool
                  keyring_entries_username=KR_DEFAULT_USERNAME,  # type: str
-                 requests_session=None                          # type: Session
+                 requests_session=None,                         # type: Session
+                 auto_close_session=True                        # type: bool
                  ):
         """
         Constructor for `ODSClient`s
@@ -134,7 +148,11 @@ class ODSClient(object):
         :param keyring_entries_username: keyring stores secrets with a key made of a service id and a username. We use
             the base url for the service id, however the user name can be anything. By default we use a string:
             'apikey_user'.
-        :param requests_session: an optional `Session` object to use (from `requests` lib)
+        :param requests_session: an optional `Session` object to use (from `requests` lib). If `None` is provided,
+            `Session` will be used. Note that when this object is deleted, the session will be automatically closed,
+            except if auto_close_session=False
+        :param auto_close_session: an optional boolean indicating if (True, default) `self.session` should be closed
+            when this object is garbaged out. Turning this to `False` can leave hanging Sockets unclosed.
         """
         # keyring option
         self.use_keyring = use_keyring
@@ -184,6 +202,7 @@ class ODSClient(object):
 
         # create and store a session
         self.session = requests_session or Session()
+        self.auto_close_session = auto_close_session
 
     def get_whole_dataframe(self,
                             dataset_id,                  # type: str
