@@ -81,7 +81,8 @@ class ODSClient(object):
     `<client>.get_cached_dataset_entry` can be used to get a `CacheEntry` object representing the (possibly
     non-existing) cache entry for a given dataset.
 
-    You can customize the `requests.Session` object used for the HTTPS transport using `requests_session`.
+    You can customize the `requests.Session` object used for the HTTPS transport using `requests_session`. If you do so,
+    remember to close it yourself or to switch `auto_close_session` to True.
 
     A client is meant to use a single api key at a time, or none. You can force the api key to be mandatory using
     `enforce_apikey=True`. There are 4 ways to pass an api key, they are used in the following order:
@@ -129,7 +130,7 @@ class ODSClient(object):
                  use_keyring=True,                              # type: bool
                  keyring_entries_username=KR_DEFAULT_USERNAME,  # type: str
                  requests_session=None,                         # type: Session
-                 auto_close_session=True                        # type: bool
+                 auto_close_session=None                        # type: bool
                  ):
         """
         Constructor for `ODSClient`s
@@ -149,10 +150,11 @@ class ODSClient(object):
             the base url for the service id, however the user name can be anything. By default we use a string:
             'apikey_user'.
         :param requests_session: an optional `Session` object to use (from `requests` lib). If `None` is provided,
-            `Session` will be used. Note that when this object is deleted, the session will be automatically closed,
-            except if auto_close_session=False
-        :param auto_close_session: an optional boolean indicating if (True, default) `self.session` should be closed
-            when this object is garbaged out. Turning this to `False` can leave hanging Sockets unclosed.
+            a new `Session` will be used and deleted when this object is garbaged out. If a custom object is provided,
+            you should close it yourself or switch `auto_close_session` to `True` explicitly.
+        :param auto_close_session: an optional boolean indicating if `self.session` should be closed when this object
+            is garbaged out. By default this is `None` and means "`True` if no custom `requests_session` is passed, else
+            `False`"). Turning this to `False` can leave hanging Sockets unclosed.
         """
         # keyring option
         self.use_keyring = use_keyring
@@ -202,6 +204,10 @@ class ODSClient(object):
 
         # create and store a session
         self.session = requests_session or Session()
+        # auto-close behaviour
+        if auto_close_session is None:
+            # default: only auto-close if this session was created by us.
+            auto_close_session = requests_session is None
         self.auto_close_session = auto_close_session
 
     def get_whole_dataframe(self,

@@ -121,6 +121,7 @@ def get_whole_dataframe(dataset_id,                                    # type: s
                         use_keyring=True,                              # type: bool
                         keyring_entries_username=KR_DEFAULT_USERNAME,  # type: str
                         requests_session=None,                         # type: Session
+                        auto_close_session=None,                       # type: bool
                         **other_opts
                         ):
     """
@@ -145,12 +146,17 @@ def get_whole_dataframe(dataset_id,                                    # type: s
     :param keyring_entries_username: keyring stores secrets with a key made of a service id and a username. We use
         the base url for the service id, however the user name can be anything. By default we use a string:
         'apikey_user'.
-    :param requests_session:
+    :param requests_session: an optional `Session` object to use (from `requests` lib). If `None` is provided,
+            a new `Session` will be used and deleted when this object is garbaged out. If a custom object is provided,
+            you should close it yourself or switch `auto_close_session` to `True` explicitly.
+    :param auto_close_session: an optional boolean indicating if `self.session` should be closed when this object
+        is garbaged out. By default this is `None` and means "`True` if no custom `requests_session` is passed, else
+        `False`"). Turning this to `False` can leave hanging Sockets unclosed.
     :param other_opts:
     :return:
     """
     client = ODSClient(platform_id=platform_id, base_url=base_url, enforce_apikey=enforce_apikey, apikey=apikey,
-                       apikey_filepath=apikey_filepath, use_keyring=use_keyring,
+                       apikey_filepath=apikey_filepath, use_keyring=use_keyring, auto_close_session=auto_close_session,
                        keyring_entries_username=keyring_entries_username, requests_session=requests_session)
     return client.get_whole_dataframe(dataset_id=dataset_id, use_labels_for_header=use_labels_for_header,
                                       tqdm=tqdm, block_size=block_size, file_cache=file_cache, **other_opts)
@@ -240,6 +246,7 @@ def get_whole_dataset(dataset_id,                                    # type: str
                       use_keyring=True,                              # type: bool
                       keyring_entries_username=KR_DEFAULT_USERNAME,  # type: str
                       requests_session=None,                         # type: Session
+                      auto_close_session=None,                       # type: bool
                       **other_opts
                       ):
     """
@@ -270,12 +277,17 @@ def get_whole_dataset(dataset_id,                                    # type: str
     :param keyring_entries_username: keyring stores secrets with a key made of a service id and a username. We use
         the base url for the service id, however the user name can be anything. By default we use a string:
         'apikey_user'.
-    :param requests_session: an optional `Session` object to use (from `requests` lib)
+    :param requests_session: an optional `Session` object to use (from `requests` lib). If `None` is provided,
+            a new `Session` will be used and deleted when this object is garbaged out. If a custom object is provided,
+            you should close it yourself or switch `auto_close_session` to `True` explicitly.
+    :param auto_close_session: an optional boolean indicating if `self.session` should be closed when this object
+        is garbaged out. By default this is `None` and means "`True` if no custom `requests_session` is passed, else
+        `False`"). Turning this to `False` can leave hanging Sockets unclosed.
     :param other_opts:
     :return:
     """
     client = ODSClient(platform_id=platform_id, base_url=base_url, enforce_apikey=enforce_apikey, apikey=apikey,
-                       apikey_filepath=apikey_filepath, use_keyring=use_keyring,
+                       apikey_filepath=apikey_filepath, use_keyring=use_keyring, auto_close_session=auto_close_session,
                        keyring_entries_username=keyring_entries_username, requests_session=requests_session)
     return client.get_whole_dataset(dataset_id=dataset_id, format=format, file_cache=file_cache,
                                     timezone=timezone, use_labels_for_header=use_labels_for_header,

@@ -266,6 +266,11 @@ In addition you have access to two utility methods :
     In order to avoid storing encoding information in the cache folder, `odsclient` converts all downloaded datasets to `utf-8` encoding before storing them in the cache. This should have no side-effect for you except if you try to read the cached file directly without using the `CacheEntry.read()` method, or if your dataset contains [old/alternative forms of east asian kanji](https://en.wikipedia.org/wiki/Unicode#Issues) that cannot be represented with unicode encodings.
 
 
+#### b. Custom `requests.Session`
+
+By default a new `requests.Session` object is created for each instance of `ODSClient`. When this `ODSClient` is garbaged out, the `requests.Session` object is closed to avoid leaving Sockets hanging (see [#27](https://github.com/smarie/python-odsclient/issues/27)). You can provide a custom `requests.Session` to the constructor (or to any of the shortcuts) with the `requests_session` argument. In which case it will not be closed by default. You can change this behaviour by setting `auto_close_session=True`. See [API reference](./api_reference.md#odsclient).
+
+
 ## Main features / benefits
 
  - Simple access to ODS API to retrive a whole dataset as text (csv) or dataframe

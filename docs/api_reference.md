@@ -15,7 +15,7 @@ A client instance offers methods to interact with the various ODS API. Currently
 
 A file cache can be activated for the two `get` methods by setting `file_cache` to `True` or to a path-like (string or `Path`) indicating a custom cache root path. `True` will use the default cache root folder `.odsclient`. `<client>.get_cached_dataset_entry` can be used to get a `CacheEntry` object representing the (possibly non-existing) cache entry for a given dataset.
 
-You can customize the `requests.Session` object used for the HTTPS transport using `requests_session`.
+You can customize the `requests.Session` object used for the HTTPS transport using `requests_session`. If you do so, remember to close it yourself or to switch `auto_close_session` to True.
 
 A client is meant to use a single api key at a time, or none. You can force the api key to be mandatory using
 `enforce_apikey=True`. There are 4 ways to pass an api key, they are used in the following order:
@@ -52,7 +52,7 @@ ODSClient(
           use_keyring=True,                              # type: bool
           keyring_entries_username=KR_DEFAULT_USERNAME,  # type: str
           requests_session=None,                         # type: Session
-          auto_close_session=True                        # type: bool
+          auto_close_session=None                        # type: bool
           ):
 ```
 
@@ -72,8 +72,8 @@ ODSClient(
  * `keyring_entries_username`: keyring stores secrets with a key made of a service id and a username. We use
     the base url for the service id, however the user name can be anything. By default we use a string:
     'apikey_user'.
- * `requests_session`: an optional `Session` object to use (from `requests` lib)
- * `auto_close_session`: an optional boolean indicating if (True, default) `self.session` should be closed when this object is garbaged out. Turning this to `False` can leave hanging Sockets unclosed.
+ * `requests_session`: an optional `Session` object to use (from `requests` lib). If `None` is provided, a new `Session` will be used and deleted when this object is garbaged out. If a custom object is provided, you should close it yourself or switch `auto_close_session` to `True` explicitly.
+ * `auto_close_session`: an optional boolean indicating if (True, default) `self.session` should be closed when this object is garbaged out. By default this is `None` and means "`True` if no custom `requests_session` is passed, else `False`"). Turning this to `False` can leave hanging Sockets unclosed.
 
 ## Shortcuts
 
