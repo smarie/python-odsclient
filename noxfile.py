@@ -62,6 +62,7 @@ def tests(session: PowerSession, coverage, pkg_specs):
     rm_file(Folders.root / ".coverage")
     rm_file(Folders.root / "coverage.xml")
 
+    # CI-only dependencies
     # Did we receive a flag through positional arguments ? (nox -s tests -- <flag>)
     install_keyrings_alt = False
     if len(session.posargs) == 1:
@@ -76,7 +77,7 @@ def tests(session: PowerSession, coverage, pkg_specs):
     # install all requirements
     session.install_reqs(setup=True, install=True, tests=True, versions_dct=pkg_specs)
 
-    # install extra req
+    # install CI-only dependencies
     if install_keyrings_alt:
         session.install2("keyrings.alt")
 
