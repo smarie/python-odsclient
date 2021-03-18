@@ -1,6 +1,9 @@
 from subprocess import call
 
-import click
+try:
+    import click
+except ImportError as e:
+    raise Exception("`click` is required for `odskeys` to work. Please `pip install click`. Caught: %r" % e)
 
 from odsclient.core import KR_DEFAULT_USERNAME, ODSClient
 from odsclient.shortcuts import store_apikey_in_keyring, get_apikey_from_keyring, remove_apikey_from_keyring

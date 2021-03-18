@@ -16,20 +16,26 @@ Its initial purpose is not to cover the [full set of APIs available](https://hel
 
 ## Installing
 
+If you wish to install `odsclient` with all of its optional dependencies `click`, `keyring` and `tqdm` you can do it all at once (recommended):
+
+```bash
+> pip install odsclient[full]
+```
+
+For a minimal installation simply use:
+
 ```bash
 > pip install odsclient
 ```
 
-Optional:
+Optional dependencies description:
 
- - If you wish to display progress bars, you should also install `tqdm`.
- - If you wish to download datasets as dataframes, you should also install `pandas`. 
+ - `tqdm` is needed to display progress bars (if the ODS server supports providing progress information).
+ - `keyring` is the recommended backend to securely store your api keys in the operating system's credential manager, see [below](#permanent).
+ - `click` is used by [`odskeys`](./odskey.md), our little commandline helper to help you register your keys with `keyring` easily.
 
-Finally, if you plan to use api keys, we recommend that you install `keyring` as it will help you store the critical api keys in your operating system's password vault.
+Finally, if you wish to download datasets and get them directly converted as dataframes, you should also install `pandas`. This dependency is not automatically installed with `pip install odsclient[full]`, you have to install it separately.
 
-```bash
-> pip install keyring
-```
 
 ## Usage
 
