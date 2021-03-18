@@ -1,5 +1,11 @@
 # Changelog
 
+### 0.8.3 - Minor fixes concerning import errors
+
+ - Improved `odskeys` error message when `click` is not installed. Now you can `pip install odsclient[full]` to install all optional dependencies at once. Fixes [#26](https://github.com/smarie/python-odsclient/issues/26)
+   
+ - No `ImportError` is raised by default if `keyring` is not installed. Instead a warning message is issued. Fixes [#25](https://github.com/smarie/python-odsclient/issues/25)
+
 ### 0.8.2 - Auto-closing `requests.Session` 
 
  - The underlying `requests.Session` is now automatically closed by `ODSClient` objects when they are garbaged out, to avoid leaving hanging Sockets around. This is not the case if a custom `Session` is passed. An advanced boolean parameter `auto_close_session` can be used to turn this feature off. Fixes [#27](https://github.com/smarie/python-odsclient/issues/27)
