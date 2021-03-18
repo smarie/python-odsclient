@@ -530,13 +530,28 @@ class ODSClient(object):
         import keyring
         keyring.delete_password(self.base_url, self.keyring_entries_username)
 
-    def get_apikey_from_keyring(self):
+    def get_apikey_from_keyring(self, ignore_import_errors=False):
         """
         Looks for a keyring entry containing the api key and returns it.
         If not found, returns `None`
+
+        :param ignore_import_errors: when this is `True`, the method will return `None` if `keyring` is not installed
+            instead of raising an `ImportError`.
         :return:
         """
-        import keyring
+        if ignore_import_errors:
+            try:
+                import keyring
+            except ImportError as e:
+                # not installed: simply warn instead of raising exception
+                warnings.warn("`keyring` is not installed but the `ODSClient` is configured to use it. You can either"
+                              "set `use_keyring=False` explicitly or install keyring to disable this warning. "
+                              "Caught: %r" % e)
+                return None
+        else:
+            # do not catch any exception
+            import keyring
+
         for _url in (self.base_url, self.base_url + '/'):
             apikey = keyring.get_password(_url, self.keyring_entries_username)
             if apikey is not None:
@@ -601,9 +616,9 @@ class ODSClient(object):
         if self.apikey is not None:
             return self.apikey
 
-        # 2- if keyring service contains an entry, use it
+        # 2- if keyring service is installed and contains an entry, use it
         if self.use_keyring:
-            apikey = self.get_apikey_from_keyring()
+            apikey = self.get_apikey_from_keyring(ignore_import_errors=True)
             if apikey is not None:
                 return apikey
 

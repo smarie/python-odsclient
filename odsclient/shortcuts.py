@@ -54,7 +54,7 @@ def get_apikey_from_keyring(platform_id='public',                          # typ
     :return:
     """
     client = ODSClient(platform_id=platform_id, base_url=base_url, keyring_entries_username=keyring_entries_username)
-    return client.get_apikey_from_keyring()
+    return client.get_apikey_from_keyring(ignore_import_errors=False)
 
 
 def remove_apikey_from_keyring(platform_id='public',                          # type: str
