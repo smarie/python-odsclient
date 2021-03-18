@@ -271,6 +271,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#083-minor-fixes-concerning-import-errors" class="md-nav__link">
+    0.8.3 - Minor fixes concerning import errors
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#082-auto-closing-requestssession" class="md-nav__link">
     0.8.2 - Auto-closing requests.Session
   </a>
@@ -380,6 +387,13 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#083-minor-fixes-concerning-import-errors" class="md-nav__link">
+    0.8.3 - Minor fixes concerning import errors
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#082-auto-closing-requestssession" class="md-nav__link">
     0.8.2 - Auto-closing requests.Session
   </a>
@@ -474,6 +488,15 @@
                 
                 
                 <h1 id="changelog">Changelog<a class="headerlink" href="#changelog" title="Permanent link">&para;</a></h1>
+<h3 id="083-minor-fixes-concerning-import-errors">0.8.3 - Minor fixes concerning import errors<a class="headerlink" href="#083-minor-fixes-concerning-import-errors" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p>Improved <code>odskeys</code> error message when <code>click</code> is not installed. Now you can <code>pip install odsclient[full]</code> to install all optional dependencies at once. Fixes <a href="https://github.com/smarie/python-odsclient/issues/26">#26</a></p>
+</li>
+<li>
+<p>No <code>ImportError</code> is raised by default if <code>keyring</code> is not installed. Instead a warning message is issued. Fixes <a href="https://github.com/smarie/python-odsclient/issues/25">#25</a></p>
+</li>
+</ul>
 <h3 id="082-auto-closing-requestssession">0.8.2 - Auto-closing <code>requests.Session</code><a class="headerlink" href="#082-auto-closing-requestssession" title="Permanent link">&para;</a></h3>
 <ul>
 <li>

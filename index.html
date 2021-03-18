@@ -659,7 +659,7 @@
                 
                 <h1 id="odsclient">odsclient<a class="headerlink" href="#odsclient" title="Permanent link">&para;</a></h1>
 <p><em>A nonofficial client for OpenDataSoft API.</em></p>
-<p><a href="https://pypi.python.org/pypi/odsclient/"><img alt="Python versions" src="https://img.shields.io/pypi/pyversions/odsclient.svg" /></a> <a href="https://github.com/smarie/python-odsclient/actions/workflows/base.yml"><img alt="Build Status" src="https://github.com/smarie/python-odsclient/actions/workflows/base.yml/badge.svg" /></a> <a href="https://smarie.github.io/python-odsclient/junit/report.html"><img alt="Tests Status" src="https://smarie.github.io/python-odsclient/junit/junit-badge.svg?dummy=8484744" /></a> <a href="https://codecov.io/gh/smarie/python-odsclient"><img alt="codecov" src="https://codecov.io/gh/smarie/python-odsclient/branch/master/graph/badge.svg" /></a></p>
+<p><a href="https://pypi.python.org/pypi/odsclient/"><img alt="Python versions" src="https://img.shields.io/pypi/pyversions/odsclient.svg" /></a> <a href="https://github.com/smarie/python-odsclient/actions/workflows/base.yml"><img alt="Build Status" src="https://github.com/smarie/python-odsclient/actions/workflows/base.yml/badge.svg" /></a> <a href="reports/junit/report.html"><img alt="Tests Status" src="reports/junit/junit-badge.svg?dummy=8484744" /></a> <a href="https://codecov.io/gh/smarie/python-odsclient"><img alt="codecov" src="https://codecov.io/gh/smarie/python-odsclient/branch/master/graph/badge.svg" /></a></p>
 <p><a href="https://smarie.github.io/python-odsclient/"><img alt="Documentation" src="https://img.shields.io/badge/doc-latest-blue.svg" /></a> <a href="https://pypi.python.org/pypi/odsclient/"><img alt="PyPI" src="https://img.shields.io/pypi/v/odsclient.svg" /></a> <a href="https://pepy.tech/project/odsclient"><img alt="Downloads" src="https://pepy.tech/badge/odsclient" /></a> <a href="https://pepy.tech/project/odsclient"><img alt="Downloads per week" src="https://pepy.tech/badge/odsclient/week" /></a> <a href="https://github.com/smarie/python-odsclient/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/smarie/python-odsclient.svg" /></a></p>
 <div class="admonition success">
 <p class="admonition-title">New: you can now use a local file cache ! Check it out <a href="#a-caching">below</a>.</p>
@@ -670,16 +670,19 @@
 <p><code>odsclient</code> provides a minimal set of functions to grab a dataset or a collection of datasets from an OpenDataSoft (ODS) platform. </p>
 <p>Its initial purpose is not to cover the <a href="https://help.opendatasoft.com/en/apis/">full set of APIs available</a> but to get a minimum viable set of features to work easily with the datasets.</p>
 <h2 id="installing">Installing<a class="headerlink" href="#installing" title="Permanent link">&para;</a></h2>
+<p>If you wish to install <code>odsclient</code> with all of its optional dependencies <code>click</code>, <code>keyring</code> and <code>tqdm</code> you can do it all at once (recommended):</p>
+<div class="highlight"><pre><span></span><code>&gt; pip install odsclient<span class="o">[</span>full<span class="o">]</span>
+</code></pre></div>
+<p>For a minimal installation simply use:</p>
 <div class="highlight"><pre><span></span><code>&gt; pip install odsclient
 </code></pre></div>
-<p>Optional:</p>
+<p>Optional dependencies description:</p>
 <ul>
-<li>If you wish to display progress bars, you should also install <code>tqdm</code>.</li>
-<li>If you wish to download datasets as dataframes, you should also install <code>pandas</code>. </li>
+<li><code>tqdm</code> is needed to display progress bars (if the ODS server supports providing progress information).</li>
+<li><code>keyring</code> is the recommended backend to securely store your api keys in the operating system's credential manager, see <a href="#permanent">below</a>.</li>
+<li><code>click</code> is used by <a href="odskey/"><code>odskeys</code></a>, our little commandline helper to help you register your keys with <code>keyring</code> easily.</li>
 </ul>
-<p>Finally, if you plan to use api keys, we recommend that you install <code>keyring</code> as it will help you store the critical api keys in your operating system's password vault.</p>
-<div class="highlight"><pre><span></span><code>&gt; pip install keyring
-</code></pre></div>
+<p>Finally, if you wish to download datasets and get them directly converted as dataframes, you should also install <code>pandas</code>. This dependency is not automatically installed with <code>pip install odsclient[full]</code>, you have to install it separately.</p>
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
 <h3 id="1-basics">1. Basics<a class="headerlink" href="#1-basics" title="Permanent link">&para;</a></h3>
 <h4 id="a-downloading-a-flat-dataset">a- Downloading a "flat" dataset<a class="headerlink" href="#a-downloading-a-flat-dataset" title="Permanent link">&para;</a></h4>
