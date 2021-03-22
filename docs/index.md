@@ -2,7 +2,7 @@
 
 *A nonofficial client for OpenDataSoft API.*
 
-[![Python versions](https://img.shields.io/pypi/pyversions/odsclient.svg)](https://pypi.python.org/pypi/odsclient/) [![Build Status](https://github.com/smarie/python-odsclient/actions/workflows/base.yml/badge.svg)](https://github.com/smarie/python-odsclient/actions/workflows/base.yml) [![Tests Status](./reports/junit/junit-badge.svg?dummy=8484744)](./reports/junit/report.html) [![codecov](https://codecov.io/gh/smarie/python-odsclient/branch/master/graph/badge.svg)](https://codecov.io/gh/smarie/python-odsclient)
+[![Python versions](https://img.shields.io/pypi/pyversions/odsclient.svg)](https://pypi.python.org/pypi/odsclient/) [![Build Status](https://github.com/smarie/python-odsclient/actions/workflows/base.yml/badge.svg)](https://github.com/smarie/python-odsclient/actions/workflows/base.yml) [![Tests Status](./reports/junit/junit-badge.svg?dummy=8484744)](./reports/junit/report.html) [![codecov](https://codecov.io/gh/smarie/python-odsclient/branch/main/graph/badge.svg)](https://codecov.io/gh/smarie/python-odsclient)
 
 [![Documentation](https://img.shields.io/badge/doc-latest-blue.svg)](https://smarie.github.io/python-odsclient/) [![PyPI](https://img.shields.io/pypi/v/odsclient.svg)](https://pypi.python.org/pypi/odsclient/) [![Downloads](https://pepy.tech/badge/odsclient)](https://pepy.tech/project/odsclient) [![Downloads per week](https://pepy.tech/badge/odsclient/week)](https://pepy.tech/project/odsclient) [![GitHub stars](https://img.shields.io/github/stars/smarie/python-odsclient.svg)](https://github.com/smarie/python-odsclient/stargazers)
 
