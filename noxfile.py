@@ -16,13 +16,11 @@ pkg_name = "odsclient"
 gh_org = "smarie"
 gh_repo = "python-odsclient"
 
-ALL_PY_VERSIONS = [PY38, PY37, PY36, PY35, PY27]
-
 ENVS = {
+    PY38: {"coverage": False, "pkg_specs": {"pip": ">19"}},
     PY27: {"coverage": False, "pkg_specs": {"pip": ">10"}},
     PY35: {"coverage": False, "pkg_specs": {"pip": ">10"}},
     PY36: {"coverage": False, "pkg_specs": {"pip": ">19"}},
-    PY38: {"coverage": False, "pkg_specs": {"pip": ">19"}},
     # IMPORTANT: this should be last so that the folder docs/reports is not deleted afterwards
     PY37: {"coverage": True, "pkg_specs": {"pip": ">19"}},  # , "pytest-html": "1.9.0"
 }

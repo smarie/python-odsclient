@@ -63,7 +63,7 @@ jobs:
         run: pip install -r noxfile-requirements.txt
       - run: conda list
         shell: bash -l {0}  # so that conda works
-      - run: nox -s "${{ matrix.nox_session }}"
+      - run: nox -s "${{ matrix.nox_session }}" -- keyrings.alt  # this posarg to install (unsafe) keyrings.alt since CI has no kr backend
         shell: bash -l {0}  # so that conda works
         env:
           EXCH_AKEY: ${{ secrets.EXCH_AKEY }}
