@@ -1,4 +1,6 @@
 import logging
+from itertools import product
+from json import dumps
 
 import nox  # noqa
 from pathlib import Path  # noqa
@@ -212,6 +214,32 @@ def release(session: PowerSession):
                  "--repo-slug {gh_org}/{gh_repo} -cf ./docs/changelog.md "
                  "-d https://{gh_org}.github.io/{gh_repo}/changelog/ {tag}"
                  "".format(gh_token=gh_token, gh_org=gh_org, gh_repo=gh_repo, tag=current_tag))
+
+
+@nox.session(python=False)
+def gha_list(session):
+    """(mandatory arg: <base_session_name>) Prints all sessions available for <base_session_name>, for GithubActions."""
+
+    # see https://stackoverflow.com/q/66747359/7262247
+
+    # get the desired base session to generate the list for
+    if len(session.posargs) != 1:
+        raise ValueError("This session has a mandatory argument: <base_session_name>")
+    session_func = globals()[session.posargs[0]]
+
+    # list all sessions for this base session
+    try:
+        session_func.parametrize
+    except AttributeError:
+        sessions_list = ["%s-%s" % (session_func.__name__, py) for py in session_func.python]
+    else:
+        sessions_list = ["%s-%s(%s)" % (session_func.__name__, py, param)
+                         for py, param in product(session_func.python, session_func.parametrize)]
+
+    # print the list so that it can be caught by GHA.
+    # Note that json.dumps is optional since this is a list of string.
+    # However it is to remind us that GHA expects a well-formatted json list of strings.
+    print(dumps(sessions_list))
 
 
 # if __name__ == '__main__':
