@@ -22,10 +22,10 @@ Boston MA 02109, U.S.A."
 """ #.replace("\n", "\r\n")
 
     # we keep this hardcoded just in case the ref_df reading does not work as expected
-    ref_shape = (3, 4)
+    ref_shape = (3, 3)
 
     ref_df = pd.read_csv(create_reading_buffer(ref_csv, is_literal=True), sep=';')
-    # ref_df = ref_df.set_index(['Catégorie', 'Objectif ou Réalisation', 'Annee']).sort_index()
+    ref_df = ref_df.set_index(['Office Name']).sort_index()
 
     return dataset_id, ref_csv, ref_df, ref_shape
 

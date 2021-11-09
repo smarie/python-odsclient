@@ -77,13 +77,13 @@ def test_example(save_to_file, progress_bar, tmp_path, file_cache):
     df = pd.read_csv(create_reading_buffer(csv_str, is_literal=False), sep=';')
 
     # compare with ref
-    # df = df.set_index(['Catégorie', 'Objectif ou Réalisation', 'Annee']).sort_index()
+    df = df.set_index(['Office Name']).sort_index()
     pd.testing.assert_frame_equal(df, ref_df)
     assert df.shape == ref_shape
 
     # test the pandas direct streaming API without cache
     df2 = get_whole_dataframe(dataset_id, tqdm=progress_bar)
-    # df2 = df2.set_index(['Catégorie', 'Objectif ou Réalisation', 'Annee']).sort_index()
+    df2 = df2.set_index(['Office Name']).sort_index()
     pd.testing.assert_frame_equal(df, df2)
 
     # make sure the cached entry exists now and can be read without internet connection
@@ -104,7 +104,7 @@ def test_example(save_to_file, progress_bar, tmp_path, file_cache):
         # Same with the other method
         df3 = get_whole_dataframe(dataset_id, file_cache=file_cache, requests_session=make_invalid_network_session(),
                                   tqdm=progress_bar)
-        # df3 = df3.set_index(['Catégorie', 'Objectif ou Réalisation', 'Annee']).sort_index()
+        df3 = df3.set_index(['Office Name']).sort_index()
         pd.testing.assert_frame_equal(df, df3)
 
         # clean it for next time
@@ -113,7 +113,7 @@ def test_example(save_to_file, progress_bar, tmp_path, file_cache):
 
         # Make sure it is re-cached if we use the dataframe-getter method directly
         df4 = get_whole_dataframe(dataset_id, file_cache=file_cache, tqdm=progress_bar)
-        # df4 = df4.set_index(['Catégorie', 'Objectif ou Réalisation', 'Annee']).sort_index()
+        df4 = df4.set_index(['Office Name']).sort_index()
         assert cached_entry.exists()
         pd.testing.assert_frame_equal(df, df4)
 
