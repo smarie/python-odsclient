@@ -7,33 +7,25 @@ from odsclient.utils import create_reading_buffer
 def ref_dataset_public_platform():
     """Return a reference dataset for the public ODS platform """
 
-    dataset_id = "respect-des-delais-dacheminement-courrier"
+    dataset_id = "opendatasoft-offices"
 
-    ref_csv = """Catégorie;Objectif ou Réalisation;Pourcentage;Annee
-Lettre prioritaire J + 1;réalisation;0.867;2014
-Colissimo guichet J + 2;objectif;0.88;2014
-Courrier industriel J + 2;réalisation;0.965;2009
-Lettre prioritaire J + 1;réalisation;0.847;2009
-Lettre prioritaire J + 1;objectif;0.85;2014
-Lettre recommandée J + 2;objectif;0.9400000000000001;2014
-Lettre recommandée J + 2;réalisation;0.887;2009
-Courrier industriel J + 2;réalisation;0.969;2014
-Colissimo guichet J + 2;réalisation;0.91;2014
-Courrier industriel J + 2;objectif;0.9500000000000001;2009
-Colissimo guichet J + 2;réalisation;0.877;2009
-Lettre verte J + 2;objectif;0.9400000000000001;2014
-Lettre prioritaire J + 1;objectif;0.84;2009
-Lettre recommandée J + 2;réalisation;0.9460000000000001;2014
-Lettre verte J + 2;réalisation;0.932;2014
-Courrier industriel J + 2;objectif;0.9500000000000001;2014
-Colissimo guichet J + 2;objectif;0.86;2009
-""".replace("\n", "\r\n")
+    ref_csv = """Geo Point;Geo Shape;Office Name;Address
+48.8416126212,2.28492558002;"{""type"": ""Point"", ""coordinates"": [2.2849255800247192, 48.841612621157495]}";Paris HQ;"Opendatasoft
+130, rue de Lourmel
+75015 Paris, France"
+47.2176789432,-1.5440967679;"{""type"": ""Point"", ""coordinates"": [-1.5440967679023743, 47.217678943247684]}";Nantes Office;"Opendatasoft
+4 rue Voltaire
+44000 Nantes"
+42.3568473029,-71.0575962067;"{""type"": ""Point"", ""coordinates"": [-71.05759620666502, 42.356847302874996]}";Boston HQ;"Opendatasoft LLC
+50 Milk St, 16th floor
+Boston MA 02109, U.S.A."
+""" #.replace("\n", "\r\n")
 
-    # we keep this explicit just in case the ref_df reading does not work as expected
-    ref_shape = (17, 1)
+    # we keep this hardcoded just in case the ref_df reading does not work as expected
+    ref_shape = (3, 3)
 
     ref_df = pd.read_csv(create_reading_buffer(ref_csv, is_literal=True), sep=';')
-    ref_df = ref_df.set_index(['Catégorie', 'Objectif ou Réalisation', 'Annee']).sort_index()
+    ref_df = ref_df.set_index(['Office Name']).sort_index()
 
     return dataset_id, ref_csv, ref_df, ref_shape
 

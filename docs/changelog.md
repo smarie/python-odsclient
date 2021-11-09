@@ -1,5 +1,10 @@
 # Changelog
 
+### 0.8.4 - Minor project changes
+
+ - Fixed the build issue with `xunitparser` by using `genbadge`. Fixed [#28](https://github.com/smarie/python-odsclient/issues/28).
+ - Changed the reference test dataset for the one advised by ODS. Fixed [#23](https://github.com/smarie/python-odsclient/issues/23) 
+
 ### 0.8.3 - Minor fixes concerning import errors
 
  - Improved `odskeys` error message when `click` is not installed. Now you can `pip install odsclient[full]` to install all optional dependencies at once. Fixes [#26](https://github.com/smarie/python-odsclient/issues/26)
