@@ -940,7 +940,8 @@ class CacheEntry(object):
     def assert_exists(self):
         """Raises an error if the file does not exist"""
         if not self.exists():
-            raise CacheFileNotFoundError("Cached file entry can not be read as it does not exist: '%s'" % self.file_path)
+            raise CacheFileNotFoundError("Cached file entry can not be read as it does not exist: '%s'"
+                                         % self.file_path)
 
     def read(self):
         # type: (...) -> str
