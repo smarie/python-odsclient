@@ -1,3 +1,7 @@
+#  Authors: Sylvain MARIE <sylvain.marie@se.com>
+#            + All contributors to <https://github.com/smarie/python-odsclient>
+#
+#  License: 3-clause BSD, <https://github.com/smarie/python-odsclient/blob/master/LICENSE>
 import sys
 
 from io import BytesIO   # to handle byte strings

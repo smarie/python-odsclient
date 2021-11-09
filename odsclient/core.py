@@ -1,3 +1,7 @@
+#  Authors: Sylvain MARIE <sylvain.marie@se.com>
+#            + All contributors to <https://github.com/smarie/python-odsclient>
+#
+#  License: 3-clause BSD, <https://github.com/smarie/python-odsclient/blob/master/LICENSE>
 import warnings
 from ast import literal_eval
 from getpass import getpass
@@ -8,10 +12,10 @@ from threading import Lock
 
 try:
     # Python 3
-    from urllib.parse import urlparse, parse_qs
+    from urllib.parse import urlparse
 except ImportError:
     # Python 2
-    from urlparse import urlparse, parse_qs
+    from urlparse import urlparse
 
 try:
     from pathlib import Path
@@ -43,15 +47,6 @@ except NameError:
     FileNotFoundError = IOError
 
 from requests import Session, HTTPError
-
-try:
-    # python 3
-    # noinspection PyCompatibility
-    from urllib.parse import quote
-except ImportError:
-    # python 2
-    # noinspection PyUnresolvedReferences
-    from urllib import quote
 
 try:
     # noinspection PyUnresolvedReferences
@@ -474,15 +469,21 @@ class ODSClient(object):
             try:
                 import pandas as pd
             except ImportError as e:
-                raise Exception("`push_dataset_realtime` with the `pandas` format requires `pandas` to be installed. [%s] %s" % (e.__class__, e))
-            # noinspection PyStatementEffect
+                raise Exception("`push_dataset_realtime` with the `pandas` format requires `pandas` to be installed. "
+                                "[%s] %s" % (e.__class__, e))
+
+            if not isinstance(dataset, pd.DataFrame):
+                raise TypeError('If format is set to "pandas" then `dataset` should be a DataFrame. Found %s'
+                                % type(dataset))
+
             dataset  # type:pandas.DataFrame
             request_body = dataset.to_json(orient='records')
         elif format == 'csv':
             try:
                 import csv
             except ImportError as e:
-                raise Exception("`push_dataset_realtime` with the `csv` format requires `csv` to be installed. [%s] %s" % (e.__class__, e))
+                raise Exception("`push_dataset_realtime` with the `csv` format requires `csv` to be installed. [%s] %s"
+                                % (e.__class__, e))
             # noinspection PyStatementEffect
             dataset  # type:str
             csv_reader = csv.DictReader(StringIO(dataset), delimiter=csv_separator)
