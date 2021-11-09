@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>odsclient/keyring_cmds.py - flake8 annotated source</title>
+      <meta http-equiv="Content-Type" value="text/html; charset=UTF-8">
+      <link rel="stylesheet" href="styles.css">
+   </head>
+   <body>
+      <div id="masthead" class="sev-3"></div>
+      <div id="page">
+         <h1>
+            <a href="odsclient.keyring_cmds.report.html">
+               <img src="back.svg" alt="&#x2B05;">
+               odsclient/keyring_cmds.py source
+            </a>
+         </h1>
+
+         <div id="doc">
+            <div id="l1"
+               class="code sev- "><tt><i>1</i> <span class="c1">#  Authors: Sylvain MARIE &lt;sylvain.marie@se.com&gt;</span></tt>
+            </div>
+            <div id="l2"
+               class="code sev- "><tt><i>2</i> <span class="c1">#            + All contributors to &lt;https://github.com/smarie/python-odsclient&gt;</span></tt>
+            </div>
+            <div id="l3"
+               class="code sev- "><tt><i>3</i> <span class="c1">#</span></tt>
+            </div>
+            <div id="l4"
+               class="code sev- "><tt><i>4</i> <span class="c1">#  License: 3-clause BSD, &lt;https://github.com/smarie/python-odsclient/blob/master/LICENSE&gt;</span></tt>
+            </div>
+            <div id="l5"
+               class="code sev-3  le">
+               <ul class="violations">
+               
+                  <li>
+                     <span class="count sev-3">
+                        S404
+                     </span>
+                     Consider possible security implications associated with call module.</li>
+               
+               </ul><tt><i>5</i> <span class="kn">from</span> <span class="nn">subprocess</span> <span class="kn">import</span> <span class="n">call</span></tt>
+            </div>
+            <div id="l6"
+               class="code sev- "><tt><i>6</i> &nbsp;</tt>
+            </div>
+            <div id="l7"
+               class="code sev- "><tt><i>7</i> <span class="k">try</span><span class="p">:</span></tt>
+            </div>
+            <div id="l8"
+               class="code sev- "><tt><i>8</i>     <span class="kn">import</span> <span class="nn">click</span></tt>
+            </div>
+            <div id="l9"
+               class="code sev- "><tt><i>9</i> <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span></tt>
+            </div>
+            <div id="l10"
+               class="code sev- "><tt><i>10</i>     <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;`click` is required for `odskeys` to work. Please `pip install click`. Caught: </span><span class="si">%r</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">e</span><span class="p">)</span></tt>
+            </div>
+            <div id="l11"
+               class="code sev- "><tt><i>11</i> &nbsp;</tt>
+            </div>
+            <div id="l12"
+               class="code sev- "><tt><i>12</i> <span class="kn">from</span> <span class="nn">odsclient.core</span> <span class="kn">import</span> <span class="n">KR_DEFAULT_USERNAME</span><span class="p">,</span> <span class="n">ODSClient</span></tt>
+            </div>
+            <div id="l13"
+               class="code sev- "><tt><i>13</i> <span class="kn">from</span> <span class="nn">odsclient.shortcuts</span> <span class="kn">import</span> <span class="n">store_apikey_in_keyring</span><span class="p">,</span> <span class="n">get_apikey_from_keyring</span><span class="p">,</span> <span class="n">remove_apikey_from_keyring</span></tt>
+            </div>
+            <div id="l14"
+               class="code sev- "><tt><i>14</i> &nbsp;</tt>
+            </div>
+            <div id="l15"
+               class="code sev- "><tt><i>15</i> &nbsp;</tt>
+            </div>
+            <div id="l16"
+               class="code sev- "><tt><i>16</i> <span class="nd">@click</span><span class="o">.</span><span class="n">group</span><span class="p">()</span></tt>
+            </div>
+            <div id="l17"
+               class="code sev- "><tt><i>17</i> <span class="k">def</span> <span class="nf">odskeys</span><span class="p">():</span></tt>
+            </div>
+            <div id="l18"
+               class="code sev- "><tt><i>18</i>     <span class="sd">&quot;&quot;&quot;</span></tt>
+            </div>
+            <div id="l19"
+               class="code sev- "><tt><i>19</i> <span class="sd">    Commandline utility to get/set/remove api keys from the OS keyring using the `keyring` library.</span></tt>
+            </div>
+            <div id="l20"
+               class="code sev- "><tt><i>20</i> <span class="sd">    To get help on each command use:</span></tt>
+            </div>
+            <div id="l21"
+               class="code sev- "><tt><i>21</i> &nbsp;</tt>
+            </div>
+            <div id="l22"
+               class="code sev- "><tt><i>22</i> <span class="sd">        odskeys &lt;cmd&gt; --help</span></tt>
+            </div>
+            <div id="l23"
+               class="code sev- "><tt><i>23</i> &nbsp;</tt>
+            </div>
+            <div id="l24"
+               class="code sev- "><tt><i>24</i> <span class="sd">    &quot;&quot;&quot;</span></tt>
+            </div>
+            <div id="l25"
+               class="code sev- "><tt><i>25</i>     <span class="k">pass</span></tt>
+            </div>
+            <div id="l26"
+               class="code sev- "><tt><i>26</i> &nbsp;</tt>
+            </div>
+            <div id="l27"
+               class="code sev- "><tt><i>27</i> &nbsp;</tt>
+            </div>
+            <div id="l28"
+               class="code sev- "><tt><i>28</i> <span class="k">def</span> <span class="nf">_get_url_used</span><span class="p">(</span><span class="n">platform_id</span><span class="p">,</span>  <span class="c1"># type: str</span></tt>
+            </div>
+            <div id="l29"
+               class="code sev- "><tt><i>29</i>                   <span class="n">base_url</span><span class="p">,</span>     <span class="c1"># type: str</span></tt>
+            </div>
+            <div id="l30"
+               class="code sev- "><tt><i>30</i>                   <span class="p">):</span></tt>
+            </div>
+            <div id="l31"
+               class="code sev- "><tt><i>31</i>     <span class="c1"># type: (...) -&gt; str</span></tt>
+            </div>
+            <div id="l32"
+               class="code sev- "><tt><i>32</i>     <span class="sd">&quot;&quot;&quot; returns the url actually used by the ODSClient &quot;&quot;&quot;</span></tt>
+            </div>
+            <div id="l33"
+               class="code sev- "><tt><i>33</i>     <span class="n">client</span> <span class="o">=</span> <span class="n">ODSClient</span><span class="p">(</span><span class="n">platform_id</span><span class="o">=</span><span class="n">platform_id</span><span class="p">,</span> <span class="n">base_url</span><span class="o">=</span><span class="n">base_url</span><span class="p">)</span></tt>
+            </div>
+            <div id="l34"
+               class="code sev- "><tt><i>34</i>     <span class="k">return</span> <span class="n">client</span><span class="o">.</span><span class="n">base_url</span></tt>
+            </div>
+            <div id="l35"
+               class="code sev- "><tt><i>35</i> &nbsp;</tt>
+            </div>
+            <div id="l36"
+               class="code sev- "><tt><i>36</i> &nbsp;</tt>
+            </div>
+            <div id="l37"
+               class="code sev- "><tt><i>37</i> <span class="nd">@odskeys</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;get&quot;</span><span class="p">)</span></tt>
+            </div>
+            <div id="l38"
+               class="code sev- "><tt><i>38</i> <span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-p&#39;</span><span class="p">,</span> <span class="s1">&#39;--platform_id&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;public&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Specific ODS platform id. Default &#39;public&#39;&quot;</span><span class="p">)</span></tt>
+            </div>
+            <div id="l39"
+               class="code sev- "><tt><i>39</i> <span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-b&#39;</span><span class="p">,</span> <span class="s1">&#39;--base_url&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Specific ODS base url. Default: &quot;</span></tt>
+            </div>
+            <div id="l40"
+               class="code sev- "><tt><i>40</i>                                                      <span class="s2">&quot;https://&lt;platform_id&gt;.opendatasoft.com/&quot;</span><span class="p">)</span></tt>
+            </div>
+            <div id="l41"
+               class="code sev- "><tt><i>41</i> <span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-u&#39;</span><span class="p">,</span> <span class="s1">&#39;--username&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">KR_DEFAULT_USERNAME</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Custom username to use in the keyring entry. &#39;</span></tt>
+            </div>
+            <div id="l42"
+               class="code sev- "><tt><i>42</i>                                                                     <span class="s1">&#39;Default: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">KR_DEFAULT_USERNAME</span><span class="p">)</span></tt>
+            </div>
+            <div id="l43"
+               class="code sev- "><tt><i>43</i> <span class="k">def</span> <span class="nf">get_ods_apikey</span><span class="p">(</span><span class="n">platform_id</span><span class="p">,</span>                   <span class="c1"># type: str</span></tt>
+            </div>
+            <div id="l44"
+               class="code sev- "><tt><i>44</i>                    <span class="n">base_url</span><span class="p">,</span>                      <span class="c1"># type: str</span></tt>
+            </div>
+            <div id="l45"
+               class="code sev- "><tt><i>45</i>                    <span class="n">username</span><span class="o">=</span><span class="n">KR_DEFAULT_USERNAME</span><span class="p">,</span>  <span class="c1"># type: str</span></tt>
+            </div>
+            <div id="l46"
+               class="code sev- "><tt><i>46</i>                    <span class="p">):</span></tt>
+            </div>
+            <div id="l47"
+               class="code sev- "><tt><i>47</i>     <span class="sd">&quot;&quot;&quot;</span></tt>
+            </div>
+            <div id="l48"
+               class="code sev- "><tt><i>48</i> <span class="sd">    Looks up an ODS apikey entry in the keyring. Custom ODS platform id or base url can be provided through options.</span></tt>
+            </div>
+            <div id="l49"
+               class="code sev- "><tt><i>49</i> <span class="sd">    &quot;&quot;&quot;</span></tt>
+            </div>
+            <div id="l50"
+               class="code sev- "><tt><i>50</i>     <span class="n">apikey</span> <span class="o">=</span> <span class="n">get_apikey_from_keyring</span><span class="p">(</span><span class="n">platform_id</span><span class="o">=</span><span class="n">platform_id</span><span class="p">,</span></tt>
+            </div>
+            <div id="l51"
+               class="code sev- "><tt><i>51</i>                                      <span class="n">base_url</span><span class="o">=</span><span class="n">base_url</span><span class="p">,</span></tt>
+            </div>
+            <div id="l52"
+               class="code sev- "><tt><i>52</i>                                      <span class="n">keyring_entries_username</span><span class="o">=</span><span class="n">username</span><span class="p">,</span></tt>
+            </div>
+            <div id="l53"
+               class="code sev- "><tt><i>53</i>                                      <span class="p">)</span></tt>
+            </div>
+            <div id="l54"
+               class="code sev- "><tt><i>54</i>     <span class="c1"># actual url used, for message prints</span></tt>
+            </div>
+            <div id="l55"
+               class="code sev- "><tt><i>55</i>     <span class="n">url_used</span> <span class="o">=</span> <span class="n">_get_url_used</span><span class="p">(</span><span class="n">platform_id</span><span class="o">=</span><span class="n">platform_id</span><span class="p">,</span> <span class="n">base_url</span><span class="o">=</span><span class="n">base_url</span><span class="p">)</span></tt>
+            </div>
+            <div id="l56"
+               class="code sev- "><tt><i>56</i>     <span class="k">if</span> <span class="n">apikey</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span></tt>
+            </div>
+            <div id="l57"
+               class="code sev- "><tt><i>57</i>         <span class="n">click</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="s2">&quot;Api key found for platform url &#39;</span><span class="si">%s</span><span class="s2">&#39;: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">url_used</span><span class="p">,</span> <span class="n">apikey</span><span class="p">))</span></tt>
+            </div>
+            <div id="l58"
+               class="code sev- "><tt><i>58</i>     <span class="k">else</span><span class="p">:</span></tt>
+            </div>
+            <div id="l59"
+               class="code sev- "><tt><i>59</i>         <span class="n">click</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="s2">&quot;No api key registered for platform url &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">url_used</span><span class="p">,</span> <span class="p">))</span></tt>
+            </div>
+            <div id="l60"
+               class="code sev- "><tt><i>60</i> &nbsp;</tt>
+            </div>
+            <div id="l61"
+               class="code sev- "><tt><i>61</i> &nbsp;</tt>
+            </div>
+            <div id="l62"
+               class="code sev- "><tt><i>62</i> <span class="nd">@odskeys</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;remove&quot;</span><span class="p">)</span></tt>
+            </div>
+            <div id="l63"
+               class="code sev- "><tt><i>63</i> <span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-p&#39;</span><span class="p">,</span> <span class="s1">&#39;--platform_id&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;public&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Specific ODS platform id. Default &#39;public&#39;&quot;</span><span class="p">)</span></tt>
+            </div>
+            <div id="l64"
+               class="code sev- "><tt><i>64</i> <span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-b&#39;</span><span class="p">,</span> <span class="s1">&#39;--base_url&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Specific ODS base url. Default: &quot;</span></tt>
+            </div>
+            <div id="l65"
+               class="code sev- "><tt><i>65</i>                                                      <span class="s2">&quot;https://&lt;platform_id&gt;.opendatasoft.com/&quot;</span><span class="p">)</span></tt>
+            </div>
+            <div id="l66"
+               class="code sev- "><tt><i>66</i> <span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-u&#39;</span><span class="p">,</span> <span class="s1">&#39;--username&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">KR_DEFAULT_USERNAME</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Custom username to use in the keyring entry. &#39;</span></tt>
+            </div>
+            <div id="l67"
+               class="code sev- "><tt><i>67</i>                                                                     <span class="s1">&#39;Default: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">KR_DEFAULT_USERNAME</span><span class="p">)</span></tt>
+            </div>
+            <div id="l68"
+               class="code sev- "><tt><i>68</i> <span class="k">def</span> <span class="nf">remove_ods_apikey</span><span class="p">(</span><span class="n">platform_id</span><span class="o">=</span><span class="s1">&#39;public&#39;</span><span class="p">,</span>          <span class="c1"># type: str</span></tt>
+            </div>
+            <div id="l69"
+               class="code sev- "><tt><i>69</i>                       <span class="n">base_url</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>                 <span class="c1"># type: str</span></tt>
+            </div>
+            <div id="l70"
+               class="code sev- "><tt><i>70</i>                       <span class="n">username</span><span class="o">=</span><span class="n">KR_DEFAULT_USERNAME</span><span class="p">,</span>  <span class="c1"># type: str</span></tt>
+            </div>
+            <div id="l71"
+               class="code sev- "><tt><i>71</i>                       <span class="p">):</span></tt>
+            </div>
+            <div id="l72"
+               class="code sev- "><tt><i>72</i>     <span class="sd">&quot;&quot;&quot;</span></tt>
+            </div>
+            <div id="l73"
+               class="code sev- "><tt><i>73</i> <span class="sd">    Removes an ODS apikey entry from the keyring. Custom ODS platform id or base url can be provided through options.</span></tt>
+            </div>
+            <div id="l74"
+               class="code sev- "><tt><i>74</i> <span class="sd">    &quot;&quot;&quot;</span></tt>
+            </div>
+            <div id="l75"
+               class="code sev- "><tt><i>75</i>     <span class="n">apikey</span> <span class="o">=</span> <span class="n">get_apikey_from_keyring</span><span class="p">(</span><span class="n">platform_id</span><span class="o">=</span><span class="n">platform_id</span><span class="p">,</span></tt>
+            </div>
+            <div id="l76"
+               class="code sev- "><tt><i>76</i>                                      <span class="n">base_url</span><span class="o">=</span><span class="n">base_url</span><span class="p">,</span></tt>
+            </div>
+            <div id="l77"
+               class="code sev- "><tt><i>77</i>                                      <span class="n">keyring_entries_username</span><span class="o">=</span><span class="n">username</span><span class="p">,</span></tt>
+            </div>
+            <div id="l78"
+               class="code sev- "><tt><i>78</i>                                      <span class="p">)</span></tt>
+            </div>
+            <div id="l79"
+               class="code sev- "><tt><i>79</i>     <span class="c1"># actual url used, for message prints</span></tt>
+            </div>
+            <div id="l80"
+               class="code sev- "><tt><i>80</i>     <span class="n">url_used</span> <span class="o">=</span> <span class="n">_get_url_used</span><span class="p">(</span><span class="n">platform_id</span><span class="o">=</span><span class="n">platform_id</span><span class="p">,</span> <span class="n">base_url</span><span class="o">=</span><span class="n">base_url</span><span class="p">)</span></tt>
+            </div>
+            <div id="l81"
+               class="code sev- "><tt><i>81</i>     <span class="k">if</span> <span class="n">apikey</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span></tt>
+            </div>
+            <div id="l82"
+               class="code sev- "><tt><i>82</i>         <span class="n">click</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="s2">&quot;No api key registered for platform url &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">url_used</span><span class="p">,))</span></tt>
+            </div>
+            <div id="l83"
+               class="code sev- "><tt><i>83</i>     <span class="k">else</span><span class="p">:</span></tt>
+            </div>
+            <div id="l84"
+               class="code sev- "><tt><i>84</i>         <span class="n">remove_apikey_from_keyring</span><span class="p">(</span><span class="n">platform_id</span><span class="o">=</span><span class="n">platform_id</span><span class="p">,</span></tt>
+            </div>
+            <div id="l85"
+               class="code sev- "><tt><i>85</i>                                    <span class="n">base_url</span><span class="o">=</span><span class="n">base_url</span><span class="p">,</span></tt>
+            </div>
+            <div id="l86"
+               class="code sev- "><tt><i>86</i>                                    <span class="n">keyring_entries_username</span><span class="o">=</span><span class="n">username</span><span class="p">,</span></tt>
+            </div>
+            <div id="l87"
+               class="code sev- "><tt><i>87</i>                                    <span class="p">)</span></tt>
+            </div>
+            <div id="l88"
+               class="code sev- "><tt><i>88</i>         <span class="n">apikey</span> <span class="o">=</span> <span class="n">get_apikey_from_keyring</span><span class="p">(</span><span class="n">platform_id</span><span class="o">=</span><span class="n">platform_id</span><span class="p">,</span></tt>
+            </div>
+            <div id="l89"
+               class="code sev- "><tt><i>89</i>                                          <span class="n">base_url</span><span class="o">=</span><span class="n">base_url</span><span class="p">,</span></tt>
+            </div>
+            <div id="l90"
+               class="code sev- "><tt><i>90</i>                                          <span class="n">keyring_entries_username</span><span class="o">=</span><span class="n">username</span><span class="p">,</span></tt>
+            </div>
+            <div id="l91"
+               class="code sev- "><tt><i>91</i>                                          <span class="p">)</span></tt>
+            </div>
+            <div id="l92"
+               class="code sev-3  le">
+               <ul class="violations">
+               
+                  <li>
+                     <span class="count sev-3">
+                        S101
+                     </span>
+                     Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.</li>
+               
+               </ul><tt><i>92</i>         <span class="k">assert</span> <span class="n">apikey</span> <span class="ow">is</span> <span class="kc">None</span></tt>
+            </div>
+            <div id="l93"
+               class="code sev- "><tt><i>93</i>         <span class="n">click</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="s2">&quot;Api key removed successfully for platform url &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">url_used</span><span class="p">,))</span></tt>
+            </div>
+            <div id="l94"
+               class="code sev- "><tt><i>94</i> &nbsp;</tt>
+            </div>
+            <div id="l95"
+               class="code sev- "><tt><i>95</i> &nbsp;</tt>
+            </div>
+            <div id="l96"
+               class="code sev- "><tt><i>96</i> <span class="nd">@odskeys</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;set&quot;</span><span class="p">)</span></tt>
+            </div>
+            <div id="l97"
+               class="code sev- "><tt><i>97</i> <span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-p&#39;</span><span class="p">,</span> <span class="s1">&#39;--platform_id&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;public&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Specific ODS platform id. Default &#39;public&#39;&quot;</span><span class="p">)</span></tt>
+            </div>
+            <div id="l98"
+               class="code sev- "><tt><i>98</i> <span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-b&#39;</span><span class="p">,</span> <span class="s1">&#39;--base_url&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Specific ODS base url. Default: &quot;</span></tt>
+            </div>
+            <div id="l99"
+               class="code sev- "><tt><i>99</i>                                                      <span class="s2">&quot;https://&lt;platform_id&gt;.opendatasoft.com/&quot;</span><span class="p">)</span></tt>
+            </div>
+            <div id="l100"
+               class="code sev- "><tt><i>100</i> <span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-u&#39;</span><span class="p">,</span> <span class="s1">&#39;--username&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">KR_DEFAULT_USERNAME</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Custom username to use in the keyring entry. &#39;</span></tt>
+            </div>
+            <div id="l101"
+               class="code sev- "><tt><i>101</i>                                                                     <span class="s1">&#39;Default: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">KR_DEFAULT_USERNAME</span><span class="p">)</span></tt>
+            </div>
+            <div id="l102"
+               class="code sev- "><tt><i>102</i> <span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-k&#39;</span><span class="p">,</span> <span class="s1">&#39;--apikey&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;apikey to register. If none is provided, you will be prompted for it.&quot;</span><span class="p">)</span></tt>
+            </div>
+            <div id="l103"
+               class="code sev- "><tt><i>103</i> <span class="k">def</span> <span class="nf">set_ods_apikey</span><span class="p">(</span><span class="n">platform_id</span><span class="o">=</span><span class="s1">&#39;public&#39;</span><span class="p">,</span>          <span class="c1"># type: str</span></tt>
+            </div>
+            <div id="l104"
+               class="code sev- "><tt><i>104</i>                    <span class="n">base_url</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>                 <span class="c1"># type: str</span></tt>
+            </div>
+            <div id="l105"
+               class="code sev- "><tt><i>105</i>                    <span class="n">username</span><span class="o">=</span><span class="n">KR_DEFAULT_USERNAME</span><span class="p">,</span>  <span class="c1"># type: str</span></tt>
+            </div>
+            <div id="l106"
+               class="code sev- "><tt><i>106</i>                    <span class="n">apikey</span><span class="o">=</span><span class="kc">None</span>                    <span class="c1"># type: str</span></tt>
+            </div>
+            <div id="l107"
+               class="code sev- "><tt><i>107</i>                    <span class="p">):</span></tt>
+            </div>
+            <div id="l108"
+               class="code sev- "><tt><i>108</i>     <span class="sd">&quot;&quot;&quot;</span></tt>
+            </div>
+            <div id="l109"
+               class="code sev- "><tt><i>109</i> <span class="sd">    Creates an ODS apikey entry in the keyring. Custom ODS platform id or base url can be provided through options.</span></tt>
+            </div>
+            <div id="l110"
+               class="code sev- "><tt><i>110</i> <span class="sd">    &quot;&quot;&quot;</span></tt>
+            </div>
+            <div id="l111"
+               class="code sev- "><tt><i>111</i>     <span class="n">store_apikey_in_keyring</span><span class="p">(</span><span class="n">platform_id</span><span class="o">=</span><span class="n">platform_id</span><span class="p">,</span></tt>
+            </div>
+            <div id="l112"
+               class="code sev- "><tt><i>112</i>                             <span class="n">base_url</span><span class="o">=</span><span class="n">base_url</span><span class="p">,</span></tt>
+            </div>
+            <div id="l113"
+               class="code sev- "><tt><i>113</i>                             <span class="n">keyring_entries_username</span><span class="o">=</span><span class="n">username</span><span class="p">,</span></tt>
+            </div>
+            <div id="l114"
+               class="code sev- "><tt><i>114</i>                             <span class="n">apikey</span><span class="o">=</span><span class="n">apikey</span></tt>
+            </div>
+            <div id="l115"
+               class="code sev- "><tt><i>115</i>                             <span class="p">)</span></tt>
+            </div>
+            <div id="l116"
+               class="code sev- "><tt><i>116</i>     <span class="n">gotapikey</span> <span class="o">=</span> <span class="n">get_apikey_from_keyring</span><span class="p">(</span><span class="n">platform_id</span><span class="o">=</span><span class="n">platform_id</span><span class="p">,</span></tt>
+            </div>
+            <div id="l117"
+               class="code sev- "><tt><i>117</i>                                         <span class="n">base_url</span><span class="o">=</span><span class="n">base_url</span><span class="p">,</span></tt>
+            </div>
+            <div id="l118"
+               class="code sev- "><tt><i>118</i>                                         <span class="n">keyring_entries_username</span><span class="o">=</span><span class="n">username</span><span class="p">,</span></tt>
+            </div>
+            <div id="l119"
+               class="code sev- "><tt><i>119</i>                                         <span class="p">)</span></tt>
+            </div>
+            <div id="l120"
+               class="code sev- "><tt><i>120</i>     <span class="k">if</span> <span class="n">apikey</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span></tt>
+            </div>
+            <div id="l121"
+               class="code sev-3  le">
+               <ul class="violations">
+               
+                  <li>
+                     <span class="count sev-3">
+                        S101
+                     </span>
+                     Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.</li>
+               
+               </ul><tt><i>121</i>         <span class="k">assert</span> <span class="n">apikey</span> <span class="o">==</span> <span class="n">gotapikey</span></tt>
+            </div>
+            <div id="l122"
+               class="code sev- "><tt><i>122</i>     <span class="k">else</span><span class="p">:</span></tt>
+            </div>
+            <div id="l123"
+               class="code sev- "><tt><i>123</i>         <span class="c1"># api key provided through getpass() - we do not have access to it</span></tt>
+            </div>
+            <div id="l124"
+               class="code sev-3  le">
+               <ul class="violations">
+               
+                  <li>
+                     <span class="count sev-3">
+                        S101
+                     </span>
+                     Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.</li>
+               
+               </ul><tt><i>124</i>         <span class="k">assert</span> <span class="n">gotapikey</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span></tt>
+            </div>
+            <div id="l125"
+               class="code sev- "><tt><i>125</i>     <span class="c1"># actual url used, for message print</span></tt>
+            </div>
+            <div id="l126"
+               class="code sev- "><tt><i>126</i>     <span class="n">url_used</span> <span class="o">=</span> <span class="n">_get_url_used</span><span class="p">(</span><span class="n">platform_id</span><span class="o">=</span><span class="n">platform_id</span><span class="p">,</span> <span class="n">base_url</span><span class="o">=</span><span class="n">base_url</span><span class="p">)</span></tt>
+            </div>
+            <div id="l127"
+               class="code sev- "><tt><i>127</i>     <span class="n">click</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="s2">&quot;Api key defined successfully for platform url &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">url_used</span><span class="p">,))</span></tt>
+            </div>
+            <div id="l128"
+               class="code sev- "><tt><i>128</i> &nbsp;</tt>
+            </div>
+            <div id="l129"
+               class="code sev- "><tt><i>129</i> &nbsp;</tt>
+            </div>
+            <div id="l130"
+               class="code sev- "><tt><i>130</i> <span class="nd">@odskeys</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;show&quot;</span><span class="p">)</span></tt>
+            </div>
+            <div id="l131"
+               class="code sev- "><tt><i>131</i> <span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-a&#39;</span><span class="p">,</span> <span class="s1">&#39;--alt&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Alternative #id (the number of available alternatives is &#39;</span></tt>
+            </div>
+            <div id="l132"
+               class="code sev- "><tt><i>132</i>                                              <span class="s1">&#39;platform dependent)&#39;</span><span class="p">)</span></tt>
+            </div>
+            <div id="l133"
+               class="code sev- "><tt><i>133</i> <span class="k">def</span> <span class="nf">show_os_mgr</span><span class="p">(</span><span class="n">alt</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>  <span class="c1"># type: int</span></tt>
+            </div>
+            <div id="l134"
+               class="code sev- "><tt><i>134</i>                 <span class="p">):</span></tt>
+            </div>
+            <div id="l135"
+               class="code sev- "><tt><i>135</i>     <span class="sd">&quot;&quot;&quot;</span></tt>
+            </div>
+            <div id="l136"
+               class="code sev- "><tt><i>136</i> <span class="sd">    Shows the OS credentials manager associated with current keyring backend.</span></tt>
+            </div>
+            <div id="l137"
+               class="code sev- "><tt><i>137</i> <span class="sd">    When several alternatives exist, the `--alt` option can be used to switch from 0 (default) to others.</span></tt>
+            </div>
+            <div id="l138"
+               class="code sev- "><tt><i>138</i> &nbsp;</tt>
+            </div>
+            <div id="l139"
+               class="code sev- "><tt><i>139</i> <span class="sd">    Currently supported backends and alternatives:</span></tt>
+            </div>
+            <div id="l140"
+               class="code sev- "><tt><i>140</i> &nbsp;</tt>
+            </div>
+            <div id="l141"
+               class="code sev- "><tt><i>141</i> <span class="sd">    Windows WinVaultKeyring:</span></tt>
+            </div>
+            <div id="l142"
+               class="code sev- "><tt><i>142</i> <span class="sd">     - (alt 0, default) control.exe /name Microsoft.CredentialManager</span></tt>
+            </div>
+            <div id="l143"
+               class="code sev- "><tt><i>143</i> <span class="sd">     - (alt 1) rundll32.exe keymgr.dll, KRShowKeyMgr</span></tt>
+            </div>
+            <div id="l144"
+               class="code sev- "><tt><i>144</i> &nbsp;</tt>
+            </div>
+            <div id="l145"
+               class="code sev- "><tt><i>145</i> <span class="sd">    &quot;&quot;&quot;</span></tt>
+            </div>
+            <div id="l146"
+               class="code sev- "><tt><i>146</i>     <span class="kn">import</span> <span class="nn">keyring</span></tt>
+            </div>
+            <div id="l147"
+               class="code sev- "><tt><i>147</i>     <span class="n">kr</span> <span class="o">=</span> <span class="n">keyring</span><span class="o">.</span><span class="n">get_keyring</span><span class="p">()</span></tt>
+            </div>
+            <div id="l148"
+               class="code sev- "><tt><i>148</i>     <span class="k">if</span> <span class="s1">&#39;Windows WinVaultKeyring&#39;</span> <span class="ow">in</span> <span class="n">kr</span><span class="o">.</span><span class="n">name</span><span class="p">:</span></tt>
+            </div>
+            <div id="l149"
+               class="code sev- "><tt><i>149</i>         <span class="n">alts</span> <span class="o">=</span> <span class="p">{</span></tt>
+            </div>
+            <div id="l150"
+               class="code sev- "><tt><i>150</i>             <span class="mi">0</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;control.exe&quot;</span><span class="p">,</span> <span class="s2">&quot;/name&quot;</span><span class="p">,</span> <span class="s2">&quot;Microsoft.CredentialManager&quot;</span><span class="p">],</span></tt>
+            </div>
+            <div id="l151"
+               class="code sev- "><tt><i>151</i>             <span class="mi">1</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;cmd.exe&quot;</span><span class="p">,</span> <span class="s2">&quot;/c&quot;</span><span class="p">,</span> <span class="s2">&quot;start&quot;</span><span class="p">,</span> <span class="s2">&quot;/B&quot;</span><span class="p">,</span> <span class="s2">&quot;rundll32.exe&quot;</span><span class="p">,</span> <span class="s2">&quot;keymgr.dll,KRShowKeyMgr&quot;</span><span class="p">]</span></tt>
+            </div>
+            <div id="l152"
+               class="code sev- "><tt><i>152</i>         <span class="p">}</span></tt>
+            </div>
+            <div id="l153"
+               class="code sev- "><tt><i>153</i>     <span class="k">else</span><span class="p">:</span></tt>
+            </div>
+            <div id="l154"
+               class="code sev- "><tt><i>154</i>         <span class="n">click</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="s2">&quot;This command is not supported for keyring backend &#39;</span><span class="si">%s</span><span class="s2">&#39;, please report it here:&quot;</span></tt>
+            </div>
+            <div id="l155"
+               class="code sev- "><tt><i>155</i>                    <span class="s2">&quot; https://github.com/smarie/python-odsclient/issues/&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">kr</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="p">))</span></tt>
+            </div>
+            <div id="l156"
+               class="code sev- "><tt><i>156</i>         <span class="k">return</span></tt>
+            </div>
+            <div id="l157"
+               class="code sev- "><tt><i>157</i> &nbsp;</tt>
+            </div>
+            <div id="l158"
+               class="code sev- "><tt><i>158</i>     <span class="c1"># execute the alternative</span></tt>
+            </div>
+            <div id="l159"
+               class="code sev- "><tt><i>159</i>     <span class="k">try</span><span class="p">:</span></tt>
+            </div>
+            <div id="l160"
+               class="code sev- "><tt><i>160</i>         <span class="n">cmd</span> <span class="o">=</span> <span class="n">alts</span><span class="p">[</span><span class="n">alt</span><span class="p">]</span></tt>
+            </div>
+            <div id="l161"
+               class="code sev- "><tt><i>161</i>     <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span></tt>
+            </div>
+            <div id="l162"
+               class="code sev- "><tt><i>162</i>         <span class="n">click</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="s2">&quot;Invalid alternative #: </span><span class="si">%s</span><span class="s2">. Only [0-</span><span class="si">%s</span><span class="s2">] are supported with keyring backend </span><span class="si">%s</span><span class="s2">&quot;</span></tt>
+            </div>
+            <div id="l163"
+               class="code sev- "><tt><i>163</i>                    <span class="o">%</span> <span class="p">(</span><span class="n">alt</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">alts</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">kr</span><span class="o">.</span><span class="n">name</span><span class="p">))</span></tt>
+            </div>
+            <div id="l164"
+               class="code sev- "><tt><i>164</i>         <span class="k">return</span></tt>
+            </div>
+            <div id="l165"
+               class="code sev- "><tt><i>165</i>     <span class="k">else</span><span class="p">:</span></tt>
+            </div>
+            <div id="l166"
+               class="code sev- "><tt><i>166</i>         <span class="n">click</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="s2">&quot;Keyring backend is &#39;</span><span class="si">%s</span><span class="s2">&#39;. Runnning command for alternative </span><span class="si">%s</span><span class="s2">: &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">kr</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">alt</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cmd</span><span class="p">)))</span></tt>
+            </div>
+            <div id="l167"
+               class="code sev-3  le">
+               <ul class="violations">
+               
+                  <li>
+                     <span class="count sev-3">
+                        S603
+                     </span>
+                     Subprocess call - check for execution of untrusted input.</li>
+               
+               </ul><tt><i>167</i>         <span class="n">call</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span></tt>
+            </div>
+            <div id="l168"
+               class="code sev- "><tt><i>168</i> &nbsp;</tt>
+            </div>
+            <div id="l169"
+               class="code sev- "><tt><i>169</i> &nbsp;</tt>
+            </div>
+            <div id="l170"
+               class="code sev- "><tt><i>170</i> <span class="c1"># @odskeys.command(name=&quot;list&quot;)</span></tt>
+            </div>
+            <div id="l171"
+               class="code sev- "><tt><i>171</i> <span class="c1"># @click.option(&#39;-p&#39;, &#39;--platform_id&#39;, default=&#39;public&#39;, help=&#39;Filter on a specific ODS platform id.&#39;)</span></tt>
+            </div>
+            <div id="l172"
+               class="code sev- "><tt><i>172</i> <span class="c1"># @click.option(&#39;-b&#39;, &#39;--base_url&#39;, default=1, help=&#39;Filter on a specific ODS base url&#39;)</span></tt>
+            </div>
+            <div id="l173"
+               class="code sev- "><tt><i>173</i> <span class="c1"># def list_ods_keys(platform_id,  # type: str</span></tt>
+            </div>
+            <div id="l174"
+               class="code sev- "><tt><i>174</i> <span class="c1">#                   base_url      # type: str</span></tt>
+            </div>
+            <div id="l175"
+               class="code sev- "><tt><i>175</i> <span class="c1">#                   ):</span></tt>
+            </div>
+            <div id="l176"
+               class="code sev- "><tt><i>176</i> <span class="c1">#     &quot;&quot;&quot;</span></tt>
+            </div>
+            <div id="l177"
+               class="code sev- "><tt><i>177</i> <span class="c1">#     Lists the</span></tt>
+            </div>
+            <div id="l178"
+               class="code sev- "><tt><i>178</i> <span class="c1">#     &quot;&quot;&quot;</span></tt>
+            </div>
+            <div id="l179"
+               class="code sev- "><tt><i>179</i> <span class="c1">#     click.echo(&#39;Filtering: %s, %s!&#39; % (platform_id, base_url))</span></tt>
+            </div>
+            <div id="l180"
+               class="code sev- "><tt><i>180</i> <span class="c1">#     # list with https://github.com/jaraco/keyring/issues/151</span></tt>
+            </div>
+            <div id="l181"
+               class="code sev- "><tt><i>181</i> <span class="c1">#     # but this does not work with windows backend</span></tt>
+            </div>
+            <div id="l182"
+               class="code sev- "><tt><i>182</i> <span class="c1">#     for item in keyring.get_keyring().get_preferred_collection().get_all_items():</span></tt>
+            </div>
+            <div id="l183"
+               class="code sev- "><tt><i>183</i> <span class="c1">#         print(item.get_label(), item.get_attributes())</span></tt>
+            </div>
+            <div id="l184"
+               class="code sev- "><tt><i>184</i> &nbsp;</tt>
+            </div>
+            <div id="l185"
+               class="code sev- "><tt><i>185</i> &nbsp;</tt>
+            </div>
+            <div id="l186"
+               class="code sev- "><tt><i>186</i> <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span></tt>
+            </div>
+            <div id="l187"
+               class="code sev- "><tt><i>187</i>     <span class="n">odskeys</span><span class="p">()</span></tt>
+            </div>
+            
+         </div>
+      </div>
+   </body>
+</html>
